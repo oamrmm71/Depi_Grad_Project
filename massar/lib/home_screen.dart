@@ -161,9 +161,9 @@ class HomeScreen extends StatelessWidget {
                     height: 52,
                     borderRadius: 50,
                     child: const Icon(
-                      Icons.tune,
+                      Icons.filter_alt_outlined,
                       color: Colors.white,
-                      size: 22,
+                      size: 26,
                     ),
                     onTap: () {},
                   ),
