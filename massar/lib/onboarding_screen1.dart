@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:massar/custom%20widgets/glass_button.dart';
+import 'package:massar/home_screen.dart';
 
 class Onboarding1 extends StatelessWidget {
   const Onboarding1({super.key});
@@ -69,7 +70,9 @@ class Onboarding1 extends StatelessWidget {
                 height: 54,
                 fontSize: 18,
                 fontWeight: FontWeight.w500,
-                onTap: () {},
+                onTap: () {
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => const HomeScreen()));
+                },
               ),
             ),
           ],
