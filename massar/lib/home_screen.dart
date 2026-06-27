@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:massar/custom%20widgets/bottom_nav_glass.dart';
 import 'package:massar/custom%20widgets/glass_button.dart';
 import 'package:flutter_card_swiper/flutter_card_swiper.dart';
 import 'package:massar/custom%20widgets/travel_card.dart';
@@ -210,25 +211,38 @@ class HomeScreen extends StatelessWidget {
             top: 360,
             left: 0,
             right: 0,
-            bottom: 40,
-            child: CardSwiper(
-              cardsCount: trips.length,
-              numberOfCardsDisplayed: 3,
-              backCardOffset: const Offset(0, 35),
-              padding: const EdgeInsets.all(0),
-              cardBuilder:
-                  (
-                    context,
-                    index,
-                    horizontalThresholdPercentage,
-                    verticalThresholdPercentage,
-                  ) {
-                    return TravelCard(
-                      title: trips[index]["title"]!,
-                      location: trips[index]["location"]!,
-                      image: trips[index]["image"]!,
-                    );
-                  },
+            child: SizedBox(
+              height: 420,
+              child: CardSwiper(
+                cardsCount: trips.length,
+                numberOfCardsDisplayed: 3,
+                backCardOffset: const Offset(0, 30),
+                padding: const EdgeInsets.all(0),
+                cardBuilder:
+                    (
+                      context,
+                      index,
+                      horizontalThresholdPercentage,
+                      verticalThresholdPercentage,
+                    ) {
+                      return TravelCard(
+                        title: trips[index]["title"]!,
+                        location: trips[index]["location"]!,
+                        image: trips[index]["image"]!,
+                      );
+                    },
+              ),
+            ),
+          ),
+          Positioned(
+            bottom: 20,
+            left: 0,
+            right: 0,
+            child: BottomNavGlass(
+              selectedIndex: 0,
+              onTap: (index) {
+                print(index);
+              },
             ),
           ),
         ],
