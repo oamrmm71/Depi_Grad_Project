@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:massar/custom%20widgets/glass_button.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -86,11 +87,111 @@ class HomeScreen extends StatelessWidget {
                         size: 30,
                       ),
                       onTap: () {},
-                  
                     ),
                   ],
                 ),
               ],
+            ),
+          ),
+          Positioned(
+            top: 150,
+            left: 24,
+            right: 24,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Explore The',
+                  style: GoogleFonts.poppins(
+                    color: Colors.white,
+                    fontSize: 34,
+                    fontWeight: FontWeight.w200,
+                    fontStyle: FontStyle.italic,
+                  ),
+                ),
+                Text(
+                  'WORLD WITH AI',
+                  style: GoogleFonts.poppins(
+                    color: Colors.white,
+                    fontSize: 40,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          Positioned(
+            top: 265,
+            left: 20,
+            right: 0,
+            child: SizedBox(
+              height: 52,
+              child: ListView(
+                scrollDirection: Axis.horizontal,
+                children: [
+                  GlassButton(
+                    width: 52,
+                    height: 52,
+                    borderRadius: 50,
+                    child: const Icon(
+                      Icons.search,
+                      color: Colors.white,
+                      size: 24,
+                    ),
+                    onTap: () {},
+                  ),
+
+                  const SizedBox(width: 8),
+
+                  GlassButton(
+                    width: 52,
+                    height: 52,
+                    borderRadius: 50,
+                    child: const Icon(
+                      Icons.tune,
+                      color: Colors.white,
+                      size: 22,
+                    ),
+                    onTap: () {},
+                  ),
+
+                  const SizedBox(width: 8),
+
+                  GlassButton(
+                    text: 'Tour Package',
+                    width: 135,
+                    height: 52,
+                    fontSize: 14,
+                    fontWeight: FontWeight.w500,
+                    borderRadius: 30,
+                    onTap: () {},
+                  ),
+
+                  const SizedBox(width: 8),
+
+                  GlassButton(
+                    text: 'Budget Package',
+                    width: 150,
+                    height: 52,
+                    fontSize: 14,
+                    fontWeight: FontWeight.w500,
+                    borderRadius: 30,
+                    onTap: () {},
+                  ),
+
+                  const SizedBox(width: 8),
+
+                  GlassButton(
+                    text: 'Trip Package',
+                    width: 130,
+                    height: 52,
+                    fontSize: 14,
+                    fontWeight: FontWeight.w500,
+                    borderRadius: 30,
+                    onTap: () {},
+                  ),
+                ],
+              ),
             ),
           ),
         ],
