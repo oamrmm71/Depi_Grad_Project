@@ -1,6 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:massar/custom%20widgets/glass_button.dart';
+import 'package:flutter_card_swiper/flutter_card_swiper.dart';
+import 'package:massar/custom%20widgets/travel_card.dart';
+
+final List<Map<String, String>> trips = [
+  {
+    "title": "BALI",
+    "location": "Southeast Asia",
+    "image": "lib/assets/profile.png",
+  },
+  {"title": "PARIS", "location": "France", "image": "lib/assets/profile.png"},
+  {"title": "TOKYO", "location": "Japan", "image": "lib/assets/profile.png"},
+];
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -192,6 +204,31 @@ class HomeScreen extends StatelessWidget {
                   ),
                 ],
               ),
+            ),
+          ),
+          Positioned(
+            top: 360,
+            left: 0,
+            right: 0,
+            bottom: 40,
+            child: CardSwiper(
+              cardsCount: trips.length,
+              numberOfCardsDisplayed: 3,
+              backCardOffset: const Offset(0, 35),
+              padding: const EdgeInsets.all(0),
+              cardBuilder:
+                  (
+                    context,
+                    index,
+                    horizontalThresholdPercentage,
+                    verticalThresholdPercentage,
+                  ) {
+                    return TravelCard(
+                      title: trips[index]["title"]!,
+                      location: trips[index]["location"]!,
+                      image: trips[index]["image"]!,
+                    );
+                  },
             ),
           ),
         ],
