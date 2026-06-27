@@ -18,37 +18,33 @@ class TravelCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 12),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(35),
-      ),
+      margin: const EdgeInsets.symmetric(horizontal: 14),
       child: Stack(
         children: [
-          ClipRRect(
-            borderRadius: BorderRadius.circular(35),
-            child: Image.asset(
-              image,
-              fit: BoxFit.cover,
-              width: double.infinity,
-              height: double.infinity,
-            ),
+          ClipPath(
+  clipper: TravelCardClipper(),
+  child: Transform.scale(
+    scale: 1.08,
+    child: Transform.translate(
+      offset: const Offset(0, -18),
+      child: Image.asset(
+        image,
+        width: double.infinity,
+        height: double.infinity,
+        fit: BoxFit.cover,
+      ),
+    ),
+  ),
+),
+
+          CustomPaint(
+            size: Size.infinite,
+            painter: TravelCardBorderPainter(),
           ),
 
-          // Border
-          Container(
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(35),
-              border: Border.all(
-                color: Colors.white.withOpacity(0.6),
-                width: 2,
-              ),
-            ),
-          ),
-
-          // Text
           Positioned(
-            top: 30,
-            left: 25,
+            top: 38,
+            left: 28,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -56,10 +52,12 @@ class TravelCard extends StatelessWidget {
                   title,
                   style: GoogleFonts.poppins(
                     color: const Color(0xFF002B45),
-                    fontSize: 38,
+                    fontSize: 34,
                     fontWeight: FontWeight.w700,
+                    height: 1,
                   ),
                 ),
+                const SizedBox(height: 3),
                 Text(
                   location,
                   style: GoogleFonts.poppins(
@@ -71,15 +69,14 @@ class TravelCard extends StatelessWidget {
             ),
           ),
 
-          // Arrow button
           Positioned(
-            top: 25,
-            right: 25,
+            top: 22,
+            right: 22,
             child: GestureDetector(
               onTap: onTap,
               child: Container(
-                width: 70,
-                height: 70,
+                width: 68,
+                height: 68,
                 decoration: const BoxDecoration(
                   shape: BoxShape.circle,
                   color: Color(0xFF002B45),
@@ -87,7 +84,7 @@ class TravelCard extends StatelessWidget {
                 child: const Icon(
                   Icons.north_east,
                   color: Colors.white,
-                  size: 35,
+                  size: 34,
                 ),
               ),
             ),
@@ -96,4 +93,154 @@ class TravelCard extends StatelessWidget {
       ),
     );
   }
+}
+
+class TravelCardBorderPainter extends CustomPainter {
+  @override
+  void paint(Canvas canvas, Size size) {
+    final paint =
+        Paint()
+          ..color = Colors.white.withOpacity(0.55)
+          ..style = PaintingStyle.stroke
+          ..strokeWidth = 1.4;
+
+    final path = _buildPath(size);
+
+    canvas.drawPath(path, paint);
+  }
+
+  Path _buildPath(Size size) {
+    const radius = 42.0;
+    final path = Path();
+
+    path.moveTo(radius, 35);
+
+    // Smooth top-left corner
+    path.quadraticBezierTo(
+      0,
+      35,
+      0,
+      radius,
+    );
+
+    // Left wave rise
+    path.quadraticBezierTo(
+  size.width * 0.08,
+  -8,   // higher on left
+  size.width * 0.26,
+  8,
+);
+
+path.quadraticBezierTo(
+  size.width * 0.46,
+  44,
+  size.width * 0.70,
+  18,
+);
+
+path.quadraticBezierTo(
+  size.width * 0.88,
+  12,   // lower on right
+  size.width,
+  radius,
+);
+
+    // Right side
+    path.lineTo(size.width, size.height - radius);
+
+    // Bottom-right
+    path.arcToPoint(
+      Offset(size.width - radius, size.height),
+      radius: const Radius.circular(radius),
+    );
+
+    // Bottom
+    path.lineTo(radius, size.height);
+
+    // Bottom-left
+    path.arcToPoint(
+      Offset(0, size.height - radius),
+      radius: const Radius.circular(radius),
+    );
+
+    // Left side
+    path.lineTo(0, radius);
+
+    path.close();
+
+    return path;
+  }
+
+  @override
+  bool shouldRepaint(CustomPainter oldDelegate) => false;
+}
+
+class TravelCardClipper extends CustomClipper<Path> {
+  @override
+  Path getClip(Size size) {
+    const radius = 42.0;
+    final path = Path();
+
+    path.moveTo(radius, 35);
+
+    // Smooth top-left corner
+    path.quadraticBezierTo(
+      0,
+      35,
+      0,
+      radius,
+    );
+
+    // EXACT same left wave rise
+    path.quadraticBezierTo(
+      size.width * 0.08,
+      -8,
+      size.width * 0.26,
+      8,
+    );
+
+    // EXACT same center wave
+    path.quadraticBezierTo(
+      size.width * 0.46,
+      44,
+      size.width * 0.70,
+      18,
+    );
+
+    // EXACT same right wave
+    path.quadraticBezierTo(
+      size.width * 0.88,
+      12,
+      size.width,
+      radius,
+    );
+
+    // Right side
+    path.lineTo(size.width, size.height - radius);
+
+    // Bottom-right
+    path.arcToPoint(
+      Offset(size.width - radius, size.height),
+      radius: const Radius.circular(radius),
+    );
+
+    // Bottom
+    path.lineTo(radius, size.height);
+
+    // Bottom-left
+    path.arcToPoint(
+      Offset(0, size.height - radius),
+      radius: const Radius.circular(radius),
+    );
+
+    // Left side
+    path.lineTo(0, radius);
+
+    path.close();
+
+    return path;
+  }
+
+  @override
+  bool shouldReclip(CustomClipper<Path> oldClipper) => false;
 }
