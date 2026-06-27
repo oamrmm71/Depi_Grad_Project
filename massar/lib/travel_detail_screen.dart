@@ -3,8 +3,6 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:massar/custom%20widgets/bottom_nav_glass.dart';
 import 'package:massar/custom%20widgets/glass_button.dart';
 
-
-
 class TravelDetailScreen extends StatelessWidget {
   const TravelDetailScreen({super.key});
 
@@ -45,8 +43,81 @@ class TravelDetailScreen extends StatelessWidget {
               ),
             ),
           ),
-        
-          
+          Positioned(
+            bottom: 20,
+            left: 0,
+            right: 0,
+            child: BottomNavGlass(
+              selectedIndex: 0,
+              onTap: (index) {
+                print(index);
+              },
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(top: 74, left: 24, right: 20),
+            child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'TRIP',
+                      style: GoogleFonts.poppins(
+                        fontSize: 42,
+                        fontWeight: FontWeight.w200,
+                        fontStyle: FontStyle.italic,
+                        color: Colors.white,
+                        height: 0.9,
+                      ),
+                    ),
+                    Text(
+                      'DETAILS',
+                      style: GoogleFonts.poppins(
+                        fontSize: 44,
+                        fontWeight: FontWeight.w600,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ],
+                ),
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.center, 
+                  children: [
+                    GlassButton(
+                      width: 140,
+                      height: 52,
+                      borderRadius: 50,
+                      child:Text(
+                        'Travel Notes',
+                        style: GoogleFonts.poppins(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w500,
+                          color: Colors.white,
+                        ),
+                      ),
+                      onTap: () {},
+                    ),
+                    
+                    GlassButton(
+                      width: 52,
+                      height: 52,
+                      borderRadius: 50,
+                      child: const Icon(
+                        Icons.close,
+                        color: Colors.white,
+                        size: 26,
+                      ),
+                      onTap: () {},
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
         ],
       ),
     );
