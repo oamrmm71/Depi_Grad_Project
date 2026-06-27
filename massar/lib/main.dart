@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'onboarding1.dart';
+import 'splash_screen.dart';
 
 void main() {
   runApp(const MainApp());
@@ -10,14 +10,9 @@ class MainApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return const MaterialApp(
       debugShowCheckedModeBanner: false,
-
-      initialRoute: '/onboarding1',
-
-      routes: {
-        '/onboarding1': (context) => const Onboarding1(),
-      },
+      home: SplashScreen(),
     );
   }
 }
