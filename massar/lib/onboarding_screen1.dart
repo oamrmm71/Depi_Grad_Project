@@ -45,6 +45,19 @@ class Onboarding1 extends StatelessWidget {
                 ),
               ),
             ),
+            Positioned(
+              top: 488,
+              left: 40,
+              child: Text(
+                'Your journey to seamless\ntravel begins here.',
+                style: GoogleFonts.poppins(
+                  fontSize: 24,
+                  fontWeight: FontWeight.w200,
+                  color: Color(0xffF5F5F5),
+                   height: 1.2,
+                ),
+              ),
+            ),
           ],
         ),
       ),
