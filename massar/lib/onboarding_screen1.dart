@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class Onboarding1 extends StatelessWidget {
   const Onboarding1({super.key});
@@ -10,7 +11,7 @@ class Onboarding1 extends StatelessWidget {
         gradient: LinearGradient(
           begin: Alignment(1.0, -0.6),
           end: Alignment(-1.0, 0.2),
-          stops: [0.0, 0.28, 0.55, 1.0],
+          stops: [0.0, 0.22, 0.44, 1.0],
           colors: [
             Color(0xFF0B63D6),
             Color(0xFF0A58BE),
@@ -30,6 +31,18 @@ class Onboarding1 extends StatelessWidget {
                 'lib/assets/plane_onboarding1.png',
                 height: 720,
                 fit: BoxFit.fitHeight,
+              ),
+            ),
+            Positioned(
+              top: 420,
+              left: 40,
+              child: Text(
+                'Explore Trips!',
+                style: GoogleFonts.poppins(
+                  fontSize: 40,
+                  fontWeight: FontWeight.w600,
+                  color: Color(0xffF5F5F5),
+                ),
               ),
             ),
           ],
