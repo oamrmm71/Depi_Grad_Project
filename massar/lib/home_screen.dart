@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:massar/custom%20widgets/glass_button.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -9,6 +10,7 @@ class HomeScreen extends StatelessWidget {
       body: Stack(
         fit: StackFit.expand,
         children: [
+          // Background gradient
           Container(
             decoration: const BoxDecoration(
               gradient: LinearGradient(
@@ -23,6 +25,8 @@ class HomeScreen extends StatelessWidget {
               ),
             ),
           ),
+
+          // Glow
           Container(
             decoration: BoxDecoration(
               gradient: RadialGradient(
@@ -35,6 +39,58 @@ class HomeScreen extends StatelessWidget {
                 ],
                 stops: const [0.0, 0.55, 1.0],
               ),
+            ),
+          ),
+
+          // Top row
+          Positioned(
+            top: 70,
+            left: 24,
+            right: 20,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                CircleAvatar(
+                  radius: 28,
+                  backgroundColor: Colors.white.withOpacity(0.2),
+                  child: ClipOval(
+                    child: Image.asset(
+                      'lib/assets/profile.png',
+                      width: 98,
+                      height: 98,
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                ),
+                Row(
+                  children: [
+                    GlassButton(
+                      width: 60,
+                      height: 60,
+                      borderRadius: 50,
+                      child: const Icon(
+                        Icons.notifications_on,
+                        color: Colors.white,
+                        size: 30,
+                      ),
+                      onTap: () {},
+                    ),
+                    SizedBox(width: 2),
+                    GlassButton(
+                      width: 60,
+                      height: 60,
+                      borderRadius: 50,
+                      child: const Icon(
+                        Icons.settings,
+                        color: Colors.white,
+                        size: 30,
+                      ),
+                      onTap: () {},
+                  
+                    ),
+                  ],
+                ),
+              ],
             ),
           ),
         ],

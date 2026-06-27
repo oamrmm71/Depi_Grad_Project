@@ -3,7 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class GlassButton extends StatelessWidget {
-  final String text;
+  final String? text;
+  final Widget? child;
   final VoidCallback? onTap;
   final double width;
   final double height;
@@ -13,7 +14,8 @@ class GlassButton extends StatelessWidget {
 
   const GlassButton({
     super.key,
-    required this.text,
+    this.text,
+    this.child,
     this.onTap,
     this.width = 320,
     this.height = 52,
@@ -45,14 +47,16 @@ class GlassButton extends StatelessWidget {
               ),
             ),
             alignment: Alignment.center,
-            child: Text(
-              text,
-              style: GoogleFonts.poppins(
-                color: Colors.white,
-                fontSize: fontSize,
-                fontWeight: fontWeight,
-              ),
-            ),
+            child:
+                child ??
+                Text(
+                  text ?? '',
+                  style: GoogleFonts.poppins(
+                    color: Colors.white,
+                    fontSize: fontSize,
+                    fontWeight: fontWeight,
+                  ),
+                ),
           ),
         ),
       ),
