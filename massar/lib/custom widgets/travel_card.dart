@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:massar/travel_detail_screen.dart';
 
 class TravelCard extends StatelessWidget {
   final String title;
@@ -82,10 +83,20 @@ class TravelCard extends StatelessWidget {
                   shape: BoxShape.circle,
                   color: Color(0xFF002B45),
                 ),
-                child: const Icon(
-                  Icons.north_east,
-                  color: Colors.white,
-                  size: 34,
+                child: GestureDetector(
+                  onTap: (){
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const TravelDetailScreen(),
+                      ),
+                    );
+                  },
+                  child: const Icon(
+                    Icons.north_east,
+                    color: Colors.white,
+                    size: 34,
+                  ),
                 ),
               ),
             ),
