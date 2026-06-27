@@ -22,20 +22,20 @@ class TravelCard extends StatelessWidget {
       child: Stack(
         children: [
           ClipPath(
-  clipper: TravelCardClipper(),
-  child: Transform.scale(
-    scale: 1.08,
-    child: Transform.translate(
-      offset: const Offset(0, -18),
-      child: Image.asset(
-        image,
-        width: double.infinity,
-        height: double.infinity,
-        fit: BoxFit.cover,
-      ),
-    ),
-  ),
-),
+            clipper: TravelCardClipper(),
+            child: Transform.scale(
+              scale: 1.08,
+              child: Transform.translate(
+                offset: const Offset(0, -18),
+                child: Image.asset(
+                  image,
+                  width: double.infinity,
+                  height: double.infinity,
+                  fit: BoxFit.cover,
+                ),
+              ),
+            ),
+          ),
 
           CustomPaint(
             size: Size.infinite,
@@ -52,7 +52,7 @@ class TravelCard extends StatelessWidget {
                   title,
                   style: GoogleFonts.poppins(
                     color: const Color(0xFF002B45),
-                    fontSize: 34,
+                    fontSize: 40,
                     fontWeight: FontWeight.w700,
                     height: 1,
                   ),
@@ -62,7 +62,8 @@ class TravelCard extends StatelessWidget {
                   location,
                   style: GoogleFonts.poppins(
                     color: const Color(0xFF002B45),
-                    fontSize: 18,
+                    fontSize: 20,
+                    fontWeight: FontWeight.w500,
                   ),
                 ),
               ],
@@ -95,80 +96,74 @@ class TravelCard extends StatelessWidget {
   }
 }
 
+/// Shared path builder so the painter (border) and clipper (image mask)
+/// always use the exact same shape and can never drift out of sync.
+Path _buildTravelCardPath(Size size) {
+  const radius = 42.0;
+  final w = size.width;
+  final h = size.height;
+  final path = Path();
+
+  path.moveTo(radius, 30);
+
+  // Smooth top-left corner
+  path.quadraticBezierTo(0, 30, 0, radius);
+
+  // First swell: rises high on the left
+  path.cubicTo(
+    w * 0.06, -32,
+    w * 0.18, -30,
+    w * 0.34, 6,
+  );
+
+  // Middle dip — tangent-matched, so it flows continuously from the first curve
+  path.cubicTo(
+    w * 0.46, 38,
+    w * 0.60, 40,
+    w * 0.74, 14,
+  );
+
+  // Final rise into the top-right corner — lower peak than the left side
+  path.cubicTo(
+    w * 0.84, -4,
+    w * 0.94, 2,
+    w, radius,
+  );
+
+  // Right side
+  path.lineTo(w, h - radius);
+
+  // Bottom-right corner
+  path.arcToPoint(
+    Offset(w - radius, h),
+    radius: const Radius.circular(radius),
+  );
+
+  // Bottom
+  path.lineTo(radius, h);
+
+  // Bottom-left corner
+  path.arcToPoint(
+    Offset(0, h - radius),
+    radius: const Radius.circular(radius),
+  );
+
+  // Left side
+  path.lineTo(0, radius);
+
+  path.close();
+  return path;
+}
+
 class TravelCardBorderPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
-    final paint =
-        Paint()
-          ..color = Colors.white.withOpacity(0.55)
-          ..style = PaintingStyle.stroke
-          ..strokeWidth = 1.4;
+    final paint = Paint()
+      ..color = Colors.white.withOpacity(0.55)
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 1.4;
 
-    final path = _buildPath(size);
-
-    canvas.drawPath(path, paint);
-  }
-
-  Path _buildPath(Size size) {
-    const radius = 42.0;
-    final path = Path();
-
-    path.moveTo(radius, 35);
-
-    // Smooth top-left corner
-    path.quadraticBezierTo(
-      0,
-      35,
-      0,
-      radius,
-    );
-
-    // Left wave rise
-    path.quadraticBezierTo(
-  size.width * 0.08,
-  -8,   // higher on left
-  size.width * 0.26,
-  8,
-);
-
-path.quadraticBezierTo(
-  size.width * 0.46,
-  44,
-  size.width * 0.70,
-  18,
-);
-
-path.quadraticBezierTo(
-  size.width * 0.88,
-  12,   // lower on right
-  size.width,
-  radius,
-);
-
-    // Right side
-    path.lineTo(size.width, size.height - radius);
-
-    // Bottom-right
-    path.arcToPoint(
-      Offset(size.width - radius, size.height),
-      radius: const Radius.circular(radius),
-    );
-
-    // Bottom
-    path.lineTo(radius, size.height);
-
-    // Bottom-left
-    path.arcToPoint(
-      Offset(0, size.height - radius),
-      radius: const Radius.circular(radius),
-    );
-
-    // Left side
-    path.lineTo(0, radius);
-
-    path.close();
-
-    return path;
+    canvas.drawPath(_buildTravelCardPath(size), paint);
   }
 
   @override
@@ -177,69 +172,7 @@ path.quadraticBezierTo(
 
 class TravelCardClipper extends CustomClipper<Path> {
   @override
-  Path getClip(Size size) {
-    const radius = 42.0;
-    final path = Path();
-
-    path.moveTo(radius, 35);
-
-    // Smooth top-left corner
-    path.quadraticBezierTo(
-      0,
-      35,
-      0,
-      radius,
-    );
-
-    // EXACT same left wave rise
-    path.quadraticBezierTo(
-      size.width * 0.08,
-      -8,
-      size.width * 0.26,
-      8,
-    );
-
-    // EXACT same center wave
-    path.quadraticBezierTo(
-      size.width * 0.46,
-      44,
-      size.width * 0.70,
-      18,
-    );
-
-    // EXACT same right wave
-    path.quadraticBezierTo(
-      size.width * 0.88,
-      12,
-      size.width,
-      radius,
-    );
-
-    // Right side
-    path.lineTo(size.width, size.height - radius);
-
-    // Bottom-right
-    path.arcToPoint(
-      Offset(size.width - radius, size.height),
-      radius: const Radius.circular(radius),
-    );
-
-    // Bottom
-    path.lineTo(radius, size.height);
-
-    // Bottom-left
-    path.arcToPoint(
-      Offset(0, size.height - radius),
-      radius: const Radius.circular(radius),
-    );
-
-    // Left side
-    path.lineTo(0, radius);
-
-    path.close();
-
-    return path;
-  }
+  Path getClip(Size size) => _buildTravelCardPath(size);
 
   @override
   bool shouldReclip(CustomClipper<Path> oldClipper) => false;
