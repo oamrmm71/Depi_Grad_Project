@@ -32,8 +32,8 @@ class TravelCard extends StatelessWidget {
           ),
 
           Positioned(
-            top: 70,
-            left: 28,
+            top: 77,
+            left: 22,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -95,11 +95,9 @@ class TravelCard extends StatelessWidget {
   }
 }
 
-/// Vertical space reserved for the top humps that extend above the card body.
 const kTopExtension = 44.0;
 
-/// Shared path builder so the painter (border) and clipper (image mask)
-/// always use the exact same shape and can never drift out of sync.
+
 Path _buildTravelCardPath(Size layoutSize) {
   const radius = 42.0;
   const topInset = kTopExtension;
