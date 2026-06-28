@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:massar/custom%20widgets/bottom_nav_glass.dart';
 import 'package:massar/custom%20widgets/glass_button.dart';
+import 'package:massar/custom%20widgets/glass_container.dart';
 
 class TravelDetailScreen extends StatelessWidget {
   const TravelDetailScreen({super.key});
@@ -53,7 +54,8 @@ class TravelDetailScreen extends StatelessWidget {
                 print(index);
               },
             ),
-          ),Positioned(
+          ),
+          Positioned(
             top: 120,
             left: 0,
             right: 0,
@@ -123,7 +125,9 @@ class TravelDetailScreen extends StatelessWidget {
                             color: Colors.white,
                             size: 26,
                           ),
-                          onTap: () {},
+                          onTap: () {
+                            Navigator.pop(context);
+                          },
                         ),
                       ],
                     ),
@@ -138,11 +142,17 @@ class TravelDetailScreen extends StatelessWidget {
                     color: Colors.white,
                   ),
                 ),
-                SizedBox(height: 10),
+                SizedBox(height: 220),
+                GlassContainer(
+                  width: 320,
+                  height: 180,
+                  borderRadius: 40,
+                  padding: const EdgeInsets.all(20),
+                  child: Column(children: [Text("Takeoff Flight")]),
+                ),
               ],
             ),
           ),
-          
         ],
       ),
     );
