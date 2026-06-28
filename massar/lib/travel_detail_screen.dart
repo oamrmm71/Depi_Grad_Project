@@ -55,16 +55,7 @@ class TravelDetailScreen extends StatelessWidget {
               },
             ),
           ),
-          Positioned(
-            top: 120,
-            left: 0,
-            right: 0,
-            child: Image.asset(
-              'lib/assets/trip_details_plane.png',
-              height: 440,
-              fit: BoxFit.contain,
-            ),
-          ),
+          
           Padding(
             padding: const EdgeInsets.only(top: 74, left: 24, right: 20),
             child: Column(
@@ -143,14 +134,27 @@ class TravelDetailScreen extends StatelessWidget {
                   ),
                 ),
                 SizedBox(height: 220),
-                GlassContainer(
-                  width: 320,
-                  height: 180,
-                  borderRadius: 40,
-                  padding: const EdgeInsets.all(20),
-                  child: Column(children: [Text("Takeoff Flight")]),
+                SizedBox(
+                  width: double.infinity,
+                  child: GlassContainer(
+                    width: double.infinity,
+                    height: 180,
+                    borderRadius: 40,
+                    padding: const EdgeInsets.all(20),
+                    child: Column(children: [Text("Takeoff Flight")]),
+                  ),
                 ),
               ],
+            ),
+          ),
+          Positioned(
+            top: 110,
+            left: 0,
+            right: 0,
+            child: Image.asset(
+              'lib/assets/trip_details_plane.png',
+              height: 440,
+              fit: BoxFit.contain,
             ),
           ),
         ],
