@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:massar/custom%20widgets/glass_button.dart';
-import 'package:massar/home_screen.dart';
+import 'package:massar/home%20screen/screens/home_screen.dart';
 
 class Onboarding1 extends StatelessWidget {
   const Onboarding1({super.key});

@@ -1,0 +1,77 @@
+class TripModel {
+  final String cityName;
+  final String tripBudget;
+  final String locationName;
+  final String locationImage;
+  final String departureDate;
+  final String arrivalDate;
+  final String flightCompany;
+  final String flightCode;
+  final String takeoffCity;
+  final String takeoffAirport;
+  final String takeoffTime;
+  final String destinationCity;
+  final String destinationAirport;
+  final String destinationTime;
+  final List<TourModel> tours;
+  final String fullTripPlan;
+
+  TripModel({
+    required this.cityName,
+    required this.tripBudget,
+    required this.locationName,
+    required this.locationImage,
+    required this.departureDate,
+    required this.arrivalDate,
+    required this.flightCompany,
+    required this.flightCode,
+    required this.takeoffCity,
+    required this.takeoffAirport,
+    required this.takeoffTime,
+    required this.destinationCity,
+    required this.destinationAirport,
+    required this.destinationTime,
+    required this.tours,
+    required this.fullTripPlan,
+  });
+
+  factory TripModel.fromJson(Map<String, dynamic> json) {
+    return TripModel(
+      cityName: json["cityName"],
+      tripBudget: json["tripBudget"],
+      locationName: json["locationName"],
+      locationImage: json["locationImage"],
+      departureDate: json["departureDate"],
+      arrivalDate: json["arrivalDate"],
+      flightCompany: json["flightCompany"],
+      flightCode: json["flightCode"],
+      takeoffCity: json["takeoffCity"],
+      takeoffAirport: json["takeoffAirport"],
+      takeoffTime: json["takeoffTime"],
+      destinationCity: json["destinationCity"],
+      destinationAirport: json["destinationAirport"],
+      destinationTime: json["destinationTime"],
+      fullTripPlan: json["fullTripPlan"],
+      tours: (json["tours"] as List)
+          .map((e) => TourModel.fromJson(e))
+          .toList(),
+    );
+  }
+}
+
+class TourModel {
+  final String name;
+  final String price;
+
+  TourModel({
+    required this.name,
+    required this.price,
+  });
+
+  factory TourModel.fromJson(Map<String, dynamic> json) {
+    return TourModel(
+      name: json["name"],
+      price: json["price"],
+    );
+  }
+}
