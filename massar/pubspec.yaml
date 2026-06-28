@@ -28,7 +28,7 @@ flutter:
 
   assets:
     - lib/assets/
-
+    - .env
 flutter_native_splash:
   color: "#F8F8F3"
 
