@@ -92,11 +92,15 @@ class TripService {
     "destinationCityName":
         flight["arrival"]?["airport"]?["municipalityName"] ??
         destination,
+
+    "destinationCountryCode":
+        flight["arrival"]?["airport"]?["countryCode"]?.toString() ?? "",
   };
 }
-  Future<Map<String, dynamic>> getAirportDetails(String iata) async {
+  Future<Map<String, dynamic>> _lookupAirportBySearch(String iata) async {
     final response = await dio.get(
-      "https://aerodatabox.p.rapidapi.com/airports/iata/$iata",
+      "https://aerodatabox.p.rapidapi.com/airports/search/term",
+      queryParameters: {"q": iata, "limit": "10"},
       options: Options(
         headers: {
           "X-RapidAPI-Key": aerodataBoxApiKey,
@@ -105,7 +109,76 @@ class TripService {
       ),
     );
 
-    final data = response.data as Map<String, dynamic>;
+    final items = response.data["items"] as List? ?? [];
+    final code = iata.toUpperCase();
+
+    for (final item in items) {
+      if (item is Map && item["iata"]?.toString().toUpperCase() == code) {
+        return Map<String, dynamic>.from(item);
+      }
+    }
+
+    if (items.isNotEmpty && items.first is Map) {
+      return Map<String, dynamic>.from(items.first as Map);
+    }
+
+    throw Exception("Airport not found for $iata");
+  }
+
+  String _extractCountryCode(Map<String, dynamic> data) {
+    final direct = data["countryCode"]?.toString().trim();
+    if (direct != null && direct.isNotEmpty) return direct;
+
+    final country = data["country"];
+    if (country is Map) {
+      for (final key in ["code", "iso2", "alpha2", "countryCode"]) {
+        final value = country[key]?.toString().trim();
+        if (value != null && value.isNotEmpty) return value;
+      }
+    }
+
+    return "";
+  }
+
+  String? _extractCountryNameFromData(Map<String, dynamic> data) {
+    final country = data["country"];
+    if (country is! Map) return null;
+
+    final name = country["name"];
+    if (name is String && name.trim().isNotEmpty) return name.trim();
+    if (name is Map) {
+      for (final key in ["common", "en", "official"]) {
+        final value = name[key]?.toString().trim();
+        if (value != null && value.isNotEmpty) return value;
+      }
+    }
+
+    for (final key in ["commonName", "fullName"]) {
+      final value = country[key]?.toString().trim();
+      if (value != null && value.isNotEmpty) return value;
+    }
+
+    return null;
+  }
+
+  Future<Map<String, dynamic>> getAirportDetails(String iata) async {
+    Map<String, dynamic> data;
+
+    try {
+      final response = await dio.get(
+        "https://aerodatabox.p.rapidapi.com/airports/iata/$iata",
+        options: Options(
+          headers: {
+            "X-RapidAPI-Key": aerodataBoxApiKey,
+            "X-RapidAPI-Host": "aerodatabox.p.rapidapi.com",
+          },
+        ),
+      );
+      data = Map<String, dynamic>.from(response.data as Map);
+    } catch (_) {
+      data = await _lookupAirportBySearch(iata);
+    }
+
     var cityName = data["municipalityName"]?.toString().trim() ?? "";
 
     if (cityName.isEmpty) {
@@ -118,12 +191,16 @@ class TripService {
       cityName = iata;
     }
 
-    final countryCode = data["countryCode"]?.toString().trim() ?? "";
-    final regionLabel = await _resolveCountryOrContinent(countryCode);
+    final countryCode = _extractCountryCode(data);
+    final countryNameFromApi = _extractCountryNameFromData(data);
+    final countryName = countryNameFromApi != null && countryNameFromApi.isNotEmpty
+        ? countryNameFromApi
+        : await _resolveCountryName(countryCode);
 
     return {
       "cityName": cityName,
-      "regionLabel": regionLabel,
+      "countryName": countryName,
+      "countryCode": countryCode,
     };
   }
 
@@ -139,33 +216,88 @@ class TripService {
         .trim();
   }
 
-  Future<String> _resolveCountryOrContinent(String countryCode) async {
+  Future<String> _resolveCountryName(String countryCode) async {
     if (countryCode.isEmpty) return "";
+
+    final code = countryCode.toUpperCase();
+    final cached = _countryCodeNames[code];
+    if (cached != null) return cached;
 
     try {
       final response = await dio.get(
-        "https://restcountries.com/v3.1/alpha/$countryCode",
+        "https://restcountries.com/v3.1/alpha/$code",
       );
 
       if (response.data is List && (response.data as List).isNotEmpty) {
         final country = (response.data as List).first as Map<String, dynamic>;
         final name = country["name"]?["common"]?.toString().trim();
         if (name != null && name.isNotEmpty) return name;
-
-        final region = country["region"]?.toString().trim();
-        if (region != null && region.isNotEmpty) return region;
       }
     } catch (_) {}
 
-    return countryCode;
+    return code;
   }
+
+  static const Map<String, String> _countryCodeNames = {
+    'AE': 'United Arab Emirates',
+    'AT': 'Austria',
+    'AU': 'Australia',
+    'BE': 'Belgium',
+    'BG': 'Bulgaria',
+    'BR': 'Brazil',
+    'CA': 'Canada',
+    'CH': 'Switzerland',
+    'CN': 'China',
+    'CY': 'Cyprus',
+    'CZ': 'Czechia',
+    'DE': 'Germany',
+    'DK': 'Denmark',
+    'EG': 'Egypt',
+    'ES': 'Spain',
+    'FI': 'Finland',
+    'FR': 'France',
+    'GB': 'United Kingdom',
+    'GR': 'Greece',
+    'HR': 'Croatia',
+    'HU': 'Hungary',
+    'ID': 'Indonesia',
+    'IE': 'Ireland',
+    'IN': 'India',
+    'IT': 'Italy',
+    'JP': 'Japan',
+    'KE': 'Kenya',
+    'KR': 'South Korea',
+    'KW': 'Kuwait',
+    'LB': 'Lebanon',
+    'MA': 'Morocco',
+    'MX': 'Mexico',
+    'MY': 'Malaysia',
+    'NG': 'Nigeria',
+    'NL': 'Netherlands',
+    'NO': 'Norway',
+    'OM': 'Oman',
+    'PH': 'Philippines',
+    'PL': 'Poland',
+    'PT': 'Portugal',
+    'QA': 'Qatar',
+    'RO': 'Romania',
+    'RU': 'Russia',
+    'SA': 'Saudi Arabia',
+    'SE': 'Sweden',
+    'SG': 'Singapore',
+    'TH': 'Thailand',
+    'TR': 'Turkey',
+    'US': 'United States',
+    'VN': 'Vietnam',
+    'ZA': 'South Africa',
+  };
 
   Future<Map<String, dynamic>> getPlaceData({
     required String cityName,
-    required String regionName,
+    required String countryName,
   }) async {
     final searchQuery =
-        regionName.isNotEmpty ? "$cityName $regionName" : cityName;
+        countryName.isNotEmpty ? "$cityName $countryName" : cityName;
 
     final imageResponse = await dio.get(
       "https://api.unsplash.com/search/photos",
@@ -184,7 +316,6 @@ class TripService {
             : "https://images.unsplash.com/photo-1507525428034-b723cf961d3e";
 
     return {
-      "locationName": regionName,
       "locationImage": imageUrl,
     };
   }
@@ -254,7 +385,31 @@ class TripService {
       "destinationTime": "TBD",
       "takeoffCityName": origin,
       "destinationCityName": airportDetails["cityName"],
+      "destinationCountryCode": airportDetails["countryCode"]?.toString() ?? "",
     };
+  }
+
+  Future<String> _resolveTripCountryName({
+    required Map<String, dynamic> airportDetails,
+    required Map<String, dynamic> flightData,
+  }) async {
+    final fromAirport =
+        airportDetails["countryName"]?.toString().trim() ?? "";
+    if (fromAirport.isNotEmpty) return fromAirport;
+
+    final fromFlight =
+        flightData["destinationCountryCode"]?.toString().trim() ?? "";
+    if (fromFlight.isNotEmpty) {
+      return _resolveCountryName(fromFlight);
+    }
+
+    final fromAirportCode =
+        airportDetails["countryCode"]?.toString().trim() ?? "";
+    if (fromAirportCode.isNotEmpty) {
+      return _resolveCountryName(fromAirportCode);
+    }
+
+    return "";
   }
 
   Future<List<Map<String, dynamic>>> getTripSuggestions({
@@ -294,15 +449,21 @@ class TripService {
           );
         }
 
+        final countryName = await _resolveTripCountryName(
+          airportDetails: airportDetails,
+          flightData: flightData,
+        );
+
         final placeData = await getPlaceData(
           cityName: cityName,
-          regionName: airportDetails["regionLabel"]?.toString() ?? "",
+          countryName: countryName,
         );
 
         trips.add({
           "cityName": cityName,
+          "countryName": countryName,
           "tripBudget": "$budget EGP",
-          "locationName": placeData["locationName"],
+          "locationName": countryName,
           "locationImage": placeData["locationImage"],
           "departureDate": "13/7/2026",
           "arrivalDate": "20/7/2026",

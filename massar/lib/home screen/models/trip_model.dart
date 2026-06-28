@@ -1,5 +1,6 @@
 class TripModel {
   final String cityName;
+  final String countryName;
   final String tripBudget;
   final String locationName;
   final String locationImage;
@@ -18,6 +19,7 @@ class TripModel {
 
   TripModel({
     required this.cityName,
+    required this.countryName,
     required this.tripBudget,
     required this.locationName,
     required this.locationImage,
@@ -38,6 +40,7 @@ class TripModel {
   factory TripModel.fromJson(Map<String, dynamic> json) {
     return TripModel(
       cityName: json["cityName"],
+      countryName: json["countryName"] ?? json["locationName"] ?? "",
       tripBudget: json["tripBudget"],
       locationName: json["locationName"],
       locationImage: json["locationImage"],

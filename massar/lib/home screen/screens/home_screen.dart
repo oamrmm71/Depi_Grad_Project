@@ -275,7 +275,7 @@ class HomeScreen extends StatelessWidget {
 
                               return TravelCard(
                                 title: trip.cityName,
-                                location: trip.locationName,
+                                location: trip.countryName,
                                 image: trip.locationImage,
                               );
                             },

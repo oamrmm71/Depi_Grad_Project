@@ -47,14 +47,15 @@ class TravelCard extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 3),
-                Text(
-                  location,
-                  style: GoogleFonts.poppins(
-                    color: const Color(0xFF002B45),
-                    fontSize: 20,
-                    fontWeight: FontWeight.w500,
+                if (location.trim().isNotEmpty)
+                  Text(
+                    location,
+                    style: GoogleFonts.poppins(
+                      color: const Color(0xFF002B45),
+                      fontSize: 20,
+                      fontWeight: FontWeight.w500,
+                    ),
                   ),
-                ),
               ],
             ),
           ),
