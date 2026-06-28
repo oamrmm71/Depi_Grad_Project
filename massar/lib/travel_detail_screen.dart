@@ -59,12 +59,12 @@ class TravelDetailScreen extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  // Header
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Column(
-                        mainAxisAlignment: MainAxisAlignment.start,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
@@ -88,7 +88,6 @@ class TravelDetailScreen extends StatelessWidget {
                         ],
                       ),
                       Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
                           GlassButton(
                             width: 140,
@@ -113,9 +112,7 @@ class TravelDetailScreen extends StatelessWidget {
                               color: Colors.white,
                               size: 26,
                             ),
-                            onTap: () {
-                              Navigator.pop(context);
-                            },
+                            onTap: () => Navigator.pop(context),
                           ),
                         ],
                       ),
@@ -132,14 +129,13 @@ class TravelDetailScreen extends StatelessWidget {
                       color: Colors.white,
                     ),
                   ),
+
+                  // Plane + content stack
                   Stack(
+                    clipBehavior: Clip.none,
                     children: [
-                      
-                      Transform.translate(
-                        offset: const Offset(
-                          0,
-                          190,
-                        ),
+                      Padding(
+                        padding: const EdgeInsets.only(top: 190),
                         child: Column(
                           children: [
                             SizedBox(
@@ -150,17 +146,22 @@ class TravelDetailScreen extends StatelessWidget {
                                 borderRadius: 40,
                                 padding: const EdgeInsets.all(20),
                                 child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.start,
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Row(
-                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
                                       children: [
                                         Row(
                                           children: [
                                             GlowCircle(
                                               radius: 10,
-                                              color: const Color.fromARGB(69, 92, 0, 28),
+                                              color: const Color.fromARGB(
+                                                69,
+                                                92,
+                                                0,
+                                                28,
+                                              ),
                                             ),
                                             const SizedBox(width: 10),
                                             Text(
@@ -183,9 +184,11 @@ class TravelDetailScreen extends StatelessWidget {
                                         ),
                                       ],
                                     ),
-                            
+
                                     Padding(
-                                      padding: const EdgeInsets.only(left: 30.0),
+                                      padding: const EdgeInsets.only(
+                                        left: 30.0,
+                                      ),
                                       child: Text(
                                         'Qatar Airways',
                                         style: GoogleFonts.poppins(
@@ -195,44 +198,19 @@ class TravelDetailScreen extends StatelessWidget {
                                         ),
                                       ),
                                     ),
-                            
+
                                     const SizedBox(height: 14),
-                            
+
                                     Row(
-                                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceEvenly,
                                       children: [
-                                        Column(
-                                          crossAxisAlignment: CrossAxisAlignment.start,
-                                          children: [
-                                            Text(
-                                              'Cairo',
-                                              style: GoogleFonts.poppins(
-                                                fontSize: 16,
-                                                fontWeight: FontWeight.w300,
-                                                color: Colors.white,
-                                                height: 0.8,
-                                              ),
-                                            ),
-                                            Text(
-                                              'CAI',
-                                              style: GoogleFonts.poppins(
-                                                fontSize: 32,
-                                                fontWeight: FontWeight.w600,
-                                                color: Colors.white,
-                                              ),
-                                            ),
-                                            Text(
-                                              '10:30 AM',
-                                              style: GoogleFonts.poppins(
-                                                fontSize: 16,
-                                                fontWeight: FontWeight.w300,
-                                                color: Colors.white,
-                                                height: 0.8,
-                                              ),
-                                            ),
-                                          ],
+                                        _locationWidget(
+                                          city: "Cairo",
+                                          code: "CAI",
+                                          time: "10:30 AM",
                                         ),
-                            
+
                                         Stack(
                                           alignment: Alignment.center,
                                           children: [
@@ -247,9 +225,9 @@ class TravelDetailScreen extends StatelessWidget {
                                             ),
                                             Transform.rotate(
                                               angle: 1.57,
-                                              child: Icon(
+                                              child: const Icon(
                                                 Icons.airplanemode_active,
-                                                color: const Color.fromARGB(
+                                                color: Color.fromARGB(
                                                   255,
                                                   0,
                                                   9,
@@ -260,37 +238,11 @@ class TravelDetailScreen extends StatelessWidget {
                                             ),
                                           ],
                                         ),
-                            
-                                        Column(
-                                          crossAxisAlignment: CrossAxisAlignment.start,
-                                          children: [
-                                            Text(
-                                              'Doha',
-                                              style: GoogleFonts.poppins(
-                                                fontSize: 16,
-                                                fontWeight: FontWeight.w300,
-                                                color: Colors.white,
-                                                height: 0.8,
-                                              ),
-                                            ),
-                                            Text(
-                                              'DOH',
-                                              style: GoogleFonts.poppins(
-                                                fontSize: 32,
-                                                fontWeight: FontWeight.w600,
-                                                color: Colors.white,
-                                              ),
-                                            ),
-                                            Text(
-                                              '1:30 PM',
-                                              style: GoogleFonts.poppins(
-                                                fontSize: 16,
-                                                fontWeight: FontWeight.w300,
-                                                color: Colors.white,
-                                                height: 0.8,
-                                              ),
-                                            ),
-                                          ],
+
+                                        _locationWidget(
+                                          city: "Doha",
+                                          code: "DOH",
+                                          time: "1:30 PM",
                                         ),
                                       ],
                                     ),
@@ -298,15 +250,19 @@ class TravelDetailScreen extends StatelessWidget {
                                 ),
                               ),
                             ),
-                            
+
                             GlassContainer(
                               width: double.infinity,
                               height: 54,
                               borderRadius: 20,
                               child: Padding(
-                                padding: const EdgeInsets.only(left: 20.0, right: 20.0),
+                                padding: const EdgeInsets.only(
+                                  left: 20.0,
+                                  right: 20.0,
+                                ),
                                 child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
                                   children: [
                                     Text(
                                       'Economy class',
@@ -328,9 +284,9 @@ class TravelDetailScreen extends StatelessWidget {
                                 ),
                               ),
                             ),
-                            
+
                             const SizedBox(height: 20),
-                            
+
                             Center(
                               child: FlightPathConnector(
                                 circleRadius: 6,
@@ -339,14 +295,170 @@ class TravelDetailScreen extends StatelessWidget {
                                 color: Colors.white,
                               ),
                             ),
+                            const SizedBox(height: 20),
+
+SizedBox(
+  width: double.infinity,
+  child: GlassContainer(
+    width: double.infinity,
+    height: 180,
+    borderRadius: 40,
+    padding: const EdgeInsets.all(20),
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+       Column(
+  crossAxisAlignment: CrossAxisAlignment.start,
+  children: [
+    Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Row(
+          children: [
+            GlowCircle(
+              radius: 10,
+              color: const Color.fromARGB(
+                69,
+                92,
+                0,
+                28,
+              ),
+            ),
+            const SizedBox(width: 10),
+            Text(
+              'Takeoff Flight',
+              style: GoogleFonts.poppins(
+                fontSize: 16,
+                fontWeight: FontWeight.w500,
+                color: Colors.white,
+              ),
+            ),
+          ],
+        ),
+        Text(
+          'AF AA312',
+          style: GoogleFonts.poppins(
+            fontSize: 14,
+            fontWeight: FontWeight.w400,
+            color: Colors.white,
+          ),
+        ),
+      ],
+    ),
+
+    Padding(
+      padding: const EdgeInsets.only(left: 30.0),
+      child: Text(
+        'Qatar Airways',
+        style: GoogleFonts.poppins(
+          fontSize: 14,
+          fontWeight: FontWeight.w400,
+          color: Colors.white,
+        ),
+      ),
+    ),
+
+    const SizedBox(height: 14),
+
+    Row(
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      children: [
+        _locationWidget(
+          city: "Cairo",
+          code: "CAI",
+          time: "10:30 AM",
+        ),
+
+        Stack(
+          alignment: Alignment.center,
+          children: [
+            GlowCircle(
+              radius: 40,
+              color: const Color.fromARGB(
+                69,
+                255,
+                216,
+                228,
+              ),
+            ),
+            Transform.rotate(
+              angle: 1.57,
+              child: const Icon(
+                Icons.airplanemode_active,
+                color: Color.fromARGB(
+                  255,
+                  0,
+                  9,
+                  46,
+                ),
+                size: 28,
+              ),
+            ),
+          ],
+        ),
+
+        _locationWidget(
+          city: "Doha",
+          code: "DOH",
+          time: "1:30 PM",
+        ),
+      ],
+    ),
+  ],
+)
+      ],
+    ),
+  ),
+),
+
+GlassContainer(
+  width: double.infinity,
+  height: 54,
+  borderRadius: 20,
+  child: Padding(
+    padding: const EdgeInsets.only(left: 20.0, right: 20.0),
+    child: Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Text(
+          'Economy class',
+          style: GoogleFonts.poppins(
+            fontSize: 16,
+            fontWeight: FontWeight.w300,
+            color: Colors.white,
+          ),
+        ),
+        Text(
+          '3000 EGP',
+          style: GoogleFonts.poppins(
+            fontSize: 16,
+            fontWeight: FontWeight.w300,
+            color: Colors.white,
+          ),
+        ),
+      ],
+    ),
+  ),
+),
+
+const SizedBox(height: 20),
+
+Center(
+  child: FlightPathConnector(
+    circleRadius: 6,
+    lineHeight: 60,
+    lineWidth: 2,
+    color: Colors.white,
+  ),
+),
+                            
                           ],
                         ),
                       ),
+
+                      // Plane in front
                       Transform.translate(
-                        offset: const Offset(
-                          -24,
-                          -40,
-                        ), // removes left padding effect
+                        offset: const Offset(-24, -40),
                         child: Image.asset(
                           'lib/assets/trip_details_plane.png',
                           fit: BoxFit.fitWidth,
@@ -373,6 +485,44 @@ class TravelDetailScreen extends StatelessWidget {
           ),
         ],
       ),
+    );
+  }
+
+  static Widget _locationWidget({
+    required String city,
+    required String code,
+    required String time,
+  }) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          city,
+          style: GoogleFonts.poppins(
+            fontSize: 16,
+            fontWeight: FontWeight.w300,
+            color: Colors.white,
+            height: 0.8,
+          ),
+        ),
+        Text(
+          code,
+          style: GoogleFonts.poppins(
+            fontSize: 32,
+            fontWeight: FontWeight.w600,
+            color: Colors.white,
+          ),
+        ),
+        Text(
+          time,
+          style: GoogleFonts.poppins(
+            fontSize: 16,
+            fontWeight: FontWeight.w300,
+            color: Colors.white,
+            height: 0.8,
+          ),
+        ),
+      ],
     );
   }
 }
