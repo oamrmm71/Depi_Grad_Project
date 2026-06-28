@@ -8,12 +8,10 @@ class TripRepository {
 
   Future<List<TripModel>> getTrips({
     required String origin,
-    required List<String> destinations,
     required int budget,
   }) async {
     final data = await tripService.getTripSuggestions(
       origin: origin,
-      destinations: destinations,
       budget: budget,
     );
 

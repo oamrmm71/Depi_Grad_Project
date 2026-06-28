@@ -235,25 +235,40 @@ class HomeScreen extends StatelessWidget {
                   }
 
                   if (state is TripLoaded) {
-                    return CardSwiper(
-                      cardsCount: state.trips.length,
-                      numberOfCardsDisplayed: 3,
-                      backCardOffset: const Offset(0, 30),
-                      padding: const EdgeInsets.all(0),
-                      cardBuilder:
-                          (
-                            context,
-                            index,
-                            horizontalThresholdPercentage,
-                            verticalThresholdPercentage,
-                          ) {
-                            return TravelCard(
-                              title: state.trips[index].cityName,
-                              location: state.trips[index].locationName,
-                              image: state.trips[index].locationImage,
-                            );
-                          },
-                    );
+                    if (state is TripLoaded) {
+                      if (state.trips.isEmpty) {
+                        return const Center(
+                          child: Text(
+                            "No trips found",
+                            style: TextStyle(color: Colors.white),
+                          ),
+                        );
+                      }
+
+                      return CardSwiper(
+                        cardsCount: state.trips.length,
+                        numberOfCardsDisplayed: state.trips.length >= 3
+                            ? 3
+                            : state.trips.length,
+                        backCardOffset: const Offset(0, 30),
+                        padding: const EdgeInsets.all(0),
+                        cardBuilder:
+                            (
+                              context,
+                              index,
+                              horizontalThresholdPercentage,
+                              verticalThresholdPercentage,
+                            ) {
+                              final trip = state.trips[index];
+
+                              return TravelCard(
+                                title: trip.cityName,
+                                location: trip.locationName,
+                                image: trip.locationImage,
+                              );
+                            },
+                      );
+                    }
                   }
 
                   return const SizedBox();

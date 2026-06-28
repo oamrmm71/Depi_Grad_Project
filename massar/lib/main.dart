@@ -1,11 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:massar/home%20screen/cubits/trip_cubit.dart';
 import 'package:massar/home%20screen/repositories/trip_repository.dart';
 import 'package:massar/home%20screen/services/trip_service.dart';
 import 'splash_screen.dart';
 
-void main() {
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  await dotenv.load(fileName: ".env");
+
   final tripService = TripService();
   final tripRepository = TripRepository(tripService);
 
@@ -14,7 +19,6 @@ void main() {
       create: (_) => TripCubit(tripRepository)
         ..fetchTrips(
           origin: "CAI",
-          destinations: ["DOH", "DXB", "IST", "JED", "LHR"],
           budget: 8000,
         ),
       child: const MainApp(),
