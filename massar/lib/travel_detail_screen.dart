@@ -55,7 +55,7 @@ class TravelDetailScreen extends StatelessWidget {
               },
             ),
           ),
-          
+
           Padding(
             padding: const EdgeInsets.only(top: 74, left: 24, right: 20),
             child: Column(
@@ -138,10 +138,18 @@ class TravelDetailScreen extends StatelessWidget {
                   width: double.infinity,
                   child: GlassContainer(
                     width: double.infinity,
-                    height: 180,
+                    height: 160,
                     borderRadius: 40,
                     padding: const EdgeInsets.all(20),
-                    child: Column(children: [Text("Takeoff Flight")]),
+                    child: Padding(
+                      padding: const EdgeInsets.all(12.0),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          
+                      ]),
+                    ),
                   ),
                 ),
               ],
