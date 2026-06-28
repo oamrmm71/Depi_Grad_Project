@@ -53,71 +53,96 @@ class TravelDetailScreen extends StatelessWidget {
                 print(index);
               },
             ),
+          ),Positioned(
+            top: 120,
+            left: 0,
+            right: 0,
+            child: Image.asset(
+              'lib/assets/trip_details_plane.png',
+              height: 440,
+              fit: BoxFit.contain,
+            ),
           ),
           Padding(
             padding: const EdgeInsets.only(top: 74, left: 24, right: 20),
-            child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-  crossAxisAlignment: CrossAxisAlignment.start,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      'TRIP',
-                      style: GoogleFonts.poppins(
-                        fontSize: 42,
-                        fontWeight: FontWeight.w200,
-                        fontStyle: FontStyle.italic,
-                        color: Colors.white,
-                        height: 0.9,
-                      ),
-                    ),
-                    Text(
-                      'DETAILS',
-                      style: GoogleFonts.poppins(
-                        fontSize: 44,
-                        fontWeight: FontWeight.w600,
-                        color: Colors.white,
-                      ),
-                    ),
-                  ],
-                ),
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.center, 
-                  children: [
-                    GlassButton(
-                      width: 140,
-                      height: 52,
-                      borderRadius: 50,
-                      child:Text(
-                        'Travel Notes',
-                        style: GoogleFonts.poppins(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w500,
-                          color: Colors.white,
+                    Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'TRIP',
+                          style: GoogleFonts.poppins(
+                            fontSize: 42,
+                            fontWeight: FontWeight.w200,
+                            fontStyle: FontStyle.italic,
+                            color: Colors.white,
+                            height: 0.9,
+                          ),
                         ),
-                      ),
-                      onTap: () {},
+                        Text(
+                          'DETAILS',
+                          style: GoogleFonts.poppins(
+                            fontSize: 44,
+                            fontWeight: FontWeight.w600,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ],
                     ),
-                    
-                    GlassButton(
-                      width: 52,
-                      height: 52,
-                      borderRadius: 50,
-                      child: const Icon(
-                        Icons.close,
-                        color: Colors.white,
-                        size: 26,
-                      ),
-                      onTap: () {},
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        GlassButton(
+                          width: 140,
+                          height: 52,
+                          borderRadius: 50,
+                          child: Text(
+                            'Travel Notes',
+                            style: GoogleFonts.poppins(
+                              fontSize: 14,
+                              fontWeight: FontWeight.w500,
+                              color: Colors.white,
+                            ),
+                          ),
+                          onTap: () {},
+                        ),
+
+                        GlassButton(
+                          width: 52,
+                          height: 52,
+                          borderRadius: 50,
+                          child: const Icon(
+                            Icons.close,
+                            color: Colors.white,
+                            size: 26,
+                          ),
+                          onTap: () {},
+                        ),
+                      ],
                     ),
                   ],
                 ),
+                SizedBox(height: 2),
+                Text(
+                  '13/7/2026 to 20/7/2026',
+                  style: GoogleFonts.poppins(
+                    fontSize: 20,
+                    fontWeight: FontWeight.w300,
+                    color: Colors.white,
+                  ),
+                ),
+                SizedBox(height: 10),
               ],
             ),
           ),
+          
         ],
       ),
     );
