@@ -94,30 +94,83 @@ class TripService {
         destination,
   };
 }
-  Future<Map<String, dynamic>> getPlaceData(
-      String destination) async {
-    final wikiResponse = await dio.get(
-      "https://en.wikipedia.org/w/api.php",
-      queryParameters: {
-        "action": "query",
-        "list": "search",
-        "format": "json",
-        "srsearch": destination,
-      },
+  Future<Map<String, dynamic>> getAirportDetails(String iata) async {
+    final response = await dio.get(
+      "https://aerodatabox.p.rapidapi.com/airports/iata/$iata",
+      options: Options(
+        headers: {
+          "X-RapidAPI-Key": aerodataBoxApiKey,
+          "X-RapidAPI-Host": "aerodatabox.p.rapidapi.com",
+        },
+      ),
     );
 
-    final wikiResults =
-        wikiResponse.data["query"]?["search"];
+    final data = response.data as Map<String, dynamic>;
+    var cityName = data["municipalityName"]?.toString().trim() ?? "";
 
-    final placeName =
-        (wikiResults != null && wikiResults.isNotEmpty)
-            ? wikiResults.first["title"]
-            : destination;
+    if (cityName.isEmpty) {
+      cityName = _cityFromAirportName(
+        data["shortName"]?.toString() ?? data["name"]?.toString() ?? "",
+      );
+    }
+
+    if (cityName.isEmpty) {
+      cityName = iata;
+    }
+
+    final countryCode = data["countryCode"]?.toString().trim() ?? "";
+    final regionLabel = await _resolveCountryOrContinent(countryCode);
+
+    return {
+      "cityName": cityName,
+      "regionLabel": regionLabel,
+    };
+  }
+
+  String _cityFromAirportName(String airportName) {
+    return airportName
+        .replaceAll(
+          RegExp(
+            r'\s*(International|Intl\.?|Regional|Municipal|Airport|Air Base|Airfield)\s*',
+            caseSensitive: false,
+          ),
+          ' ',
+        )
+        .trim();
+  }
+
+  Future<String> _resolveCountryOrContinent(String countryCode) async {
+    if (countryCode.isEmpty) return "";
+
+    try {
+      final response = await dio.get(
+        "https://restcountries.com/v3.1/alpha/$countryCode",
+      );
+
+      if (response.data is List && (response.data as List).isNotEmpty) {
+        final country = (response.data as List).first as Map<String, dynamic>;
+        final name = country["name"]?["common"]?.toString().trim();
+        if (name != null && name.isNotEmpty) return name;
+
+        final region = country["region"]?.toString().trim();
+        if (region != null && region.isNotEmpty) return region;
+      }
+    } catch (_) {}
+
+    return countryCode;
+  }
+
+  Future<Map<String, dynamic>> getPlaceData({
+    required String cityName,
+    required String regionName,
+  }) async {
+    final searchQuery =
+        regionName.isNotEmpty ? "$cityName $regionName" : cityName;
 
     final imageResponse = await dio.get(
       "https://api.unsplash.com/search/photos",
       queryParameters: {
-        "query": destination,
+        "query": searchQuery,
         "client_id": unsplashApiKey,
         "per_page": 1,
       },
@@ -131,7 +184,7 @@ class TripService {
             : "https://images.unsplash.com/photo-1507525428034-b723cf961d3e";
 
     return {
-      "locationName": placeName,
+      "locationName": regionName,
       "locationImage": imageUrl,
     };
   }
@@ -139,7 +192,12 @@ class TripService {
   Future<List<String>> getAIDestinations({
   required int budget,
   required String origin,
+  List<String> excludeCities = const [],
 }) async {
+  final excludeText = excludeCities.isNotEmpty
+      ? " Do not suggest airports for these cities: ${excludeCities.join(', ')}."
+      : "";
+
   final response = await dio.post(
     "https://api.groq.com/openai/v1/chat/completions",
     options: Options(
@@ -155,11 +213,11 @@ class TripService {
         {
           "role": "system",
           "content":
-              "Return ONLY 5 airport IATA codes separated by commas. Example: DXB,CDG,AMS,IST,SIN. No words, no sentences."
+              "Return ONLY 8 airport IATA codes separated by commas. Example: DXB,CDG,AMS,IST,SIN,BCN,ATH,CPH. No words, no sentences."
         },
         {
           "role": "user",
-          "content": "Budget: $budget EGP"
+          "content": "Budget: $budget EGP. Origin airport: $origin.$excludeText"
         }
       ]
     },
@@ -182,30 +240,67 @@ class TripService {
   return destinations;
 }
 
+  Map<String, dynamic> _placeholderFlightData({
+    required String origin,
+    required String destination,
+    required Map<String, dynamic> airportDetails,
+  }) {
+    return {
+      "flightCompany": "TBD",
+      "flightCode": "TBD",
+      "takeoffAirport": origin,
+      "destinationAirport": destination,
+      "takeoffTime": "TBD",
+      "destinationTime": "TBD",
+      "takeoffCityName": origin,
+      "destinationCityName": airportDetails["cityName"],
+    };
+  }
+
   Future<List<Map<String, dynamic>>> getTripSuggestions({
     required String origin,
     required int budget,
+    List<String> excludeCities = const [],
   }) async {
     final destinations = await getAIDestinations(
       budget: budget,
       origin: origin,
+      excludeCities: excludeCities,
     );
 
+    final excluded = excludeCities.map((c) => c.toLowerCase()).toSet();
     List<Map<String, dynamic>> trips = [];
 
     for (final destination in destinations) {
       try {
-        final flightData = await getFlightData(
-          origin: origin,
-          destination: destination,
-        );
+        final airportDetails = await getAirportDetails(destination);
+        final cityName = airportDetails["cityName"]?.toString() ?? destination;
+
+        if (excluded.contains(cityName.toLowerCase())) {
+          continue;
+        }
+
+        Map<String, dynamic> flightData;
+        try {
+          flightData = await getFlightData(
+            origin: origin,
+            destination: destination,
+          );
+        } catch (_) {
+          flightData = _placeholderFlightData(
+            origin: origin,
+            destination: destination,
+            airportDetails: airportDetails,
+          );
+        }
 
         final placeData = await getPlaceData(
-          flightData["destinationCityName"],
+          cityName: cityName,
+          regionName: airportDetails["regionLabel"]?.toString() ?? "",
         );
 
         trips.add({
-          "cityName": flightData["destinationCityName"],
+          "cityName": cityName,
           "tripBudget": "$budget EGP",
           "locationName": placeData["locationName"],
           "locationImage": placeData["locationImage"],
@@ -216,14 +311,10 @@ class TripService {
           "takeoffCity": flightData["takeoffCityName"],
           "takeoffAirport": flightData["takeoffAirport"],
           "takeoffTime": flightData["takeoffTime"],
-          "destinationCity":
-              flightData["destinationCityName"],
-          "destinationAirport":
-              flightData["destinationAirport"],
-          "destinationTime":
-              flightData["destinationTime"],
-          "fullTripPlan":
-              "Trip plan will be generated soon",
+          "destinationCity": flightData["destinationCityName"],
+          "destinationAirport": flightData["destinationAirport"],
+          "destinationTime": flightData["destinationTime"],
+          "fullTripPlan": "Trip plan will be generated soon",
           "tours": [
             {
               "name": "City Tour",
@@ -235,6 +326,8 @@ class TripService {
             }
           ]
         });
+
+        excluded.add(cityName.toLowerCase());
 
         if (trips.length >= 5) break;
       } catch (e) {

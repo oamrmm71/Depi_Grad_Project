@@ -254,11 +254,11 @@ class HomeScreen extends StatelessWidget {
                         padding: const EdgeInsets.all(0),
 
                         onSwipe: (previousIndex, currentIndex, direction) {
-                          // when reaching near the end, fetch more
-                          if (previousIndex >= state.trips.length - 2) {
+                          if (previousIndex >= state.trips.length - 1) {
                             context.read<TripCubit>().fetchTrips(
                               origin: "CAI",
-                              budget: 100000,
+                              budget: 1000000,
+                              loadMore: true,
                             );
                           }
                           return true;
