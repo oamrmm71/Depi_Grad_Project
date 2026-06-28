@@ -19,7 +19,7 @@ Future<void> main() async {
       create: (_) => TripCubit(tripRepository)
         ..fetchTrips(
           origin: "CAI",
-          budget: 100,
+          budget: 1000000,
         ),
       child: const MainApp(),
     ),

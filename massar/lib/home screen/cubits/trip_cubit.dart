@@ -7,21 +7,32 @@ class TripCubit extends Cubit<TripState> {
 
   TripCubit(this.tripRepository) : super(TripInitial());
 
-  
   Future<void> fetchTrips({
   required String origin,
   required int budget,
 }) async {
   try {
-    emit(TripLoading());
+    List currentTrips = [];
 
-    final trips = await tripRepository.getTrips(
+    if (state is TripLoaded) {
+      currentTrips = List.from((state as TripLoaded).trips);
+    } else {
+      emit(TripLoading());
+    }
+
+    final newTrips = await tripRepository.getTrips(
       origin: origin,
       budget: budget,
     );
 
-    emit(TripLoaded(trips));
+    emit(
+      TripLoaded([
+        ...currentTrips,
+        ...newTrips,
+      ]),
+    );
   } catch (e) {
     emit(TripError(e.toString()));
   }
-}}
+}
+}

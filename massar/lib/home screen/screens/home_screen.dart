@@ -252,6 +252,18 @@ class HomeScreen extends StatelessWidget {
                             : state.trips.length,
                         backCardOffset: const Offset(0, 30),
                         padding: const EdgeInsets.all(0),
+
+                        onSwipe: (previousIndex, currentIndex, direction) {
+                          // when reaching near the end, fetch more
+                          if (previousIndex >= state.trips.length - 2) {
+                            context.read<TripCubit>().fetchTrips(
+                              origin: "CAI",
+                              budget: 100000,
+                            );
+                          }
+                          return true;
+                        },
+
                         cardBuilder:
                             (
                               context,

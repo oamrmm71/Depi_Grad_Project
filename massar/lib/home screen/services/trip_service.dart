@@ -4,55 +4,98 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 class TripService {
   final Dio dio = Dio();
 
-  static final String aviationApiKey = dotenv.env["AVIATION_KEY"]!;
-  static final String unsplashApiKey = dotenv.env["UNSPLASH_KEY"]!;
-  static final String groqApiKey = dotenv.env["GROQ_KEY"]!;
+  static final String aerodataBoxApiKey =
+      dotenv.env["AERODATABOX_KEY"]!;
+  static final String unsplashApiKey =
+      dotenv.env["UNSPLASH_KEY"]!;
+  static final String groqApiKey =
+      dotenv.env["GROQ_KEY"]!;
+
   Future<Map<String, dynamic>> getFlightData({
-    required String origin,
-    required String destination,
-  }) async {
-    final response = await dio.get(
-      "https://api.aviationstack.com/v1/flights",
-      queryParameters: {
-        "access_key": aviationApiKey,
-        "dep_iata": origin,
-        "arr_iata": destination,
+  required String origin,
+  required String destination,
+}) async {
+  final now = DateTime.now().toUtc();
+
+  final from =
+      "${now.year}-${now.month.toString().padLeft(2, '0')}-${now.day.toString().padLeft(2, '0')}T${now.hour.toString().padLeft(2, '0')}:00";
+
+  final to = now.add(const Duration(hours: 12));
+
+  final until =
+      "${to.year}-${to.month.toString().padLeft(2, '0')}-${to.day.toString().padLeft(2, '0')}T${to.hour.toString().padLeft(2, '0')}:00";
+
+  final response = await dio.get(
+    "https://aerodatabox.p.rapidapi.com/flights/airports/iata/$origin",
+    queryParameters: {
+      "fromLocal": from,
+      "toLocal": until,
+      "withLeg": true,
+      "direction": "Departure",
+      "withCancelled": false,
+      "withCodeshared": true,
+      "withCargo": false,
+      "withPrivate": false,
+    },
+    options: Options(
+      headers: {
+        "X-RapidAPI-Key": aerodataBoxApiKey,
+        "X-RapidAPI-Host": "aerodatabox.p.rapidapi.com",
       },
-    );
+    ),
+  );
 
-    final flights = response.data["data"];
+  final departures = response.data["departures"];
 
-    if (flights == null || flights.isEmpty) {
-      throw Exception("No flights found for $origin → $destination");
-    }
-
-    final flight = flights.first;
-
-    return {
-      "flightCompany": flight["airline"]?["name"] ?? "Unknown Airline",
-      "flightCode": flight["flight"]?["iata"] ?? "N/A",
-      "takeoffAirport": flight["departure"]?["airport"] ?? "Unknown Airport",
-      "destinationAirport": flight["arrival"]?["airport"] ?? "Unknown Airport",
-      "takeoffTime": flight["departure"]?["scheduled"] ?? "Unknown Time",
-      "destinationTime": flight["arrival"]?["scheduled"] ?? "Unknown Time",
-
-      "takeoffCityName":
-          flight["departure"]?["timezone"]
-                  ?.toString()
-                  .split("/")
-                  .last ??
-              origin,
-
-      "destinationCityName":
-          flight["arrival"]?["timezone"]
-                  ?.toString()
-                  .split("/")
-                  .last ??
-              destination,
-    };
+  if (departures == null || departures.isEmpty) {
+    throw Exception("No departures found");
   }
 
-  Future<Map<String, dynamic>> getPlaceData(String destination) async {
+  final matchingFlights = departures.where((flight) {
+    final arrivalCode =
+        flight["arrival"]?["airport"]?["iata"]?.toString();
+
+    return arrivalCode == destination;
+  }).toList();
+
+  if (matchingFlights.isEmpty) {
+    throw Exception("No flights to $destination");
+  }
+
+  final flight = matchingFlights.first;
+
+  return {
+    "flightCompany":
+        flight["airline"]?["name"] ?? "Unknown Airline",
+
+    "flightCode":
+        flight["number"] ?? "N/A",
+
+    "takeoffAirport":
+        flight["departure"]?["airport"]?["name"] ?? origin,
+
+    "destinationAirport":
+        flight["arrival"]?["airport"]?["name"] ?? destination,
+
+    "takeoffTime":
+        flight["departure"]?["scheduledTimeLocal"] ??
+        "Unknown Time",
+
+    "destinationTime":
+        flight["arrival"]?["scheduledTimeLocal"] ??
+        "Unknown Time",
+
+    "takeoffCityName":
+        flight["departure"]?["airport"]?["municipalityName"] ??
+        origin,
+
+    "destinationCityName":
+        flight["arrival"]?["airport"]?["municipalityName"] ??
+        destination,
+  };
+}
+  Future<Map<String, dynamic>> getPlaceData(
+      String destination) async {
     final wikiResponse = await dio.get(
       "https://en.wikipedia.org/w/api.php",
       queryParameters: {
@@ -63,7 +106,8 @@ class TripService {
       },
     );
 
-    final wikiResults = wikiResponse.data["query"]?["search"];
+    final wikiResults =
+        wikiResponse.data["query"]?["search"];
 
     final placeName =
         (wikiResults != null && wikiResults.isNotEmpty)
@@ -93,119 +137,111 @@ class TripService {
   }
 
   Future<List<String>> getAIDestinations({
-    required int budget,
-  }) async {
-    final seed = DateTime.now().millisecondsSinceEpoch;
-
-    final response = await dio.post(
-      "https://api.groq.com/openai/v1/chat/completions",
-      options: Options(
-        headers: {
-          "Authorization": "Bearer $groqApiKey",
-          "Content-Type": "application/json",
-        },
-      ),
-      data: {
-        "model": "llama-3.1-8b-instant",
-        "temperature": 1.4,
-        "messages": [
-          {
-            "role": "system",
-            "content":
-                "Generate exactly 10 VALID airport IATA codes (3 letters only) for major international tourist destinations. Examples: CDG, LHR, JFK, NRT, DXB. Return ONLY comma-separated airport codes. No explanations."
-          },
-          {
-            "role": "user",
-            "content": "Budget: $budget EGP. Random seed: $seed"
-          }
-        ]
+  required int budget,
+  required String origin,
+}) async {
+  final response = await dio.post(
+    "https://api.groq.com/openai/v1/chat/completions",
+    options: Options(
+      headers: {
+        "Authorization": "Bearer $groqApiKey",
+        "Content-Type": "application/json",
       },
-    );
+    ),
+    data: {
+      "model": "llama-3.1-8b-instant",
+      "temperature": 1.2,
+      "messages": [
+        {
+          "role": "system",
+          "content":
+              "Return ONLY 5 airport IATA codes separated by commas. Example: DXB,CDG,AMS,IST,SIN. No words, no sentences."
+        },
+        {
+          "role": "user",
+          "content": "Budget: $budget EGP"
+        }
+      ]
+    },
+  );
 
-    final choices = response.data["choices"];
+  final text =
+      response.data["choices"][0]["message"]["content"]
+          .toString()
+          .trim();
 
-    if (choices == null || choices.isEmpty) {
-      throw Exception("Groq returned no destinations");
-    }
+  final destinations = text
+      .split(",")
+      .map((e) => e.trim().toUpperCase())
+      .where((e) => RegExp(r'^[A-Z]{3}$').hasMatch(e))
+      .where((e) => e != origin)
+      .toList();
 
-    final String text = choices.first["message"]["content"].toString();
+  print("Generated destinations: $destinations");
 
-    final List<String> destinations = text
-        .split(",")
-        .map((e) => e.toString().trim().toUpperCase())
-        .map((e) => e.replaceAll(RegExp(r'[^A-Z]'), ''))
-        .where((e) => e.length == 3)
-        .toSet()
-        .toList();
-
-    print("Generated destinations: $destinations");
-
-    return destinations;
-  }
+  return destinations;
+}
 
   Future<List<Map<String, dynamic>>> getTripSuggestions({
     required String origin,
     required int budget,
   }) async {
-    try {
-      final destinations = await getAIDestinations(
-        budget: budget,
-      );
+    final destinations = await getAIDestinations(
+      budget: budget,
+      origin: origin,
+    );
 
-      List<Map<String, dynamic>> trips = [];
+    List<Map<String, dynamic>> trips = [];
 
-      for (final destination in destinations) {
-        try {
-          print("Trying destination: $destination");
+    for (final destination in destinations) {
+      try {
+        final flightData = await getFlightData(
+          origin: origin,
+          destination: destination,
+        );
 
-          final flightData = await getFlightData(
-            origin: origin,
-            destination: destination,
-          );
+        final placeData = await getPlaceData(
+          flightData["destinationCityName"],
+        );
 
-          final placeData = await getPlaceData(
-            flightData["destinationCityName"],
-          );
+        trips.add({
+          "cityName": flightData["destinationCityName"],
+          "tripBudget": "$budget EGP",
+          "locationName": placeData["locationName"],
+          "locationImage": placeData["locationImage"],
+          "departureDate": "13/7/2026",
+          "arrivalDate": "20/7/2026",
+          "flightCompany": flightData["flightCompany"],
+          "flightCode": flightData["flightCode"],
+          "takeoffCity": flightData["takeoffCityName"],
+          "takeoffAirport": flightData["takeoffAirport"],
+          "takeoffTime": flightData["takeoffTime"],
+          "destinationCity":
+              flightData["destinationCityName"],
+          "destinationAirport":
+              flightData["destinationAirport"],
+          "destinationTime":
+              flightData["destinationTime"],
+          "fullTripPlan":
+              "Trip plan will be generated soon",
+          "tours": [
+            {
+              "name": "City Tour",
+              "price": "1000 EGP"
+            },
+            {
+              "name": "Museum Visit",
+              "price": "500 EGP"
+            }
+          ]
+        });
 
-          trips.add({
-            "cityName": flightData["destinationCityName"],
-            "tripBudget": "$budget EGP",
-
-            "locationName": placeData["locationName"],
-            "locationImage": placeData["locationImage"],
-
-            "departureDate": "13/7/2026",
-            "arrivalDate": "20/7/2026",
-
-            "flightCompany": flightData["flightCompany"],
-            "flightCode": flightData["flightCode"],
-
-            "takeoffCity": flightData["takeoffCityName"],
-            "takeoffAirport": flightData["takeoffAirport"],
-            "takeoffTime": flightData["takeoffTime"],
-
-            "destinationCity": flightData["destinationCityName"],
-            "destinationAirport": flightData["destinationAirport"],
-            "destinationTime": flightData["destinationTime"],
-
-            "fullTripPlan": "Trip plan will be generated soon",
-
-            "tours": [
-              {"name": "City Tour", "price": "1000 EGP"},
-              {"name": "Museum Visit", "price": "500 EGP"},
-            ],
-          });
-        } catch (e) {
-          print("Failed destination: $destination → $e");
-          continue;
-        }
+        if (trips.length >= 5) break;
+      } catch (e) {
+        print("Failed $destination -> $e");
       }
-
-      print("Trips count: ${trips.length}");
-
-      return trips;
-    } catch (e) {
-      throw Exception("Failed to fetch trip data: $e");
     }
+
+    return trips;
   }
 }
