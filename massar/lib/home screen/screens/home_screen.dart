@@ -237,7 +237,7 @@ class HomeScreen extends StatelessWidget {
                   if (state is TripLoaded) {
                     return CardSwiper(
                       cardsCount: state.trips.length,
-                      numberOfCardsDisplayed: 1,
+                      numberOfCardsDisplayed: 3,
                       backCardOffset: const Offset(0, 30),
                       padding: const EdgeInsets.all(0),
                       cardBuilder:
