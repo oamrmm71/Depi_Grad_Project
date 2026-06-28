@@ -4,6 +4,10 @@ import 'package:massar/custom%20widgets/bottom_nav_glass.dart';
 import 'package:massar/custom%20widgets/glass_button.dart';
 import 'package:flutter_card_swiper/flutter_card_swiper.dart';
 import 'package:massar/custom%20widgets/travel_card.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:massar/home%20screen/cubits/trip_state.dart';
+
+import '../cubits/trip_cubit.dart';
 
 final List<Map<String, String>> trips = [
   {
@@ -213,24 +217,47 @@ class HomeScreen extends StatelessWidget {
             right: 0,
             child: SizedBox(
               height: 420,
-              child: CardSwiper(
-                cardsCount: trips.length,
-                numberOfCardsDisplayed: 3,
-                backCardOffset: const Offset(0, 30),
-                padding: const EdgeInsets.all(0),
-                cardBuilder:
-                    (
-                      context,
-                      index,
-                      horizontalThresholdPercentage,
-                      verticalThresholdPercentage,
-                    ) {
-                      return TravelCard(
-                        title: trips[index]["title"]!,
-                        location: trips[index]["location"]!,
-                        image: trips[index]["image"]!,
-                      );
-                    },
+              child: BlocBuilder<TripCubit, TripState>(
+                builder: (context, state) {
+                  if (state is TripLoading) {
+                    return const Center(
+                      child: CircularProgressIndicator(color: Colors.white),
+                    );
+                  }
+
+                  if (state is TripError) {
+                    return Center(
+                      child: Text(
+                        state.message,
+                        style: const TextStyle(color: Colors.white),
+                      ),
+                    );
+                  }
+
+                  if (state is TripLoaded) {
+                    return CardSwiper(
+                      cardsCount: 1,
+                      numberOfCardsDisplayed: 1,
+                      backCardOffset: const Offset(0, 30),
+                      padding: const EdgeInsets.all(0),
+                      cardBuilder:
+                          (
+                            context,
+                            index,
+                            horizontalThresholdPercentage,
+                            verticalThresholdPercentage,
+                          ) {
+                            return TravelCard(
+                              title: state.trip.cityName,
+                              location: state.trip.locationName,
+                              image: state.trip.locationImage,
+                            );
+                          },
+                    );
+                  }
+
+                  return const SizedBox();
+                },
               ),
             ),
           ),

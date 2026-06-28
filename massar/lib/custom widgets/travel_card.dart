@@ -28,12 +28,32 @@ class TravelCard extends StatelessWidget {
               scale: 1.08,
               child: Transform.translate(
                 offset: const Offset(0, -18),
-                child: Image.asset(
-                  image,
-                  width: double.infinity,
-                  height: double.infinity,
-                  fit: BoxFit.cover,
-                ),
+                child: Image.network(
+  image,
+  width: double.infinity,
+  height: double.infinity,
+  fit: BoxFit.cover,
+  loadingBuilder: (context, child, loadingProgress) {
+    if (loadingProgress == null) return child;
+
+    return const Center(
+      child: CircularProgressIndicator(
+        color: Colors.white,
+      ),
+    );
+  },
+  errorBuilder: (context, error, stackTrace) {
+    return Container(
+      color: Colors.grey,
+      child: const Center(
+        child: Icon(
+          Icons.broken_image,
+          color: Colors.white,
+        ),
+      ),
+    );
+  },
+),
               ),
             ),
           ),
