@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:massar/custom%20widgets/bottom_nav_glass.dart';
+import 'package:massar/custom%20widgets/flight_path_connector.dart';
 import 'package:massar/custom%20widgets/glass_button.dart';
 import 'package:massar/custom%20widgets/glass_container.dart';
 import 'package:massar/custom%20widgets/glow_circle.dart';
@@ -309,6 +310,12 @@ class TravelDetailScreen extends StatelessWidget {
                       ],
                     ),
                   ),
+                ),
+                FlightPathConnector(
+                  circleRadius: 6,
+                  lineHeight: 60,
+                  lineWidth: 2,
+                  color: Colors.white,
                 ),
               ],
             ),
