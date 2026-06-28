@@ -212,11 +212,11 @@ class HomeScreen extends StatelessWidget {
             ),
           ),
           Positioned(
-            top: 360,
+            top: 310,
             left: 0,
             right: 0,
             child: SizedBox(
-              height: 420,
+              height: 490,
               child: BlocBuilder<TripCubit, TripState>(
                 builder: (context, state) {
                   if (state is TripLoading) {
