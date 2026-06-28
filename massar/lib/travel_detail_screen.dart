@@ -3,6 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:massar/custom%20widgets/bottom_nav_glass.dart';
 import 'package:massar/custom%20widgets/glass_button.dart';
 import 'package:massar/custom%20widgets/glass_container.dart';
+import 'package:massar/custom%20widgets/glow_circle.dart';
 
 class TravelDetailScreen extends StatelessWidget {
   const TravelDetailScreen({super.key});
@@ -138,20 +139,149 @@ class TravelDetailScreen extends StatelessWidget {
                   width: double.infinity,
                   child: GlassContainer(
                     width: double.infinity,
-                    height: 160,
+                    height: 180,
                     borderRadius: 40,
                     padding: const EdgeInsets.all(20),
-                    child: Padding(
-                      padding: const EdgeInsets.all(12.0),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          
-                      ]),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Row(
+                              children: [
+                                GlowCircle(
+                                  radius: 10,
+                                  color: const Color.fromARGB(69, 92, 0, 28),
+                                ),
+                                SizedBox(width: 10),
+                                Text(
+                                  'Takeoff Flight',
+                                  style: GoogleFonts.poppins(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w500,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            Text(
+                              'AF AA312',
+                              style: GoogleFonts.poppins(
+                                fontSize: 14,
+                                fontWeight: FontWeight.w400,
+                                color: Colors.white,
+                              ),
+                            ),
+                          ],
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(left: 30.0),
+                          child: Text(
+                            'Qatar Airways',
+                            style: GoogleFonts.poppins(
+                              fontSize: 14,
+                              fontWeight: FontWeight.w400,
+                              color: Colors.white,
+                            ),
+                          ),
+                        ),
+                        SizedBox(height: 14),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  'Cairo',
+                                  style: GoogleFonts.poppins(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w300,
+                                    color: Colors.white,
+                                    height: 0.8,
+                                  ),
+                                ),
+                                Text(
+                                  'CAI',
+                                  style: GoogleFonts.poppins(
+                                    fontSize: 32,
+                                    fontWeight: FontWeight.w600,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                                Text(
+                                  '10:30 AM',
+                                  style: GoogleFonts.poppins(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w300,
+                                    color: Colors.white,
+                                    height: 0.8,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            Stack(
+                              alignment: Alignment.center,
+                              children: [
+                                GlowCircle(
+                                  radius: 40,
+                                  color: const Color.fromARGB(
+                                    69,
+                                    255,
+                                    216,
+                                    228,
+                                  ),
+                                ),
+                                Transform.rotate(
+                                  angle: 1.57, // 90 degrees
+                                  child: Icon(
+                                    Icons.airplanemode_active,
+                                    color: const Color.fromARGB(255, 0, 9, 46),
+                                    size: 28,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  'Cairo',
+                                  style: GoogleFonts.poppins(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w300,
+                                    color: Colors.white,
+                                    height: 0.8,
+                                  ),
+                                ),
+                                Text(
+                                  'CAI',
+                                  style: GoogleFonts.poppins(
+                                    fontSize: 32,
+                                    fontWeight: FontWeight.w600,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                                Text(
+                                  '10:30 AM',
+                                  style: GoogleFonts.poppins(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w300,
+                                    color: Colors.white,
+                                    height: 0.8,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ],
                     ),
                   ),
                 ),
+                
               ],
             ),
           ),
