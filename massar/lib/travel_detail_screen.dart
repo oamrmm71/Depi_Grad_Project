@@ -311,11 +311,14 @@ class TravelDetailScreen extends StatelessWidget {
                     ),
                   ),
                 ),
-                FlightPathConnector(
-                  circleRadius: 6,
-                  lineHeight: 60,
-                  lineWidth: 2,
-                  color: Colors.white,
+                SizedBox(height: 20),
+                Center(
+                  child: FlightPathConnector(
+                    circleRadius: 6,
+                    lineHeight: 60,
+                    lineWidth: 2,
+                    color: Colors.white,
+                  ),
                 ),
               ],
             ),
