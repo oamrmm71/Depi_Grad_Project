@@ -236,7 +236,7 @@ class HomeScreen extends StatelessWidget {
 
                   if (state is TripLoaded) {
                     return CardSwiper(
-                      cardsCount: 1,
+                      cardsCount: state.trips.length,
                       numberOfCardsDisplayed: 1,
                       backCardOffset: const Offset(0, 30),
                       padding: const EdgeInsets.all(0),
@@ -248,9 +248,9 @@ class HomeScreen extends StatelessWidget {
                             verticalThresholdPercentage,
                           ) {
                             return TravelCard(
-                              title: state.trip.cityName,
-                              location: state.trip.locationName,
-                              image: state.trip.locationImage,
+                              title: state.trips[index].cityName,
+                              location: state.trips[index].locationName,
+                              image: state.trips[index].locationImage,
                             );
                           },
                     );

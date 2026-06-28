@@ -28,8 +28,6 @@ class TripService {
       "destinationAirport": flight["arrival"]["airport"],
       "takeoffTime": flight["departure"]["scheduled"],
       "destinationTime": flight["arrival"]["scheduled"],
-
-      // Clean city names
       "takeoffCityName":
           flight["departure"]["timezone"].toString().split("/").last,
       "destinationCityName":
@@ -67,58 +65,48 @@ class TripService {
     };
   }
 
-  Future<Map<String, dynamic>> getTripSuggestions({
+  Future<List<Map<String, dynamic>>> getTripSuggestions({
     required String origin,
-    required String destination,
+    required List<String> destinations,
     required int budget,
   }) async {
     try {
-      final flightData = await getFlightData(
-        origin: origin,
-        destination: destination,
-      );
+      List<Map<String, dynamic>> trips = [];
 
-      final placeData = await getPlaceData(
-        flightData["destinationCityName"],
-      );
+      for (final destination in destinations) {
+        final flightData = await getFlightData(
+          origin: origin,
+          destination: destination,
+        );
 
-      return {
-        // Real city name instead of IATA
-        "cityName": flightData["destinationCityName"],
+        final placeData = await getPlaceData(
+          flightData["destinationCityName"],
+        );
 
-        "tripBudget": "$budget EGP",
+        trips.add({
+          "cityName": flightData["destinationCityName"],
+          "tripBudget": "$budget EGP",
+          "locationName": placeData["locationName"],
+          "locationImage": placeData["locationImage"],
+          "departureDate": "13/7/2026",
+          "arrivalDate": "20/7/2026",
+          "flightCompany": flightData["flightCompany"],
+          "flightCode": flightData["flightCode"],
+          "takeoffCity": flightData["takeoffCityName"],
+          "takeoffAirport": flightData["takeoffAirport"],
+          "takeoffTime": flightData["takeoffTime"],
+          "destinationCity": flightData["destinationCityName"],
+          "destinationAirport": flightData["destinationAirport"],
+          "destinationTime": flightData["destinationTime"],
+          "fullTripPlan": "Trip plan will be generated soon",
+          "tours": [
+            {"name": "City Tour", "price": "1000 EGP"},
+            {"name": "Museum Visit", "price": "500 EGP"},
+          ],
+        });
+      }
 
-        // Real place data
-        "locationName": placeData["locationName"],
-        "locationImage": placeData["locationImage"],
-
-        // Temporary dates
-        "departureDate": "13/7/2026",
-        "arrivalDate": "20/7/2026",
-
-        // Real flight data
-        "flightCompany": flightData["flightCompany"],
-        "flightCode": flightData["flightCode"],
-
-        // Real takeoff city
-        "takeoffCity": flightData["takeoffCityName"],
-        "takeoffAirport": flightData["takeoffAirport"],
-        "takeoffTime": flightData["takeoffTime"],
-
-        // Real destination city
-        "destinationCity": flightData["destinationCityName"],
-        "destinationAirport": flightData["destinationAirport"],
-        "destinationTime": flightData["destinationTime"],
-
-        // Temporary itinerary
-        "fullTripPlan": "Trip plan will be generated soon",
-
-        // Temporary tours
-        "tours": [
-          {"name": "City Tour", "price": "1000 EGP"},
-          {"name": "Museum Visit", "price": "500 EGP"},
-        ],
-      };
+      return trips;
     } catch (e) {
       throw Exception("Failed to fetch trip data: $e");
     }

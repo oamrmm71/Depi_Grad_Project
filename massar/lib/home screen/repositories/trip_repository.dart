@@ -1,5 +1,4 @@
 import 'package:massar/home%20screen/models/trip_model.dart';
-
 import '../services/trip_service.dart';
 
 class TripRepository {
@@ -7,17 +6,17 @@ class TripRepository {
 
   TripRepository(this.tripService);
 
-  Future<TripModel> getTrip({
+  Future<List<TripModel>> getTrips({
     required String origin,
-    required String destination,
+    required List<String> destinations,
     required int budget,
   }) async {
     final data = await tripService.getTripSuggestions(
       origin: origin,
-      destination: destination,
+      destinations: destinations,
       budget: budget,
     );
 
-    return TripModel.fromJson(data);
+    return data.map((e) => TripModel.fromJson(e)).toList();
   }
 }

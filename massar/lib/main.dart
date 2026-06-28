@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:massar/home%20screen/cubits/trip_cubit.dart';
+import 'package:massar/home%20screen/repositories/trip_repository.dart';
+import 'package:massar/home%20screen/services/trip_service.dart';
 import 'splash_screen.dart';
-import 'home screen/services/trip_service.dart';
-import 'home screen/repositories/trip_repository.dart';
 
 void main() {
   final tripService = TripService();
@@ -12,9 +12,9 @@ void main() {
   runApp(
     BlocProvider(
       create: (_) => TripCubit(tripRepository)
-        ..fetchTrip(
+        ..fetchTrips(
           origin: "CAI",
-          destination: "DOH",
+          destinations: ["DOH", "DXB", "IST", "JED", "LHR"],
           budget: 8000,
         ),
       child: const MainApp(),

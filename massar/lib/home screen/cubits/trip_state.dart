@@ -7,9 +7,9 @@ class TripInitial extends TripState {}
 class TripLoading extends TripState {}
 
 class TripLoaded extends TripState {
-  final TripModel trip;
+  final List<TripModel> trips;
 
-  TripLoaded(this.trip);
+  TripLoaded(this.trips);
 }
 
 class TripError extends TripState {
