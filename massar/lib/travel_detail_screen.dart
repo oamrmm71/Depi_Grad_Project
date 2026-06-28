@@ -142,201 +142,211 @@ class TravelDetailScreen extends StatelessWidget {
                       fit: BoxFit.fitWidth,
                     ),
                   ),
-                  SizedBox(
-                    width: double.infinity,
-                    child: GlassContainer(
-                      width: double.infinity,
-                      height: 180,
-                      borderRadius: 40,
-                      padding: const EdgeInsets.all(20),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Row(
-                                children: [
-                                  GlowCircle(
-                                    radius: 10,
-                                    color: const Color.fromARGB(69, 92, 0, 28),
-                                  ),
-                                  const SizedBox(width: 10),
-                                  Text(
-                                    'Takeoff Flight',
-                                    style: GoogleFonts.poppins(
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.w500,
-                                      color: Colors.white,
+                  Transform.translate(
+                    offset: const Offset(
+                      0,
+                      -100,
+                    ),
+                    child: Column(
+                      children: [
+                        SizedBox(
+                          width: double.infinity,
+                          child: GlassContainer(
+                            width: double.infinity,
+                            height: 180,
+                            borderRadius: 40,
+                            padding: const EdgeInsets.all(20),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Row(
+                                      children: [
+                                        GlowCircle(
+                                          radius: 10,
+                                          color: const Color.fromARGB(69, 92, 0, 28),
+                                        ),
+                                        const SizedBox(width: 10),
+                                        Text(
+                                          'Takeoff Flight',
+                                          style: GoogleFonts.poppins(
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.w500,
+                                            color: Colors.white,
+                                          ),
+                                        ),
+                                      ],
                                     ),
-                                  ),
-                                ],
-                              ),
-                              Text(
-                                'AF AA312',
-                                style: GoogleFonts.poppins(
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.w400,
-                                  color: Colors.white,
-                                ),
-                              ),
-                            ],
-                          ),
-
-                          Padding(
-                            padding: const EdgeInsets.only(left: 30.0),
-                            child: Text(
-                              'Qatar Airways',
-                              style: GoogleFonts.poppins(
-                                fontSize: 14,
-                                fontWeight: FontWeight.w400,
-                                color: Colors.white,
-                              ),
-                            ),
-                          ),
-
-                          const SizedBox(height: 14),
-
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                            children: [
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    'Cairo',
-                                    style: GoogleFonts.poppins(
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.w300,
-                                      color: Colors.white,
-                                      height: 0.8,
-                                    ),
-                                  ),
-                                  Text(
-                                    'CAI',
-                                    style: GoogleFonts.poppins(
-                                      fontSize: 32,
-                                      fontWeight: FontWeight.w600,
-                                      color: Colors.white,
-                                    ),
-                                  ),
-                                  Text(
-                                    '10:30 AM',
-                                    style: GoogleFonts.poppins(
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.w300,
-                                      color: Colors.white,
-                                      height: 0.8,
-                                    ),
-                                  ),
-                                ],
-                              ),
-
-                              Stack(
-                                alignment: Alignment.center,
-                                children: [
-                                  GlowCircle(
-                                    radius: 40,
-                                    color: const Color.fromARGB(
-                                      69,
-                                      255,
-                                      216,
-                                      228,
-                                    ),
-                                  ),
-                                  Transform.rotate(
-                                    angle: 1.57,
-                                    child: Icon(
-                                      Icons.airplanemode_active,
-                                      color: const Color.fromARGB(
-                                        255,
-                                        0,
-                                        9,
-                                        46,
+                                    Text(
+                                      'AF AA312',
+                                      style: GoogleFonts.poppins(
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.w400,
+                                        color: Colors.white,
                                       ),
-                                      size: 28,
                                     ),
-                                  ),
-                                ],
-                              ),
-
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    'Doha',
+                                  ],
+                                ),
+                        
+                                Padding(
+                                  padding: const EdgeInsets.only(left: 30.0),
+                                  child: Text(
+                                    'Qatar Airways',
                                     style: GoogleFonts.poppins(
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.w300,
-                                      color: Colors.white,
-                                      height: 0.8,
-                                    ),
-                                  ),
-                                  Text(
-                                    'DOH',
-                                    style: GoogleFonts.poppins(
-                                      fontSize: 32,
-                                      fontWeight: FontWeight.w600,
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.w400,
                                       color: Colors.white,
                                     ),
                                   ),
-                                  Text(
-                                    '1:30 PM',
-                                    style: GoogleFonts.poppins(
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.w300,
-                                      color: Colors.white,
-                                      height: 0.8,
+                                ),
+                        
+                                const SizedBox(height: 14),
+                        
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                  children: [
+                                    Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          'Cairo',
+                                          style: GoogleFonts.poppins(
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.w300,
+                                            color: Colors.white,
+                                            height: 0.8,
+                                          ),
+                                        ),
+                                        Text(
+                                          'CAI',
+                                          style: GoogleFonts.poppins(
+                                            fontSize: 32,
+                                            fontWeight: FontWeight.w600,
+                                            color: Colors.white,
+                                          ),
+                                        ),
+                                        Text(
+                                          '10:30 AM',
+                                          style: GoogleFonts.poppins(
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.w300,
+                                            color: Colors.white,
+                                            height: 0.8,
+                                          ),
+                                        ),
+                                      ],
                                     ),
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-
-                  GlassContainer(
-                    width: double.infinity,
-                    height: 54,
-                    borderRadius: 20,
-                    child: Padding(
-                      padding: const EdgeInsets.only(left: 20.0, right: 20.0),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            'Economy class',
-                            style: GoogleFonts.poppins(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w300,
-                              color: Colors.white,
+                        
+                                    Stack(
+                                      alignment: Alignment.center,
+                                      children: [
+                                        GlowCircle(
+                                          radius: 40,
+                                          color: const Color.fromARGB(
+                                            69,
+                                            255,
+                                            216,
+                                            228,
+                                          ),
+                                        ),
+                                        Transform.rotate(
+                                          angle: 1.57,
+                                          child: Icon(
+                                            Icons.airplanemode_active,
+                                            color: const Color.fromARGB(
+                                              255,
+                                              0,
+                                              9,
+                                              46,
+                                            ),
+                                            size: 28,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                        
+                                    Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          'Doha',
+                                          style: GoogleFonts.poppins(
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.w300,
+                                            color: Colors.white,
+                                            height: 0.8,
+                                          ),
+                                        ),
+                                        Text(
+                                          'DOH',
+                                          style: GoogleFonts.poppins(
+                                            fontSize: 32,
+                                            fontWeight: FontWeight.w600,
+                                            color: Colors.white,
+                                          ),
+                                        ),
+                                        Text(
+                                          '1:30 PM',
+                                          style: GoogleFonts.poppins(
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.w300,
+                                            color: Colors.white,
+                                            height: 0.8,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                              ],
                             ),
                           ),
-                          Text(
-                            '3000 EGP',
-                            style: GoogleFonts.poppins(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w300,
-                              color: Colors.white,
+                        ),
+                        
+                        GlassContainer(
+                          width: double.infinity,
+                          height: 54,
+                          borderRadius: 20,
+                          child: Padding(
+                            padding: const EdgeInsets.only(left: 20.0, right: 20.0),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  'Economy class',
+                                  style: GoogleFonts.poppins(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w300,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                                Text(
+                                  '3000 EGP',
+                                  style: GoogleFonts.poppins(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w300,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                              ],
                             ),
                           ),
-                        ],
-                      ),
-                    ),
-                  ),
-
-                  const SizedBox(height: 20),
-
-                  Center(
-                    child: FlightPathConnector(
-                      circleRadius: 6,
-                      lineHeight: 60,
-                      lineWidth: 2,
-                      color: Colors.white,
+                        ),
+                        
+                        const SizedBox(height: 20),
+                        
+                        Center(
+                          child: FlightPathConnector(
+                            circleRadius: 6,
+                            lineHeight: 60,
+                            lineWidth: 2,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                 ],
