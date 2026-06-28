@@ -21,45 +21,39 @@ class TravelCard extends StatelessWidget {
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 14),
       child: Stack(
+        fit: StackFit.expand,
         children: [
           ClipPath(
             clipper: TravelCardClipper(),
-            child: Transform.scale(
-              scale: 1.08,
-              child: Transform.translate(
-                offset: const Offset(0, -18),
-                child: Image.network(
-  image,
-  width: double.infinity,
-  height: double.infinity,
-  fit: BoxFit.cover,
-  loadingBuilder: (context, child, loadingProgress) {
-    if (loadingProgress == null) return child;
+            child: Image.network(
+              image,
+              fit: BoxFit.cover,
+              width: double.infinity,
+              height: double.infinity,
+              loadingBuilder: (context, child, loadingProgress) {
+                if (loadingProgress == null) return child;
 
-    return const Center(
-      child: CircularProgressIndicator(
-        color: Colors.white,
-      ),
-    );
-  },
-  errorBuilder: (context, error, stackTrace) {
-    return Container(
-      color: Colors.grey,
-      child: const Center(
-        child: Icon(
-          Icons.broken_image,
-          color: Colors.white,
-        ),
-      ),
-    );
-  },
-),
-              ),
+                return const Center(
+                  child: CircularProgressIndicator(
+                    color: Colors.white,
+                  ),
+                );
+              },
+              errorBuilder: (context, error, stackTrace) {
+                return Container(
+                  color: Colors.grey,
+                  child: const Center(
+                    child: Icon(
+                      Icons.broken_image,
+                      color: Colors.white,
+                    ),
+                  ),
+                );
+              },
             ),
           ),
 
           CustomPaint(
-            size: Size.infinite,
             painter: TravelCardBorderPainter(),
           ),
 
@@ -135,33 +129,41 @@ Path _buildTravelCardPath(Size size) {
   final h = size.height;
   final path = Path();
 
-  path.moveTo(radius, 30);
+  // Convex corner humps + concave center dip (mirrored saddle shape).
+  const leftHumpY = -38.0;
+  const rightHumpY = -32.0;
+  const centerDipY = 40.0;
 
-  // Smooth top-left corner
-  path.quadraticBezierTo(0, 30, 0, radius);
+  path.moveTo(radius, h);
 
-  // First swell: rises high on the left
-  path.cubicTo(
-    w * 0.06, -32,
-    w * 0.18, -30,
-    w * 0.34, 6,
+  path.arcToPoint(
+    Offset(0, h - radius),
+    radius: const Radius.circular(radius),
   );
 
-  // Middle dip — tangent-matched, so it flows continuously from the first curve
+  path.lineTo(0, radius);
+
+  // Left corner hump — rounds off the left edge into the top wave
   path.cubicTo(
-    w * 0.46, 38,
-    w * 0.60, 40,
-    w * 0.74, 14,
+    0, 4,
+    w * 0.16, leftHumpY,
+    w * 0.34, 14,
   );
 
-  // Final rise into the top-right corner — lower peak than the left side
+  // Wide concave dip across the centre
   path.cubicTo(
-    w * 0.84, -4,
-    w * 0.94, 2,
+    w * 0.44, centerDipY,
+    w * 0.56, centerDipY,
+    w * 0.66, 14,
+  );
+
+  // Right corner hump — mirrors the left, blends into the right edge
+  path.cubicTo(
+    w * 0.84, rightHumpY,
+    w, 4,
     w, radius,
   );
 
-  // Right side
   path.lineTo(w, h - radius);
 
   // Bottom-right corner
@@ -172,15 +174,6 @@ Path _buildTravelCardPath(Size size) {
 
   // Bottom
   path.lineTo(radius, h);
-
-  // Bottom-left corner
-  path.arcToPoint(
-    Offset(0, h - radius),
-    radius: const Radius.circular(radius),
-  );
-
-  // Left side
-  path.lineTo(0, radius);
 
   path.close();
   return path;
@@ -206,5 +199,5 @@ class TravelCardClipper extends CustomClipper<Path> {
   Path getClip(Size size) => _buildTravelCardPath(size);
 
   @override
-  bool shouldReclip(CustomClipper<Path> oldClipper) => false;
+  bool shouldReclip(TravelCardClipper oldClipper) => false;
 }
