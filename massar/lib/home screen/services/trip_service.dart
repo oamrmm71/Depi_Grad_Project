@@ -17,84 +17,113 @@ class TripService {
     return "${utc.year}-${utc.month.toString().padLeft(2, '0')}-${utc.day.toString().padLeft(2, '0')}T${utc.hour.toString().padLeft(2, '0')}:00";
   }
 
-  String _formatDate(DateTime dt) {
-    return "${dt.day.toString().padLeft(2, '0')}/${dt.month.toString().padLeft(2, '0')}/${dt.year}";
-  }
+String _formatDate(DateTime dt) {
+  return "${dt.day.toString().padLeft(2, '0')}/${dt.month.toString().padLeft(2, '0')}/${dt.year}";
+}
 
-  Future<Map<String, dynamic>> getFlightData({
-    required String origin,
-    required String destination,
-    int windowDays = 7,
-  }) async {
-    final now = DateTime.now().toUtc();
+String _formatTime(DateTime dt) {
+  return "${dt.hour.toString().padLeft(2, '0')}:${dt.minute.toString().padLeft(2, '0')}";
+}
 
-    final from = _toLocalApiTimestamp(now);
-    final until = _toLocalApiTimestamp(now.add(Duration(days: windowDays)));
+Future<Map<String, dynamic>> getFlightData({
+  required String origin,
+  required String destination,
+  int windowDays = 7,
+}) async {
+  final now = DateTime.now().toUtc();
 
-    final response = await dio.get(
-      "https://aerodatabox.p.rapidapi.com/flights/airports/iata/$origin",
-      queryParameters: {
-        "fromLocal": from,
-        "toLocal": until,
-        "withLeg": true,
-        "direction": "Departure",
-        "withCancelled": false,
-        "withCodeshared": true,
-        "withCargo": false,
-        "withPrivate": false,
+  final from = _toLocalApiTimestamp(now);
+  final until = _toLocalApiTimestamp(
+    now.add(Duration(days: windowDays)),
+  );
+
+  final response = await dio.get(
+    "https://aerodatabox.p.rapidapi.com/flights/airports/iata/$origin/$from/$until",
+    queryParameters: {
+      "withLeg": true,
+      "direction": "Departure",
+      "withCancelled": false,
+      "withCodeshared": true,
+      "withCargo": false,
+      "withPrivate": false,
+    },
+    options: Options(
+      headers: {
+        "X-RapidAPI-Key": aerodataBoxApiKey,
+        "X-RapidAPI-Host": "aerodatabox.p.rapidapi.com",
       },
-      options: Options(
-        headers: {
-          "X-RapidAPI-Key": aerodataBoxApiKey,
-          "X-RapidAPI-Host": "aerodatabox.p.rapidapi.com",
-        },
-      ),
-    );
+    ),
+  );
 
-    final departures = response.data["departures"];
+  final departures = response.data["departures"];
 
-    if (departures == null || departures.isEmpty) {
-      throw Exception("No departures found");
-    }
-
-    final matchingFlights = departures.where((flight) {
-      final arrivalCode = flight["arrival"]?["airport"]?["iata"]?.toString();
-      return arrivalCode == destination;
-    }).toList();
-
-    if (matchingFlights.isEmpty) {
-      throw Exception("No flights to $destination");
-    }
-
-    final flight = matchingFlights.first;
-
-    final depTimeRaw = flight["departure"]?["scheduledTimeLocal"]?.toString();
-    final arrTimeRaw = flight["arrival"]?["scheduledTimeLocal"]?.toString();
-
-    final depDt = (depTimeRaw != null && depTimeRaw.isNotEmpty)
-        ? DateTime.tryParse(depTimeRaw)
-        : null;
-    final arrDt = (arrTimeRaw != null && arrTimeRaw.isNotEmpty)
-        ? DateTime.tryParse(arrTimeRaw)
-        : null;
-
-    return {
-      "flightCompany": flight["airline"]?["name"] ?? "Unknown Airline",
-      "flightCode": flight["number"] ?? "N/A",
-      "takeoffAirport": flight["departure"]?["airport"]?["name"] ?? origin,
-      "destinationAirport": flight["arrival"]?["airport"]?["name"] ?? destination,
-      "takeoffTime": depTimeRaw ?? "Unknown Time",
-      "destinationTime": arrTimeRaw ?? "Unknown Time",
-      "departureDate": depDt != null ? _formatDate(depDt) : "",
-      "arrivalDate": arrDt != null ? _formatDate(arrDt) : "",
-      "takeoffCityName":
-          flight["departure"]?["airport"]?["municipalityName"] ?? origin,
-      "destinationCityName":
-          flight["arrival"]?["airport"]?["municipalityName"] ?? destination,
-      "destinationCountryCode":
-          flight["arrival"]?["airport"]?["countryCode"]?.toString() ?? "",
-    };
+  if (departures == null || departures.isEmpty) {
+    throw Exception("No departures found");
   }
+
+  final matchingFlights = departures.where((flight) {
+    final arrivalCode =
+        flight["arrival"]?["airport"]?["iata"]?.toString();
+    return arrivalCode == destination;
+  }).toList();
+
+  if (matchingFlights.isEmpty) {
+    throw Exception("No flights to $destination");
+  }
+
+  final flight = matchingFlights.first;
+
+  final depTimeRaw =
+      flight["departure"]?["scheduledTimeLocal"]?.toString();
+
+  final arrTimeRaw =
+      flight["arrival"]?["scheduledTimeLocal"]?.toString();
+
+  final depDt =
+      depTimeRaw != null ? DateTime.tryParse(depTimeRaw) : null;
+
+  final arrDt =
+      arrTimeRaw != null ? DateTime.tryParse(arrTimeRaw) : null;
+
+  return {
+    "flightCompany":
+        flight["airline"]?["name"] ?? "Unknown Airline",
+
+    "flightCode":
+        flight["number"] ?? "N/A",
+
+    "takeoffAirport":
+        flight["departure"]?["airport"]?["name"] ?? origin,
+
+    "destinationAirport":
+        flight["arrival"]?["airport"]?["name"] ?? destination,
+
+    "takeoffTime":
+        depDt != null ? _formatTime(depDt) : "TBD",
+
+    "destinationTime":
+        arrDt != null ? _formatTime(arrDt) : "TBD",
+
+    "departureDate":
+        depDt != null ? _formatDate(depDt) : "",
+
+    "arrivalDate":
+        arrDt != null ? _formatDate(arrDt) : "",
+
+    "takeoffCityName":
+        flight["departure"]?["airport"]?["municipalityName"] ??
+        origin,
+
+    "destinationCityName":
+        flight["arrival"]?["airport"]?["municipalityName"] ??
+        destination,
+
+    "destinationCountryCode":
+        flight["arrival"]?["airport"]?["countryCode"]
+            ?.toString() ??
+        "",
+  };
+}
   Future<Map<String, dynamic>> _lookupAirportBySearch(String iata) async {
     final response = await dio.get(
       "https://aerodatabox.p.rapidapi.com/airports/search/term",
@@ -379,12 +408,12 @@ class TripService {
     final arrival = departure.add(Duration(days: 3 + ((seed ~/ 7) % 6)));
 
     return {
-      "flightCompany": "TBD",
-      "flightCode": "TBD",
+      "flightCompany": "Unknown Airline",
+      "flightCode": "N/A",
       "takeoffAirport": origin,
       "destinationAirport": destination,
-      "takeoffTime": "TBD",
-      "destinationTime": "TBD",
+      "takeoffTime": _formatTime(departure),
+"destinationTime": _formatTime(arrival),
       "departureDate": _formatDate(departure),
       "arrivalDate": _formatDate(arrival),
       "takeoffCityName": origin,
