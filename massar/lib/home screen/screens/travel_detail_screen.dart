@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:massar/custom widgets/bottom_nav_glass.dart';
-import 'package:massar/custom widgets/flight_path_connector.dart';
-import 'package:massar/custom widgets/glass_button.dart';
-import 'package:massar/custom widgets/glass_container.dart';
-import 'package:massar/custom widgets/glow_circle.dart';
+import 'package:massar/custom%20widgets/bottom_nav_glass.dart';
+import 'package:massar/custom%20widgets/flight_path_connector.dart';
+import 'package:massar/custom%20widgets/glass_button.dart';
+import 'package:massar/custom%20widgets/glass_container.dart';
+import 'package:massar/custom%20widgets/glow_circle.dart';
+import 'package:massar/custom%20widgets/tour_info_card.dart';
 
 import '../models/trip_model.dart';
 
@@ -308,7 +309,55 @@ class TravelDetailScreen extends StatelessWidget {
                             ),
                             const SizedBox(height: 20),
 
-                      
+                            if (trip.tripPlan != null) ...[
+                              ...() {
+                                final plan = trip.tripPlan!;
+                                final cityCountry =
+                                    '${trip.destinationCity}, ${trip.countryName}';
+                                final widgets = <Widget>[];
+
+                                for (int i = 0; i < plan.accommodations.length; i++) {
+                                  widgets.add(TourAccommodationCard(
+                                    accommodation: plan.accommodations[i],
+                                  ));
+                                  if (i < plan.accommodations.length - 1 ||
+                                      plan.attractions.isNotEmpty) {
+                                    widgets.add(const SizedBox(height: 4));
+                                    widgets.add(Center(
+                                      child: FlightPathConnector(
+                                        circleRadius: 6,
+                                        lineHeight: 40,
+                                        lineWidth: 2,
+                                        color: Colors.white,
+                                      ),
+                                    ));
+                                    widgets.add(const SizedBox(height: 4));
+                                  }
+                                }
+
+                                for (int i = 0; i < plan.attractions.length; i++) {
+                                  widgets.add(TourAttractionCard(
+                                    attraction: plan.attractions[i],
+                                    cityCountry: cityCountry,
+                                  ));
+                                  if (i < plan.attractions.length - 1) {
+                                    widgets.add(const SizedBox(height: 4));
+                                    widgets.add(Center(
+                                      child: FlightPathConnector(
+                                        circleRadius: 6,
+                                        lineHeight: 40,
+                                        lineWidth: 2,
+                                        color: Colors.white,
+                                      ),
+                                    ));
+                                    widgets.add(const SizedBox(height: 4));
+                                  }
+                                }
+
+                                return widgets;
+                              }(),
+                            ],
+
                           ],
                         ),
                       ),

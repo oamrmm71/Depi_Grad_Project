@@ -1,3 +1,5 @@
+import 'trip_plan_model.dart';
+
 class TripModel {
   final String cityName;
   final String countryName;
@@ -5,18 +7,19 @@ class TripModel {
   final String locationName;
   final String locationImage;
   final String? departureDate;
-  final String ?arrivalDate;
+  final String? arrivalDate;
   final String? flightCompany;
   final String? flightCode;
   final String? ticketPrice;
   final String takeoffCity;
   final String takeoffAirport;
-  final String ?takeoffTime;
+  final String? takeoffTime;
   final String destinationCity;
   final String destinationAirport;
-  final String ?destinationTime;
+  final String? destinationTime;
   final List<TourModel> tours;
   final String fullTripPlan;
+  final TripPlanModel? tripPlan;
 
   TripModel({
     required this.cityName,
@@ -37,6 +40,7 @@ class TripModel {
     required this.destinationTime,
     required this.tours,
     required this.fullTripPlan,
+    this.tripPlan,
   });
 
   factory TripModel.fromJson(Map<String, dynamic> json) {
@@ -61,6 +65,7 @@ class TripModel {
       tours: (json["tours"] as List)
           .map((e) => TourModel.fromJson(e))
           .toList(),
+      tripPlan: json["tripPlan"] as TripPlanModel?,
     );
   }
 }

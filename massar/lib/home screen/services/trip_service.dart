@@ -1,7 +1,9 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:dio/dio.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import '../models/trip_plan_model.dart';
 
 class TripService {
   final Dio dio = Dio();
@@ -311,6 +313,60 @@ class TripService {
     return null;
   }
 
+  Future<TripPlanModel?> generateTripPlan({
+    required String cityName,
+    required String countryName,
+    required int budget,
+  }) async {
+    try {
+      final response = await dio.post(
+        "https://api.groq.com/openai/v1/chat/completions",
+        options: Options(
+          headers: {
+            "Authorization": "Bearer $groqApiKey",
+            "Content-Type": "application/json",
+          },
+        ),
+        data: {
+          "model": "llama-3.1-8b-instant",
+          "temperature": 0.4,
+          "messages": [
+            {
+              "role": "system",
+              "content":
+                  "You are a travel planner. Respond ONLY with valid JSON and nothing else — "
+                  "no markdown, no explanation, no code fences. "
+                  "Use exactly this structure:\n"
+                  '{"accommodations":[{"hotel_name":"...","location":"City, Country",'
+                  '"room_type":"...","nights":3,"days":4,"price_per_night_egp":2000,'
+                  '"total_egp":6000}],"attractions":[{"name":"...","fee_egp":200}]}\n'
+                  "All prices in EGP. Use fee_egp 0 for free attractions.",
+            },
+            {
+              "role": "user",
+              "content":
+                  "Plan a trip to $cityName, $countryName with a total budget of "
+                  "$budget EGP. Include 1-2 real hotel accommodations and 4-6 "
+                  "popular tourist attractions with realistic prices.",
+            },
+          ],
+        },
+      );
+
+      final raw =
+          response.data["choices"][0]["message"]["content"].toString().trim();
+      final jsonStr = raw
+          .replaceAll(RegExp(r'^```json\s*', multiLine: true), '')
+          .replaceAll(RegExp(r'^```\s*', multiLine: true), '')
+          .trim();
+
+      return TripPlanModel.fromJson(jsonDecode(jsonStr) as Map<String, dynamic>);
+    } catch (e) {
+      print("generateTripPlan error: $e");
+      return null;
+    }
+  }
+
   Future<Map<String, dynamic>> getPlaceData({
     required String cityName,
     required String countryName,
@@ -511,6 +567,12 @@ class TripService {
           destination: destination,
         );
 
+        final tripPlan = await generateTripPlan(
+          cityName: cityName,
+          countryName: countryName,
+          budget: budget,
+        );
+
         trips.add({
           "cityName": cityName,
           "countryName": countryName,
@@ -530,6 +592,7 @@ class TripService {
           "destinationTime": flightData["destinationTime"],
           "isRealFlightData": !usedFallback,
           "fullTripPlan": "Trip plan will be generated soon",
+          "tripPlan": tripPlan,
           "tours": [
             {"name": "City Tour", "price": "1000 EGP"},
             {"name": "Museum Visit", "price": "500 EGP"},
