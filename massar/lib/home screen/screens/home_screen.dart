@@ -6,6 +6,7 @@ import 'package:flutter_card_swiper/flutter_card_swiper.dart';
 import 'package:massar/custom%20widgets/travel_card.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:massar/home%20screen/cubits/trip_state.dart';
+import 'package:massar/home%20screen/screens/travel_detail_screen.dart';
 
 import '../cubits/trip_cubit.dart';
 
@@ -273,10 +274,22 @@ class HomeScreen extends StatelessWidget {
                             ) {
                               final trip = state.trips[index];
 
-                              return TravelCard(
-                                title: trip.cityName,
-                                location: trip.countryName,
-                                image: trip.locationImage,
+                              return GestureDetector(
+                                onTap: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (_) =>
+                                          TravelDetailScreen(trip: trip),
+                                    ),
+                                  );
+                                },
+                                child: TravelCard(
+                                  trip: trip,
+                                  title: trip.cityName,
+                                  location: trip.countryName,
+                                  image: trip.locationImage,
+                                ),
                               );
                             },
                       );

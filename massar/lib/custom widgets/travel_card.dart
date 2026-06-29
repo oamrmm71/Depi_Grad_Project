@@ -2,9 +2,11 @@ import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:massar/home%20screen/models/trip_model.dart';
 import 'package:massar/home%20screen/screens/travel_detail_screen.dart';
 
 class TravelCard extends StatelessWidget {
+  final TripModel trip;
   final String title;
   final String location;
   final String image;
@@ -12,6 +14,7 @@ class TravelCard extends StatelessWidget {
 
   const TravelCard({
     super.key,
+    required this.trip,
     required this.title,
     required this.location,
     required this.image,
@@ -73,11 +76,12 @@ class TravelCard extends StatelessWidget {
                   color: Color(0xFF002B45),
                 ),
                 child: GestureDetector(
-                  onTap: (){
+                  onTap: () {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => const TravelDetailScreen(),
+                        builder: (context) =>
+                            TravelDetailScreen(trip: trip),
                       ),
                     );
                   },

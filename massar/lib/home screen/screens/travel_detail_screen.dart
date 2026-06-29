@@ -6,8 +6,12 @@ import 'package:massar/custom widgets/glass_button.dart';
 import 'package:massar/custom widgets/glass_container.dart';
 import 'package:massar/custom widgets/glow_circle.dart';
 
+import '../models/trip_model.dart';
+
 class TravelDetailScreen extends StatelessWidget {
-  const TravelDetailScreen({super.key});
+  final TripModel trip;
+
+  const TravelDetailScreen({super.key, required this.trip});
 
   @override
   Widget build(BuildContext context) {
@@ -122,7 +126,7 @@ class TravelDetailScreen extends StatelessWidget {
                   const SizedBox(height: 2),
 
                   Text(
-                    '13/7/2026 to 20/7/2026',
+                    '${trip.departureDate} to ${trip.arrivalDate}',
                     style: GoogleFonts.poppins(
                       fontSize: 20,
                       fontWeight: FontWeight.w300,
@@ -175,7 +179,7 @@ class TravelDetailScreen extends StatelessWidget {
                                           ],
                                         ),
                                         Text(
-                                          'AF AA312',
+                                          trip.flightCode,
                                           style: GoogleFonts.poppins(
                                             fontSize: 14,
                                             fontWeight: FontWeight.w400,
@@ -190,7 +194,7 @@ class TravelDetailScreen extends StatelessWidget {
                                         left: 30.0,
                                       ),
                                       child: Text(
-                                        'Qatar Airways',
+                                        trip.flightCompany,
                                         style: GoogleFonts.poppins(
                                           fontSize: 14,
                                           fontWeight: FontWeight.w400,
@@ -206,9 +210,9 @@ class TravelDetailScreen extends StatelessWidget {
                                           MainAxisAlignment.spaceEvenly,
                                       children: [
                                         _locationWidget(
-                                          city: "Cairo",
-                                          code: "CAI",
-                                          time: "10:30 AM",
+                                          city: trip.takeoffCity,
+                                          code: trip.takeoffAirport,
+                                          time: trip.takeoffTime,
                                         ),
 
                                         Stack(
@@ -240,9 +244,9 @@ class TravelDetailScreen extends StatelessWidget {
                                         ),
 
                                         _locationWidget(
-                                          city: "Doha",
-                                          code: "DOH",
-                                          time: "1:30 PM",
+                                          city: trip.destinationCity,
+                                          code: trip.destinationAirport,
+                                          time: trip.destinationTime,
                                         ),
                                       ],
                                     ),
@@ -297,161 +301,7 @@ class TravelDetailScreen extends StatelessWidget {
                             ),
                             const SizedBox(height: 20),
 
-SizedBox(
-  width: double.infinity,
-  child: GlassContainer(
-    width: double.infinity,
-    height: 180,
-    borderRadius: 40,
-    padding: const EdgeInsets.all(20),
-    child: Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-       Column(
-  crossAxisAlignment: CrossAxisAlignment.start,
-  children: [
-    Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Row(
-          children: [
-            GlowCircle(
-              radius: 10,
-              color: const Color.fromARGB(
-                69,
-                92,
-                0,
-                28,
-              ),
-            ),
-            const SizedBox(width: 10),
-            Text(
-              'Takeoff Flight',
-              style: GoogleFonts.poppins(
-                fontSize: 16,
-                fontWeight: FontWeight.w500,
-                color: Colors.white,
-              ),
-            ),
-          ],
-        ),
-        Text(
-          'AF AA312',
-          style: GoogleFonts.poppins(
-            fontSize: 14,
-            fontWeight: FontWeight.w400,
-            color: Colors.white,
-          ),
-        ),
-      ],
-    ),
-
-    Padding(
-      padding: const EdgeInsets.only(left: 30.0),
-      child: Text(
-        'Qatar Airways',
-        style: GoogleFonts.poppins(
-          fontSize: 14,
-          fontWeight: FontWeight.w400,
-          color: Colors.white,
-        ),
-      ),
-    ),
-
-    const SizedBox(height: 14),
-
-    Row(
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-      children: [
-        _locationWidget(
-          city: "Cairo",
-          code: "CAI",
-          time: "10:30 AM",
-        ),
-
-        Stack(
-          alignment: Alignment.center,
-          children: [
-            GlowCircle(
-              radius: 40,
-              color: const Color.fromARGB(
-                69,
-                255,
-                216,
-                228,
-              ),
-            ),
-            Transform.rotate(
-              angle: 1.57,
-              child: const Icon(
-                Icons.airplanemode_active,
-                color: Color.fromARGB(
-                  255,
-                  0,
-                  9,
-                  46,
-                ),
-                size: 28,
-              ),
-            ),
-          ],
-        ),
-
-        _locationWidget(
-          city: "Doha",
-          code: "DOH",
-          time: "1:30 PM",
-        ),
-      ],
-    ),
-  ],
-)
-      ],
-    ),
-  ),
-),
-
-GlassContainer(
-  width: double.infinity,
-  height: 54,
-  borderRadius: 20,
-  child: Padding(
-    padding: const EdgeInsets.only(left: 20.0, right: 20.0),
-    child: Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Text(
-          'Economy class',
-          style: GoogleFonts.poppins(
-            fontSize: 16,
-            fontWeight: FontWeight.w300,
-            color: Colors.white,
-          ),
-        ),
-        Text(
-          '3000 EGP',
-          style: GoogleFonts.poppins(
-            fontSize: 16,
-            fontWeight: FontWeight.w300,
-            color: Colors.white,
-          ),
-        ),
-      ],
-    ),
-  ),
-),
-
-const SizedBox(height: 20),
-
-Center(
-  child: FlightPathConnector(
-    circleRadius: 6,
-    lineHeight: 60,
-    lineWidth: 2,
-    color: Colors.white,
-  ),
-),
-                            
+                      
                           ],
                         ),
                       ),
