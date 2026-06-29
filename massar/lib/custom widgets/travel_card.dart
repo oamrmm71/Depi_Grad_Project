@@ -37,6 +37,7 @@ class TravelCard extends StatelessWidget {
           Positioned(
             top: 77,
             left: 22,
+            right: 106,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -48,6 +49,7 @@ class TravelCard extends StatelessWidget {
                     fontWeight: FontWeight.w700,
                     height: 1,
                   ),
+                  softWrap: true,
                 ),
                 const SizedBox(height: 3),
                 if (location.trim().isNotEmpty)
@@ -58,6 +60,7 @@ class TravelCard extends StatelessWidget {
                       fontSize: 20,
                       fontWeight: FontWeight.w500,
                     ),
+                    softWrap: true,
                   ),
               ],
             ),
