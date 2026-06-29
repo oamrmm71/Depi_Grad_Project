@@ -2,19 +2,23 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 
 class GlassContainer extends StatelessWidget {
-  final double width;
-  final double height;
+  final double? width;
+  final double? height;
   final double borderRadius;
   final Widget child;
   final EdgeInsetsGeometry? padding;
+  final Color? backgroundColor;
+  final Color? borderColor;
 
   const GlassContainer({
     super.key,
-    required this.width,
-    required this.height,
+    this.width,
+    this.height,
     required this.child,
     this.borderRadius = 30,
     this.padding,
+    this.backgroundColor,
+    this.borderColor,
   });
 
   @override
@@ -31,10 +35,10 @@ class GlassContainer extends StatelessWidget {
           height: height,
           padding: padding,
           decoration: BoxDecoration(
-            color: Colors.white.withOpacity(0.12),
+            color: backgroundColor ?? Colors.white.withValues(alpha: 0.12),
             borderRadius: BorderRadius.circular(borderRadius),
             border: Border.all(
-              color: Colors.white.withOpacity(0.18),
+              color: borderColor ?? Colors.white.withValues(alpha: 0.18),
               width: 1,
             ),
           ),
