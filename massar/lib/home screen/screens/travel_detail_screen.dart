@@ -314,23 +314,30 @@ class TravelDetailScreen extends StatelessWidget {
                                 final plan = trip.tripPlan!;
                                 final cityCountry =
                                     '${trip.destinationCity}, ${trip.countryName}';
+                                final hasReturnFlight =
+                                    trip.returnFlightCode != null ||
+                                    trip.returnFlightCompany != null ||
+                                    trip.returnTakeoffTime != null;
                                 final widgets = <Widget>[];
+
+                                Widget connector() => Center(
+                                  child: FlightPathConnector(
+                                    circleRadius: 6,
+                                    lineHeight: 40,
+                                    lineWidth: 2,
+                                    color: Colors.white,
+                                  ),
+                                );
 
                                 for (int i = 0; i < plan.accommodations.length; i++) {
                                   widgets.add(TourAccommodationCard(
                                     accommodation: plan.accommodations[i],
                                   ));
                                   if (i < plan.accommodations.length - 1 ||
-                                      plan.attractions.isNotEmpty) {
+                                      plan.attractions.isNotEmpty ||
+                                      hasReturnFlight) {
                                     widgets.add(const SizedBox(height: 4));
-                                    widgets.add(Center(
-                                      child: FlightPathConnector(
-                                        circleRadius: 6,
-                                        lineHeight: 40,
-                                        lineWidth: 2,
-                                        color: Colors.white,
-                                      ),
-                                    ));
+                                    widgets.add(connector());
                                     widgets.add(const SizedBox(height: 4));
                                   }
                                 }
@@ -340,22 +347,129 @@ class TravelDetailScreen extends StatelessWidget {
                                     attraction: plan.attractions[i],
                                     cityCountry: cityCountry,
                                   ));
-                                  if (i < plan.attractions.length - 1) {
+                                  if (i < plan.attractions.length - 1 ||
+                                      hasReturnFlight) {
                                     widgets.add(const SizedBox(height: 4));
-                                    widgets.add(Center(
-                                      child: FlightPathConnector(
-                                        circleRadius: 6,
-                                        lineHeight: 40,
-                                        lineWidth: 2,
-                                        color: Colors.white,
-                                      ),
-                                    ));
+                                    widgets.add(connector());
                                     widgets.add(const SizedBox(height: 4));
                                   }
                                 }
 
                                 return widgets;
                               }(),
+                            ],
+
+                            // Return flight card
+                            if (trip.returnFlightCode != null ||
+                                trip.returnFlightCompany != null ||
+                                trip.returnTakeoffTime != null) ...[
+                              if (trip.tripPlan == null) ...[
+                                const SizedBox(height: 4),
+                                Center(
+                                  child: FlightPathConnector(
+                                    circleRadius: 6,
+                                    lineHeight: 40,
+                                    lineWidth: 2,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                                const SizedBox(height: 4),
+                              ],
+                              SizedBox(
+                                width: double.infinity,
+                                child: GlassContainer(
+                                  width: double.infinity,
+                                  height: 180,
+                                  borderRadius: 40,
+                                  padding: const EdgeInsets.all(20),
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Row(
+                                            children: [
+                                              GlowCircle(
+                                                radius: 10,
+                                                color: const Color.fromARGB(
+                                                    69, 92, 0, 28),
+                                              ),
+                                              const SizedBox(width: 10),
+                                              Text(
+                                                'Return Flight',
+                                                style: GoogleFonts.poppins(
+                                                  fontSize: 16,
+                                                  fontWeight: FontWeight.w500,
+                                                  color: Colors.white,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                          if (trip.returnFlightCode != null)
+                                            Text(
+                                              trip.returnFlightCode!,
+                                              style: GoogleFonts.poppins(
+                                                fontSize: 14,
+                                                fontWeight: FontWeight.w400,
+                                                color: Colors.white,
+                                              ),
+                                            ),
+                                        ],
+                                      ),
+                                      if (trip.returnFlightCompany != null)
+                                        Padding(
+                                          padding: const EdgeInsets.only(left: 30),
+                                          child: Text(
+                                            trip.returnFlightCompany!,
+                                            style: GoogleFonts.poppins(
+                                              fontSize: 14,
+                                              fontWeight: FontWeight.w400,
+                                              color: Colors.white,
+                                            ),
+                                          ),
+                                        ),
+                                      const SizedBox(height: 14),
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceEvenly,
+                                        children: [
+                                          _locationWidget(
+                                            city: trip.destinationCity,
+                                            code: trip.destinationAirport,
+                                            time: trip.returnTakeoffTime,
+                                          ),
+                                          Stack(
+                                            alignment: Alignment.center,
+                                            children: [
+                                              GlowCircle(
+                                                radius: 40,
+                                                color: const Color.fromARGB(
+                                                    69, 255, 216, 228),
+                                              ),
+                                              Transform.rotate(
+                                                angle: 1.57,
+                                                child: const Icon(
+                                                  Icons.airplanemode_active,
+                                                  color: Color.fromARGB(
+                                                      255, 0, 9, 46),
+                                                  size: 28,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                          _locationWidget(
+                                            city: trip.takeoffCity,
+                                            code: trip.takeoffAirport,
+                                            time: trip.returnDestinationTime,
+                                          ),
+                                        ],
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
                             ],
 
                           ],

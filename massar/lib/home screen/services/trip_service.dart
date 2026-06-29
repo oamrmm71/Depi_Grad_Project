@@ -567,6 +567,21 @@ class TripService {
           destination: destination,
         );
 
+        Map<String, dynamic> returnFlightData = {
+          "flightCompany": null,
+          "flightCode": null,
+          "departureDate": null,
+          "arrivalDate": null,
+          "takeoffTime": null,
+          "destinationTime": null,
+        };
+        try {
+          returnFlightData = await getFlightData(
+            origin: destination,
+            destination: origin,
+          );
+        } catch (_) {}
+
         final tripPlan = await generateTripPlan(
           cityName: cityName,
           countryName: countryName,
@@ -590,6 +605,12 @@ class TripService {
           "destinationCity": cityName,
           "destinationAirport": flightData["destinationAirport"],
           "destinationTime": flightData["destinationTime"],
+          "returnFlightCompany": returnFlightData["flightCompany"],
+          "returnFlightCode": returnFlightData["flightCode"],
+          "returnDepartureDate": returnFlightData["departureDate"],
+          "returnArrivalDate": returnFlightData["arrivalDate"],
+          "returnTakeoffTime": returnFlightData["takeoffTime"],
+          "returnDestinationTime": returnFlightData["destinationTime"],
           "isRealFlightData": !usedFallback,
           "fullTripPlan": "Trip plan will be generated soon",
           "tripPlan": tripPlan,

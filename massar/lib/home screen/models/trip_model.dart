@@ -17,6 +17,12 @@ class TripModel {
   final String destinationCity;
   final String destinationAirport;
   final String? destinationTime;
+  final String? returnFlightCompany;
+  final String? returnFlightCode;
+  final String? returnDepartureDate;
+  final String? returnArrivalDate;
+  final String? returnTakeoffTime;
+  final String? returnDestinationTime;
   final List<TourModel> tours;
   final String fullTripPlan;
   final TripPlanModel? tripPlan;
@@ -38,6 +44,12 @@ class TripModel {
     required this.destinationCity,
     required this.destinationAirport,
     required this.destinationTime,
+    this.returnFlightCompany,
+    this.returnFlightCode,
+    this.returnDepartureDate,
+    this.returnArrivalDate,
+    this.returnTakeoffTime,
+    this.returnDestinationTime,
     required this.tours,
     required this.fullTripPlan,
     this.tripPlan,
@@ -61,6 +73,12 @@ class TripModel {
       destinationCity: json["destinationCity"],
       destinationAirport: json["destinationAirport"],
       destinationTime: json["destinationTime"],
+      returnFlightCompany: json["returnFlightCompany"],
+      returnFlightCode: json["returnFlightCode"],
+      returnDepartureDate: json["returnDepartureDate"],
+      returnArrivalDate: json["returnArrivalDate"],
+      returnTakeoffTime: json["returnTakeoffTime"],
+      returnDestinationTime: json["returnDestinationTime"],
       fullTripPlan: json["fullTripPlan"],
       tours: (json["tours"] as List)
           .map((e) => TourModel.fromJson(e))
