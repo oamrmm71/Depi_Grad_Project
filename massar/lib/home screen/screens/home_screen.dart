@@ -6,6 +6,7 @@ import 'package:flutter_card_swiper/flutter_card_swiper.dart';
 import 'package:massar/custom%20widgets/travel_card.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:massar/home%20screen/cubits/trip_state.dart';
+import 'package:massar/home%20screen/screens/notifications_screen.dart';
 import 'package:massar/home%20screen/screens/travel_detail_screen.dart';
 
 import '../cubits/trip_cubit.dart';
@@ -83,16 +84,25 @@ class HomeScreen extends StatelessWidget {
                 ),
                 Row(
                   children: [
-                    GlassButton(
-                      width: 60,
-                      height: 60,
-                      borderRadius: 50,
-                      child: const Icon(
-                        Icons.notifications_on,
-                        color: Colors.white,
-                        size: 30,
+                    GestureDetector(
+                      child: GlassButton(
+                        width: 60,
+                        height: 60,
+                        borderRadius: 50,
+                        child: const Icon(
+                          Icons.notifications_on,
+                          color: Colors.white,
+                          size: 30,
+                        ),
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const NotificationsScreen(),
+                            ),
+                          );
+                        },
                       ),
-                      onTap: () {},
                     ),
                     SizedBox(width: 2),
                     GlassButton(
