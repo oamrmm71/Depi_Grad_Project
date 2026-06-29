@@ -8,6 +8,7 @@ class TripModel {
   final String ?arrivalDate;
   final String? flightCompany;
   final String? flightCode;
+  final String? ticketPrice;
   final String takeoffCity;
   final String takeoffAirport;
   final String ?takeoffTime;
@@ -27,6 +28,7 @@ class TripModel {
     required this.arrivalDate,
     this.flightCompany,
     this.flightCode,
+    this.ticketPrice,
     required this.takeoffCity,
     required this.takeoffAirport,
     required this.takeoffTime,
@@ -48,6 +50,7 @@ class TripModel {
       arrivalDate: json["arrivalDate"],
       flightCompany: json["flightCompany"],
       flightCode: json["flightCode"],
+      ticketPrice: json["ticketPrice"],
       takeoffCity: json["takeoffCity"],
       takeoffAirport: json["takeoffAirport"],
       takeoffTime: json["takeoffTime"],

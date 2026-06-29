@@ -261,6 +261,7 @@ class TravelDetailScreen extends StatelessWidget {
                               ),
                             ),
 
+                            if (trip.ticketPrice != null)
                             GlassContainer(
                               width: double.infinity,
                               height: 54,
@@ -283,7 +284,7 @@ class TravelDetailScreen extends StatelessWidget {
                                       ),
                                     ),
                                     Text(
-                                      '3000 EGP',
+                                      trip.ticketPrice!,
                                       style: GoogleFonts.poppins(
                                         fontSize: 16,
                                         fontWeight: FontWeight.w300,

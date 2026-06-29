@@ -270,6 +270,47 @@ class TripService {
     return _countryCodeMap[code] ?? code;
   }
 
+  Future<String?> getTicketPrice({
+    required String origin,
+    required String destination,
+  }) async {
+    try {
+      final response = await dio.post(
+        "https://api.groq.com/openai/v1/chat/completions",
+        options: Options(
+          headers: {
+            "Authorization": "Bearer $groqApiKey",
+            "Content-Type": "application/json",
+          },
+        ),
+        data: {
+          "model": "llama-3.1-8b-instant",
+          "temperature": 0.2,
+          "messages": [
+            {
+              "role": "system",
+              "content":
+                  "You are a flight pricing assistant. Respond with ONLY a "
+                  "single integer representing a realistic economy class "
+                  "one-way ticket price in USD for the given route. "
+                  "No text, no currency symbol, just the number.",
+            },
+            {
+              "role": "user",
+              "content": "Economy one-way ticket price from $origin to $destination airport.",
+            },
+          ],
+        },
+      );
+
+      final text =
+          response.data["choices"][0]["message"]["content"].toString().trim();
+      final price = int.tryParse(RegExp(r'\d+').firstMatch(text)?.group(0) ?? "");
+      if (price != null && price > 0) return "\$$price";
+    } catch (_) {}
+    return null;
+  }
+
   Future<Map<String, dynamic>> getPlaceData({
     required String cityName,
     required String countryName,
@@ -465,6 +506,11 @@ class TripService {
           countryName: countryName,
         );
 
+        final ticketPrice = await getTicketPrice(
+          origin: origin,
+          destination: destination,
+        );
+
         trips.add({
           "cityName": cityName,
           "countryName": countryName,
@@ -475,6 +521,7 @@ class TripService {
           "arrivalDate": flightData["arrivalDate"],
           "flightCompany": flightData["flightCompany"],
           "flightCode": flightData["flightCode"],
+          "ticketPrice": ticketPrice,
           "takeoffCity": flightData["takeoffCityName"],
           "takeoffAirport": flightData["takeoffAirport"],
           "takeoffTime": flightData["takeoffTime"],
