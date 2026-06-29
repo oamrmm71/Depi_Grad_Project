@@ -346,7 +346,7 @@ class TripService {
               "role": "user",
               "content":
                   "Plan a trip to $cityName, $countryName with a total budget of "
-                  "$budget EGP. Include 1-2 real hotel accommodations and 4-6 "
+                  "$budget EGP. Include exactly 1 real hotel accommodation and 4-6 "
                   "popular tourist attractions with realistic prices.",
             },
           ],
