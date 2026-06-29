@@ -11,17 +11,8 @@ class TripService {
   static final String unsplashApiKey = dotenv.env["UNSPLASH_KEY"]!;
   static final String groqApiKey = dotenv.env["GROQ_KEY"]!;
 
-  /// Cache airport lookups for the lifetime of this TripService instance.
-  /// Same IATA codes get suggested repeatedly across searches (DXB, CDG, IST,
-  /// etc.), so this avoids burning API quota re-fetching airport details you
-  /// already have.
   final Map<String, Map<String, dynamic>> _airportDetailsCache = {};
 
-  /// Cache the full departures list per origin+window for the lifetime of this
-  /// TripService instance. The departures list does NOT depend on the
-  /// destination, so re-querying it for every single destination was
-  /// multiplying API calls for no reason and made rate limiting far worse than
-  /// necessary. (FIX #3 — bonus inefficiency)
   final Map<String, List<dynamic>> _departuresCache = {};
 
   String _toLocalApiTimestamp(DateTime utc) {
@@ -42,9 +33,7 @@ class TripService {
         "${dt.minute.toString().padLeft(2, '0')}";
   }
 
-  // ---------------------------------------------------------------------------
-  // Generic retry-with-backoff wrapper for AeroDataBox calls.
-  // ---------------------------------------------------------------------------
+  
   Future<Response> _aeroDataBoxGet(
     String url, {
     Map<String, dynamic>? queryParameters,
@@ -80,7 +69,7 @@ class TripService {
             final seconds = int.tryParse(retryAfterHeader);
             waitMs = seconds != null ? seconds * 1000 : 1500 * attempt;
           } else {
-            // Exponential backoff with jitter: ~1.5 s, 3 s, 6 s, 12 s …
+            
             waitMs =
                 (1500 * pow(2, attempt - 1)).toInt() + rand.nextInt(400);
           }
@@ -113,22 +102,6 @@ class TripService {
     }
   }
 
-  // ---------------------------------------------------------------------------
-  // FIX #1 + FIX #3
-  //
-  // FIX #1 — AeroDataBox rejects any window longer than 12 hours with HTTP 400
-  // ("The requested period of time must not be more than 12 hours in
-  // duration"). The old code passed windowDays * 24 hours as a single request,
-  // so EVERY flight lookup returned a 400 and we always fell back to placeholder
-  // data — not a rate-limit problem at all.
-  //
-  // The fix: split the full window into ≤12-hour chunks, call the API once per
-  // chunk, and merge the results.
-  //
-  // FIX #3 — The departures list does not depend on the destination. Fetching
-  // it once per origin (and caching) instead of once per destination eliminates
-  // 5× redundant API calls.
-  // ---------------------------------------------------------------------------
   Future<List<dynamic>> _fetchDeparturesForOrigin({
     required String origin,
     required int windowDays,
@@ -154,7 +127,6 @@ class TripService {
         Duration(hours: min(offset + chunkHours, totalHours)),
       );
 
-      // Guard against a degenerate zero-length final chunk.
       if (!chunkEnd.isAfter(chunkStart)) continue;
 
       final from = _toLocalApiTimestamp(chunkStart);
@@ -206,7 +178,6 @@ class TripService {
     required String destination,
     int windowDays = 7,
   }) async {
-    // Uses the cached, chunked departures list — no repeated API calls.
     final departures = await _fetchDeparturesForOrigin(
       origin: origin,
       windowDays: windowDays,
@@ -245,8 +216,8 @@ class TripService {
           flight["arrival"]?["airport"]?["name"] ?? destination,
       "takeoffTime": depDt != null ? _formatTime(depDt) : "TBD",
       "destinationTime": arrDt != null ? _formatTime(arrDt) : "TBD",
-      "departureDate": depDt != null ? _formatDate(depDt) : "",
-      "arrivalDate": arrDt != null ? _formatDate(arrDt) : "",
+      "departureDate": depDt != null ? _formatDate(depDt) : "NULL",
+      "arrivalDate": arrDt != null ? _formatDate(arrDt) : "NULL",
       "takeoffCityName":
           flight["departure"]?["airport"]?["municipalityName"] ?? origin,
       "destinationCityName":
@@ -382,9 +353,6 @@ class TripService {
     if (countryCode.isEmpty) return "";
 
     final code = countryCode.toUpperCase();
-    final cached = _countryCodeNames[code];
-    if (cached != null) return cached;
-
     try {
       final response = await dio.get(
         "https://restcountries.com/v3.1/alpha/$code",
@@ -401,60 +369,6 @@ class TripService {
 
     return code;
   }
-
-  static const Map<String, String> _countryCodeNames = {
-    'AE': 'United Arab Emirates',
-    'AT': 'Austria',
-    'AU': 'Australia',
-    'BE': 'Belgium',
-    'BG': 'Bulgaria',
-    'BR': 'Brazil',
-    'CA': 'Canada',
-    'CH': 'Switzerland',
-    'CN': 'China',
-    'CY': 'Cyprus',
-    'CZ': 'Czechia',
-    'DE': 'Germany',
-    'DK': 'Denmark',
-    'EG': 'Egypt',
-    'ES': 'Spain',
-    'FI': 'Finland',
-    'FR': 'France',
-    'GB': 'United Kingdom',
-    'GR': 'Greece',
-    'HR': 'Croatia',
-    'HU': 'Hungary',
-    'ID': 'Indonesia',
-    'IE': 'Ireland',
-    'IN': 'India',
-    'IT': 'Italy',
-    'JP': 'Japan',
-    'KE': 'Kenya',
-    'KR': 'South Korea',
-    'KW': 'Kuwait',
-    'LB': 'Lebanon',
-    'MA': 'Morocco',
-    'MX': 'Mexico',
-    'MY': 'Malaysia',
-    'NG': 'Nigeria',
-    'NL': 'Netherlands',
-    'NO': 'Norway',
-    'OM': 'Oman',
-    'PH': 'Philippines',
-    'PL': 'Poland',
-    'PT': 'Portugal',
-    'QA': 'Qatar',
-    'RO': 'Romania',
-    'RU': 'Russia',
-    'SA': 'Saudi Arabia',
-    'SE': 'Sweden',
-    'SG': 'Singapore',
-    'TH': 'Thailand',
-    'TR': 'Turkey',
-    'US': 'United States',
-    'VN': 'Vietnam',
-    'ZA': 'South Africa',
-  };
 
   Future<Map<String, dynamic>> getPlaceData({
     required String cityName,
@@ -527,20 +441,12 @@ class TripService {
 
     print("Raw Groq response: \"$text\"");
 
-    // Scan for any standalone 3-letter token anywhere in the response.
-    // This handles cases like "Sure! DXB, CDG, AMS…" or codes separated
-    // by newlines/spaces instead of commas.
+   
     final candidateTokens = RegExp(r'\b[A-Za-z]{3}\b')
         .allMatches(text)
         .map((m) => m.group(0)!.toUpperCase())
         .toList();
 
-    // ---------------------------------------------------------------------------
-    // FIX #2 — Currency codes (EGP, USD, EUR, …) were NOT in the original
-    // stopword set, so when the AI added prose like "1 000 000 EGP (≈ 40 000
-    // USD)" those tokens passed the filter and were treated as destination IATA
-    // codes, burning real API quota on garbage lookups.
-    // ---------------------------------------------------------------------------
     const stopwords = {
       // Common English words
       'THE', 'AND', 'FOR', 'ARE', 'BUT', 'NOT', 'YOU', 'ALL',
@@ -575,32 +481,7 @@ class TripService {
     return destinations;
   }
 
-  Map<String, dynamic> _placeholderFlightData({
-    required String origin,
-    required String destination,
-    required Map<String, dynamic> airportDetails,
-  }) {
-    final seed = DateTime.now().millisecondsSinceEpoch;
-    final departure = DateTime.now().add(Duration(days: 3 + (seed % 6)));
-    final arrival =
-        departure.add(Duration(days: 3 + ((seed ~/ 7) % 6)));
-
-    return {
-      "flightCompany": "Unknown Airline",
-      "flightCode": "N/A",
-      "takeoffAirport": origin,
-      "destinationAirport": destination,
-      "takeoffTime": _formatTime(departure),
-      "destinationTime": _formatTime(arrival),
-      "departureDate": _formatDate(departure),
-      "arrivalDate": _formatDate(arrival),
-      "takeoffCityName": origin,
-      "destinationCityName": airportDetails["cityName"],
-      "destinationCountryCode":
-          airportDetails["countryCode"]?.toString() ?? "",
-    };
-  }
-
+  
   Future<String> _resolveTripCountryName({
     required Map<String, dynamic> airportDetails,
     required Map<String, dynamic> flightData,
@@ -670,11 +551,20 @@ class TripService {
             "using placeholder. Reason: $e",
           );
           usedFallback = true;
-          flightData = _placeholderFlightData(
-            origin: origin,
-            destination: destination,
-            airportDetails: airportDetails,
-          );
+          flightData = {
+            "flightCompany": "Unknown Airline",
+            "flightCode": "N/A",
+            "takeoffAirport": origin,
+            "destinationAirport": destination,
+            "takeoffTime": "N/A",
+            "destinationTime": "N/A",
+            "departureDate": "N/A",
+            "arrivalDate": "N/A",
+            "takeoffCityName": origin,
+            "destinationCityName": airportDetails["cityName"],
+            "destinationCountryCode":
+                airportDetails["countryCode"]?.toString() ?? "",
+          };
         }
 
         final countryName = await _resolveTripCountryName(
@@ -687,13 +577,6 @@ class TripService {
           countryName: countryName,
         );
 
-        // Ensure dates are never empty (fall back to placeholder values).
-        final placeholderDates = _placeholderFlightData(
-          origin: origin,
-          destination: destination,
-          airportDetails: airportDetails,
-        );
-
         trips.add({
           "cityName": cityName,
           "countryName": countryName,
@@ -704,12 +587,12 @@ class TripService {
               (flightData["departureDate"]?.toString().trim().isNotEmpty ??
                       false)
                   ? flightData["departureDate"]
-                  : placeholderDates["departureDate"],
+                  : "null",
           "arrivalDate":
               (flightData["arrivalDate"]?.toString().trim().isNotEmpty ??
                       false)
                   ? flightData["arrivalDate"]
-                  : placeholderDates["arrivalDate"],
+                  : "null",
           "flightCompany": flightData["flightCompany"],
           "flightCode": flightData["flightCode"],
           "takeoffCity": flightData["takeoffCityName"],
