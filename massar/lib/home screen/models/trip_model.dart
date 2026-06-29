@@ -6,8 +6,8 @@ class TripModel {
   final String locationImage;
   final String? departureDate;
   final String ?arrivalDate;
-  final String flightCompany;
-  final String flightCode;
+  final String? flightCompany;
+  final String? flightCode;
   final String takeoffCity;
   final String takeoffAirport;
   final String ?takeoffTime;
@@ -25,8 +25,8 @@ class TripModel {
     required this.locationImage,
     required this.departureDate,
     required this.arrivalDate,
-    required this.flightCompany,
-    required this.flightCode,
+    this.flightCompany,
+    this.flightCode,
     required this.takeoffCity,
     required this.takeoffAirport,
     required this.takeoffTime,

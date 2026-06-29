@@ -125,14 +125,18 @@ class TravelDetailScreen extends StatelessWidget {
 
                   const SizedBox(height: 2),
 
-                  Text(
-                    '${trip.departureDate} to ${trip.arrivalDate}',
-                    style: GoogleFonts.poppins(
-                      fontSize: 20,
-                      fontWeight: FontWeight.w300,
-                      color: Colors.white,
+                  if (trip.departureDate != null || trip.arrivalDate != null)
+                    Text(
+                      [
+                        if (trip.departureDate != null) trip.departureDate!,
+                        if (trip.arrivalDate != null) trip.arrivalDate!,
+                      ].join(' to '),
+                      style: GoogleFonts.poppins(
+                        fontSize: 20,
+                        fontWeight: FontWeight.w300,
+                        color: Colors.white,
+                      ),
                     ),
-                  ),
 
                   // Plane + content stack
                   Stack(
@@ -178,30 +182,32 @@ class TravelDetailScreen extends StatelessWidget {
                                             ),
                                           ],
                                         ),
-                                        Text(
-                                          trip.flightCode,
+                                        if (trip.flightCode != null)
+                                          Text(
+                                            trip.flightCode!,
+                                            style: GoogleFonts.poppins(
+                                              fontSize: 14,
+                                              fontWeight: FontWeight.w400,
+                                              color: Colors.white,
+                                            ),
+                                          ),
+                                      ],
+                                    ),
+
+                                    if (trip.flightCompany != null)
+                                      Padding(
+                                        padding: const EdgeInsets.only(
+                                          left: 30.0,
+                                        ),
+                                        child: Text(
+                                          trip.flightCompany!,
                                           style: GoogleFonts.poppins(
                                             fontSize: 14,
                                             fontWeight: FontWeight.w400,
                                             color: Colors.white,
                                           ),
                                         ),
-                                      ],
-                                    ),
-
-                                    Padding(
-                                      padding: const EdgeInsets.only(
-                                        left: 30.0,
                                       ),
-                                      child: Text(
-                                        trip.flightCompany,
-                                        style: GoogleFonts.poppins(
-                                          fontSize: 14,
-                                          fontWeight: FontWeight.w400,
-                                          color: Colors.white,
-                                        ),
-                                      ),
-                                    ),
 
                                     const SizedBox(height: 14),
 
@@ -212,7 +218,7 @@ class TravelDetailScreen extends StatelessWidget {
                                         _locationWidget(
                                           city: trip.takeoffCity,
                                           code: trip.takeoffAirport,
-                                          time: trip.takeoffTime ?? "N/A",
+                                          time: trip.takeoffTime,
                                         ),
 
                                         Stack(
@@ -246,7 +252,7 @@ class TravelDetailScreen extends StatelessWidget {
                                         _locationWidget(
                                           city: trip.destinationCity,
                                           code: trip.destinationAirport,
-                                          time: trip.destinationTime ?? "N/A",
+                                          time: trip.destinationTime,
                                         ),
                                       ],
                                     ),
@@ -341,7 +347,7 @@ class TravelDetailScreen extends StatelessWidget {
   static Widget _locationWidget({
     required String city,
     required String code,
-    required String time,
+    required String? time,
   }) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -363,15 +369,16 @@ class TravelDetailScreen extends StatelessWidget {
             color: Colors.white,
           ),
         ),
-        Text(
-          time,
-          style: GoogleFonts.poppins(
-            fontSize: 16,
-            fontWeight: FontWeight.w300,
-            color: Colors.white,
-            height: 0.8,
+        if (time != null)
+          Text(
+            time,
+            style: GoogleFonts.poppins(
+              fontSize: 16,
+              fontWeight: FontWeight.w300,
+              color: Colors.white,
+              height: 0.8,
+            ),
           ),
-        ),
       ],
     );
   }

@@ -13,7 +13,7 @@ class TripService {
   static const String _airlabsBase = "https://airlabs.co/api/v9";
 
   final Map<String, Map<String, dynamic>> _airportDetailsCache = {};
-  final Map<String, String> _airlineNameCache = {};
+  final Map<String, String?> _airlineNameCache = {};
 
   Future<Response> _airlabsGet(
     String path, {
@@ -34,10 +34,10 @@ class TripService {
         "${dt.minute.toString().padLeft(2, '0')}";
   }
 
-  Future<String> _getAirlineName(String iataCode) async {
-    if (iataCode.isEmpty) return "Unknown Airline";
+  Future<String?> _getAirlineName(String iataCode) async {
+    if (iataCode.isEmpty) return null;
     if (_airlineNameCache.containsKey(iataCode)) {
-      return _airlineNameCache[iataCode]!;
+      return _airlineNameCache[iataCode];
     }
     try {
       final response = await _airlabsGet(
@@ -46,13 +46,13 @@ class TripService {
       );
       final items = response.data["response"] as List? ?? [];
       if (items.isNotEmpty) {
-        final name = items.first["name"]?.toString() ?? iataCode;
+        final name = items.first["name"]?.toString();
         _airlineNameCache[iataCode] = name;
         return name;
       }
     } catch (_) {}
-    _airlineNameCache[iataCode] = iataCode;
-    return iataCode;
+    _airlineNameCache[iataCode] = null;
+    return null;
   }
 
   Future<Map<String, dynamic>> getFlightData({
@@ -116,7 +116,7 @@ class TripService {
 
     return {
       "flightCompany": airlineName,
-      "flightCode": route["flight_iata"]?.toString() ?? "N/A",
+      "flightCode": route["flight_iata"]?.toString(),
       "takeoffAirport": origin,
       "destinationAirport": destination,
       "takeoffTime": nextDep != null ? _formatTime(nextDep) : depTimeStr,
@@ -440,8 +440,8 @@ class TripService {
           print("getFlightData failed for $origin → $destination: $e");
           usedFallback = true;
           flightData = {
-            "flightCompany": "Unknown Airline",
-            "flightCode": "N/A",
+            "flightCompany": null,
+            "flightCode": null,
             "takeoffAirport": origin,
             "destinationAirport": destination,
             "takeoffTime": null,
