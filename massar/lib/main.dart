@@ -3,6 +3,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:massar/home%20screen/cubits/trip_cubit.dart';
 import 'package:massar/home%20screen/repositories/trip_repository.dart';
+import 'package:massar/home%20screen/services/country_service.dart';
+import 'package:massar/home%20screen/services/flight_service.dart';
+import 'package:massar/home%20screen/services/groq_service.dart';
+import 'package:massar/home%20screen/services/image_service.dart';
 import 'package:massar/home%20screen/services/trip_service.dart';
 import 'splash_screen.dart';
 
@@ -11,7 +15,18 @@ Future<void> main() async {
 
   await dotenv.load(fileName: ".env");
 
-  final tripService = TripService();
+  final countryService = CountryService();
+  final flightService = FlightService(countryService: countryService);
+  final groqService = GroqService();
+  final imageService = ImageService();
+
+  final tripService = TripService(
+    flightService: flightService,
+    groqService: groqService,
+    imageService: imageService,
+    countryService: countryService,
+  );
+
   final tripRepository = TripRepository(tripService);
 
   runApp(
