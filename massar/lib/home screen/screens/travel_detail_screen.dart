@@ -212,7 +212,7 @@ class TravelDetailScreen extends StatelessWidget {
                                         _locationWidget(
                                           city: trip.takeoffCity,
                                           code: trip.takeoffAirport,
-                                          time: trip.takeoffTime,
+                                          time: trip.takeoffTime ?? "N/A",
                                         ),
 
                                         Stack(
@@ -246,7 +246,7 @@ class TravelDetailScreen extends StatelessWidget {
                                         _locationWidget(
                                           city: trip.destinationCity,
                                           code: trip.destinationAirport,
-                                          time: trip.destinationTime,
+                                          time: trip.destinationTime ?? "N/A",
                                         ),
                                       ],
                                     ),

@@ -4,16 +4,16 @@ class TripModel {
   final String tripBudget;
   final String locationName;
   final String locationImage;
-  final String departureDate;
-  final String arrivalDate;
+  final String? departureDate;
+  final String ?arrivalDate;
   final String flightCompany;
   final String flightCode;
   final String takeoffCity;
   final String takeoffAirport;
-  final String takeoffTime;
+  final String ?takeoffTime;
   final String destinationCity;
   final String destinationAirport;
-  final String destinationTime;
+  final String ?destinationTime;
   final List<TourModel> tours;
   final String fullTripPlan;
 

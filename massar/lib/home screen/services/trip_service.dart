@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:math';
 
 import 'package:dio/dio.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -7,19 +6,21 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 class TripService {
   final Dio dio = Dio();
 
-  static final String aerodataBoxApiKey = dotenv.env["AERODATABOX_KEY"]!;
   static final String unsplashApiKey = dotenv.env["UNSPLASH_KEY"]!;
   static final String groqApiKey = dotenv.env["GROQ_KEY"]!;
+  static final String airlabsKey = dotenv.env["AIRLABS_KEY"]!;
+
+  static const String _airlabsBase = "https://airlabs.co/api/v9";
 
   final Map<String, Map<String, dynamic>> _airportDetailsCache = {};
+  final Map<String, String> _airlineNameCache = {};
 
-  final Map<String, List<dynamic>> _departuresCache = {};
-
-  String _toLocalApiTimestamp(DateTime utc) {
-    return "${utc.year}-"
-        "${utc.month.toString().padLeft(2, '0')}-"
-        "${utc.day.toString().padLeft(2, '0')}T"
-        "${utc.hour.toString().padLeft(2, '0')}:00";
+  Future<Response> _airlabsGet(
+    String path, {
+    Map<String, dynamic>? queryParameters,
+  }) async {
+    final params = {"api_key": airlabsKey, ...?queryParameters};
+    return dio.get("$_airlabsBase$path", queryParameters: params);
   }
 
   String _formatDate(DateTime dt) {
@@ -33,144 +34,25 @@ class TripService {
         "${dt.minute.toString().padLeft(2, '0')}";
   }
 
-  
-  Future<Response> _aeroDataBoxGet(
-    String url, {
-    Map<String, dynamic>? queryParameters,
-    int maxRetries = 4,
-  }) async {
-    int attempt = 0;
-    final rand = Random();
-
-    while (true) {
-      try {
-        final response = await dio.get(
-          url,
-          queryParameters: queryParameters,
-          options: Options(
-            headers: {
-              "X-RapidAPI-Key": aerodataBoxApiKey,
-              "X-RapidAPI-Host": "aerodatabox.p.rapidapi.com",
-            },
-          ),
-        );
-        return response;
-      } on DioException catch (e) {
-        final status = e.response?.statusCode;
-        final isRateLimited = status == 429;
-        final isServerError = status != null && status >= 500;
-
-        attempt++;
-        if ((isRateLimited || isServerError) && attempt <= maxRetries) {
-          final retryAfterHeader =
-              e.response?.headers.value('retry-after');
-          int waitMs;
-          if (retryAfterHeader != null) {
-            final seconds = int.tryParse(retryAfterHeader);
-            waitMs = seconds != null ? seconds * 1000 : 1500 * attempt;
-          } else {
-            
-            waitMs =
-                (1500 * pow(2, attempt - 1)).toInt() + rand.nextInt(400);
-          }
-
-          print(
-            "AeroDataBox request rate limited/server error (status=$status). "
-            "Retry attempt $attempt/$maxRetries after ${waitMs}ms. URL=$url",
-          );
-
-          await Future.delayed(Duration(milliseconds: waitMs));
-          continue;
-        }
-
-        if (isRateLimited) {
-          print(
-            "=== AERODATABOX 429 - QUOTA/RATE LIMIT DETAILS ===\n"
-            "URL: $url\n"
-            "Response headers: ${e.response?.headers.map}\n"
-            "Response body: ${e.response?.data}\n"
-            "===================================================",
-          );
-        } else {
-          print(
-            "AeroDataBox request failed permanently. status=$status "
-            "message=${e.message} data=${e.response?.data} URL=$url",
-          );
-        }
-        rethrow;
-      }
+  Future<String> _getAirlineName(String iataCode) async {
+    if (iataCode.isEmpty) return "Unknown Airline";
+    if (_airlineNameCache.containsKey(iataCode)) {
+      return _airlineNameCache[iataCode]!;
     }
-  }
-
-  Future<List<dynamic>> _fetchDeparturesForOrigin({
-    required String origin,
-    required int windowDays,
-  }) async {
-    final cacheKey = "$origin:$windowDays";
-    final cached = _departuresCache[cacheKey];
-    if (cached != null) {
-      print("_fetchDeparturesForOrigin: cache hit for $cacheKey");
-      return cached;
-    }
-
-    final now = DateTime.now().toUtc();
-    final totalHours = windowDays * 24;
-
-    // AeroDataBox hard limit: window must be ≤ 12 hours.
-    const chunkHours = 12;
-
-    final allDepartures = <dynamic>[];
-
-    for (int offset = 0; offset < totalHours; offset += chunkHours) {
-      final chunkStart = now.add(Duration(hours: offset));
-      final chunkEnd = now.add(
-        Duration(hours: min(offset + chunkHours, totalHours)),
+    try {
+      final response = await _airlabsGet(
+        "/airlines",
+        queryParameters: {"iata_code": iataCode},
       );
-
-      if (!chunkEnd.isAfter(chunkStart)) continue;
-
-      final from = _toLocalApiTimestamp(chunkStart);
-      final until = _toLocalApiTimestamp(chunkEnd);
-
-      try {
-        final response = await _aeroDataBoxGet(
-          "https://aerodatabox.p.rapidapi.com/flights/airports/iata/$origin/$from/$until",
-          queryParameters: {
-            "withLeg": true,
-            "direction": "Departure",
-            "withCancelled": false,
-            "withCodeshared": true,
-            "withCargo": false,
-            "withPrivate": false,
-          },
-        );
-
-        final departures = response.data["departures"] as List? ?? [];
-        print(
-          "_fetchDeparturesForOrigin: chunk $from → $until returned "
-          "${departures.length} departure(s) for $origin",
-        );
-        allDepartures.addAll(departures);
-      } catch (e) {
-        // One missing chunk should not kill the whole search.
-        print(
-          "Skipping departures chunk $from → $until for $origin due to error: $e",
-        );
+      final items = response.data["response"] as List? ?? [];
+      if (items.isNotEmpty) {
+        final name = items.first["name"]?.toString() ?? iataCode;
+        _airlineNameCache[iataCode] = name;
+        return name;
       }
-
-      // Small inter-chunk delay to stay under per-second/minute rate limits.
-      if (offset + chunkHours < totalHours) {
-        await Future.delayed(const Duration(milliseconds: 500));
-      }
-    }
-
-    print(
-      "_fetchDeparturesForOrigin: $origin total departures fetched over "
-      "$windowDays day(s): ${allDepartures.length}",
-    );
-
-    _departuresCache[cacheKey] = allDepartures;
-    return allDepartures;
+    } catch (_) {}
+    _airlineNameCache[iataCode] = iataCode;
+    return iataCode;
   }
 
   Future<Map<String, dynamic>> getFlightData({
@@ -178,157 +60,135 @@ class TripService {
     required String destination,
     int windowDays = 7,
   }) async {
-    final departures = await _fetchDeparturesForOrigin(
-      origin: origin,
-      windowDays: windowDays,
+    // /routes uses the static airline route database — works for any future
+    // date, unlike /schedules which only shows today's live board.
+    final response = await _airlabsGet(
+      "/routes",
+      queryParameters: {
+        "dep_iata": origin,
+        "arr_iata": destination,
+      },
     );
 
-    if (departures.isEmpty) {
-      throw Exception("No departures found from $origin");
+    final routes = response.data["response"] as List? ?? [];
+    if (routes.isEmpty) {
+      throw Exception("No direct route from $origin to $destination");
     }
 
-    final matchingFlights = departures.where((flight) {
-      final arrivalCode =
-          flight["arrival"]?["airport"]?["iata"]?.toString();
-      return arrivalCode == destination;
-    }).toList();
+    final route = routes.first;
 
-    if (matchingFlights.isEmpty) {
-      throw Exception("No flights from $origin to $destination in window");
+    final depTimeStr = route["dep_time"]?.toString(); // "HH:MM" local
+    final arrTimeStr = route["arr_time"]?.toString(); // "HH:MM" local
+    final durationMins =
+        int.tryParse(route["duration"]?.toString() ?? "") ?? 0;
+
+    // Parse operating days; default to daily if missing.
+    final rawDays = route["days"];
+    final opDays = (rawDays is List)
+        ? rawDays.map((d) => d.toString().toLowerCase()).toSet()
+        : <String>{"mon", "tue", "wed", "thu", "fri", "sat", "sun"};
+
+    const weekdays = ["mon", "tue", "wed", "thu", "fri", "sat", "sun"];
+
+    // Walk forward from tomorrow until we hit an operating day.
+    DateTime? nextDep;
+    final now = DateTime.now();
+    for (int i = 1; i <= windowDays + 7; i++) {
+      final d = now.add(Duration(days: i));
+      final dayName = weekdays[d.weekday - 1];
+      if (opDays.contains(dayName)) {
+        if (depTimeStr != null) {
+          final parts = depTimeStr.split(':');
+          final h = int.tryParse(parts[0]) ?? 0;
+          final m = parts.length > 1 ? (int.tryParse(parts[1]) ?? 0) : 0;
+          nextDep = DateTime(d.year, d.month, d.day, h, m);
+          break;
+        }
+      }
     }
 
-    final flight = matchingFlights.first;
+    final arrDt = (nextDep != null && durationMins > 0)
+        ? nextDep.add(Duration(minutes: durationMins))
+        : null;
 
-    final depTimeRaw =
-        flight["departure"]?["scheduledTimeLocal"]?.toString();
-    final arrTimeRaw =
-        flight["arrival"]?["scheduledTimeLocal"]?.toString();
-
-    final depDt = depTimeRaw != null ? DateTime.tryParse(depTimeRaw) : null;
-    final arrDt = arrTimeRaw != null ? DateTime.tryParse(arrTimeRaw) : null;
+    final airlineIata = route["airline_iata"]?.toString() ?? "";
+    final airlineName = await _getAirlineName(airlineIata);
 
     return {
-      "flightCompany": flight["airline"]?["name"] ?? "Unknown Airline",
-      "flightCode": flight["number"] ?? "N/A",
-      "takeoffAirport":
-          flight["departure"]?["airport"]?["name"] ?? origin,
-      "destinationAirport":
-          flight["arrival"]?["airport"]?["name"] ?? destination,
-      "takeoffTime": depDt != null ? _formatTime(depDt) : "TBD",
-      "destinationTime": arrDt != null ? _formatTime(arrDt) : "TBD",
-      "departureDate": depDt != null ? _formatDate(depDt) : "NULL",
-      "arrivalDate": arrDt != null ? _formatDate(arrDt) : "NULL",
-      "takeoffCityName":
-          flight["departure"]?["airport"]?["municipalityName"] ?? origin,
-      "destinationCityName":
-          flight["arrival"]?["airport"]?["municipalityName"] ?? destination,
-      "destinationCountryCode":
-          flight["arrival"]?["airport"]?["countryCode"]?.toString() ?? "",
+      "flightCompany": airlineName,
+      "flightCode": route["flight_iata"]?.toString() ?? "N/A",
+      "takeoffAirport": origin,
+      "destinationAirport": destination,
+      "takeoffTime": nextDep != null ? _formatTime(nextDep) : depTimeStr,
+      "destinationTime": arrDt != null ? _formatTime(arrDt) : arrTimeStr,
+      "departureDate": nextDep != null ? _formatDate(nextDep) : null,
+      "arrivalDate": arrDt != null
+          ? _formatDate(arrDt)
+          : nextDep != null
+              ? _formatDate(nextDep)
+              : null,
+      "takeoffCityName": origin,
+      "destinationCityName": destination,
+      "destinationCountryCode": "",
     };
   }
 
-  Future<Map<String, dynamic>> _lookupAirportBySearch(String iata) async {
-    final response = await _aeroDataBoxGet(
-      "https://aerodatabox.p.rapidapi.com/airports/search/term",
-      queryParameters: {"q": iata, "limit": "10"},
-    );
-
-    final items = response.data["items"] as List? ?? [];
-    final code = iata.toUpperCase();
-
-    for (final item in items) {
-      if (item is Map && item["iata"]?.toString().toUpperCase() == code) {
-        return Map<String, dynamic>.from(item);
-      }
-    }
-
-    if (items.isNotEmpty && items.first is Map) {
-      return Map<String, dynamic>.from(items.first as Map);
-    }
-
-    throw Exception("Airport not found for $iata");
-  }
-
-  String _extractCountryCode(Map<String, dynamic> data) {
-    final direct = data["countryCode"]?.toString().trim();
-    if (direct != null && direct.isNotEmpty) return direct;
-
-    final country = data["country"];
-    if (country is Map) {
-      for (final key in ["code", "iso2", "alpha2", "countryCode"]) {
-        final value = country[key]?.toString().trim();
-        if (value != null && value.isNotEmpty) return value;
-      }
-    }
-
-    return "";
-  }
-
-  String? _extractCountryNameFromData(Map<String, dynamic> data) {
-    final country = data["country"];
-    if (country is! Map) return null;
-
-    final name = country["name"];
-    if (name is String && name.trim().isNotEmpty) return name.trim();
-    if (name is Map) {
-      for (final key in ["common", "en", "official"]) {
-        final value = name[key]?.toString().trim();
-        if (value != null && value.isNotEmpty) return value;
-      }
-    }
-
-    for (final key in ["commonName", "fullName"]) {
-      final value = country[key]?.toString().trim();
-      if (value != null && value.isNotEmpty) return value;
-    }
-
-    return null;
+  // Strips common airport-name suffixes so "Dubai International Airport"
+  // becomes "Dubai", "Singapore Changi Airport" becomes "Singapore Changi", etc.
+  String _cityFromAirportName(String name) {
+    return name
+        .replaceAll(
+          RegExp(
+            r'\s*(International|Intl\.?|Regional|Municipal|Airport|'
+            r'Air\s+Base|Airfield|Aeropuerto|Aéroport|Flughafen|Aeroporto)\s*',
+            caseSensitive: false,
+          ),
+          ' ',
+        )
+        .replaceAll(RegExp(r'\s+'), ' ')
+        .trim();
   }
 
   Future<Map<String, dynamic>> getAirportDetails(String iata) async {
     final code = iata.toUpperCase();
-
     final cached = _airportDetailsCache[code];
-    if (cached != null) {
-      return cached;
-    }
+    if (cached != null) return cached;
 
-    Map<String, dynamic> data;
+    final response = await _airlabsGet(
+      "/airports",
+      queryParameters: {"iata_code": code},
+    );
 
-    try {
-      final response = await _aeroDataBoxGet(
-        "https://aerodatabox.p.rapidapi.com/airports/iata/$iata",
-      );
-      data = Map<String, dynamic>.from(response.data as Map);
-    } catch (e) {
-      print(
-        "getAirportDetails: direct lookup failed for $iata ($e), "
-        "trying search fallback",
-      );
-      data = await _lookupAirportBySearch(iata);
-    }
+    final items = response.data["response"] as List? ?? [];
+    if (items.isEmpty) throw Exception("Airport not found: $iata");
 
-    var cityName = data["municipalityName"]?.toString().trim() ?? "";
+    final airport = items.first as Map;
 
-    if (cityName.isEmpty) {
-      cityName = _cityFromAirportName(
-        data["shortName"]?.toString() ??
-            data["name"]?.toString() ??
-            "",
-      );
-    }
+    // AirLabs may use "city" or "city_name"; fall back to stripping the
+    // airport name if neither is present.
+    final rawCity = airport["city"]?.toString().trim() ??
+        airport["city_name"]?.toString().trim() ??
+        "";
+    final airportName = airport["name"]?.toString().trim() ?? "";
+    final cityName = rawCity.isNotEmpty
+        ? rawCity
+        : airportName.isNotEmpty
+            ? _cityFromAirportName(airportName)
+            : code;
 
-    if (cityName.isEmpty) cityName = iata;
+    final countryCode = airport["country_code"]?.toString().trim() ?? "";
 
-    final countryCode = _extractCountryCode(data);
-    final countryNameFromApi = _extractCountryNameFromData(data);
-    final countryName =
-        (countryNameFromApi != null && countryNameFromApi.isNotEmpty)
-            ? countryNameFromApi
-            : await _resolveCountryName(countryCode);
+    // AirLabs sometimes returns the full country name directly — prefer it
+    // over the extra restcountries.com round-trip.
+    final rawCountryName = airport["country_name"]?.toString().trim() ??
+        airport["country"]?.toString().trim() ??
+        "";
+    final countryName = rawCountryName.isNotEmpty
+        ? rawCountryName
+        : await _resolveCountryName(countryCode);
 
     final result = {
-      "cityName": cityName,
+      "cityName": cityName.isNotEmpty ? cityName : code,
       "countryName": countryName,
       "countryCode": countryCode,
     };
@@ -337,37 +197,77 @@ class TripService {
     return result;
   }
 
-  String _cityFromAirportName(String airportName) {
-    return airportName
-        .replaceAll(
-          RegExp(
-            r'\s*(International|Intl\.?|Regional|Municipal|Airport|Air Base|Airfield)\s*',
-            caseSensitive: false,
-          ),
-          ' ',
-        )
-        .trim();
-  }
+  static const Map<String, String> _countryCodeMap = {
+    "AF": "Afghanistan", "AL": "Albania", "DZ": "Algeria", "AD": "Andorra",
+    "AO": "Angola", "AG": "Antigua and Barbuda", "AR": "Argentina",
+    "AM": "Armenia", "AU": "Australia", "AT": "Austria", "AZ": "Azerbaijan",
+    "BS": "Bahamas", "BH": "Bahrain", "BD": "Bangladesh", "BB": "Barbados",
+    "BY": "Belarus", "BE": "Belgium", "BZ": "Belize", "BJ": "Benin",
+    "BT": "Bhutan", "BO": "Bolivia", "BA": "Bosnia and Herzegovina",
+    "BW": "Botswana", "BR": "Brazil", "BN": "Brunei", "BG": "Bulgaria",
+    "BF": "Burkina Faso", "BI": "Burundi", "CV": "Cape Verde",
+    "KH": "Cambodia", "CM": "Cameroon", "CA": "Canada",
+    "CF": "Central African Republic", "TD": "Chad", "CL": "Chile",
+    "CN": "China", "CO": "Colombia", "KM": "Comoros", "CG": "Congo",
+    "CD": "DR Congo", "CR": "Costa Rica", "HR": "Croatia", "CU": "Cuba",
+    "CY": "Cyprus", "CZ": "Czech Republic", "DK": "Denmark", "DJ": "Djibouti",
+    "DM": "Dominica", "DO": "Dominican Republic", "EC": "Ecuador",
+    "EG": "Egypt", "SV": "El Salvador", "GQ": "Equatorial Guinea",
+    "ER": "Eritrea", "EE": "Estonia", "SZ": "Eswatini", "ET": "Ethiopia",
+    "FJ": "Fiji", "FI": "Finland", "FR": "France", "GA": "Gabon",
+    "GM": "Gambia", "GE": "Georgia", "DE": "Germany", "GH": "Ghana",
+    "GR": "Greece", "GD": "Grenada", "GT": "Guatemala", "GN": "Guinea",
+    "GW": "Guinea-Bissau", "GY": "Guyana", "HT": "Haiti", "HN": "Honduras",
+    "HU": "Hungary", "IS": "Iceland", "IN": "India", "ID": "Indonesia",
+    "IR": "Iran", "IQ": "Iraq", "IE": "Ireland", "IL": "Israel",
+    "IT": "Italy", "JM": "Jamaica", "JP": "Japan", "JO": "Jordan",
+    "KZ": "Kazakhstan", "KE": "Kenya", "KI": "Kiribati", "KP": "North Korea",
+    "KR": "South Korea", "KW": "Kuwait", "KG": "Kyrgyzstan", "LA": "Laos",
+    "LV": "Latvia", "LB": "Lebanon", "LS": "Lesotho", "LR": "Liberia",
+    "LY": "Libya", "LI": "Liechtenstein", "LT": "Lithuania", "LU": "Luxembourg",
+    "MG": "Madagascar", "MW": "Malawi", "MY": "Malaysia", "MV": "Maldives",
+    "ML": "Mali", "MT": "Malta", "MH": "Marshall Islands", "MR": "Mauritania",
+    "MU": "Mauritius", "MX": "Mexico", "FM": "Micronesia", "MD": "Moldova",
+    "MC": "Monaco", "MN": "Mongolia", "ME": "Montenegro", "MA": "Morocco",
+    "MZ": "Mozambique", "MM": "Myanmar", "NA": "Namibia", "NR": "Nauru",
+    "NP": "Nepal", "NL": "Netherlands", "NZ": "New Zealand", "NI": "Nicaragua",
+    "NE": "Niger", "NG": "Nigeria", "MK": "North Macedonia", "NO": "Norway",
+    "OM": "Oman", "PK": "Pakistan", "PW": "Palau", "PA": "Panama",
+    "PG": "Papua New Guinea", "PY": "Paraguay", "PE": "Peru",
+    "PH": "Philippines", "PL": "Poland", "PT": "Portugal", "QA": "Qatar",
+    "RO": "Romania", "RU": "Russia", "RW": "Rwanda",
+    "KN": "Saint Kitts and Nevis", "LC": "Saint Lucia",
+    "VC": "Saint Vincent and the Grenadines", "WS": "Samoa",
+    "SM": "San Marino", "ST": "Sao Tome and Principe", "SA": "Saudi Arabia",
+    "SN": "Senegal", "RS": "Serbia", "SC": "Seychelles", "SL": "Sierra Leone",
+    "SG": "Singapore", "SK": "Slovakia", "SI": "Slovenia",
+    "SB": "Solomon Islands", "SO": "Somalia", "ZA": "South Africa",
+    "SS": "South Sudan", "ES": "Spain", "LK": "Sri Lanka", "SD": "Sudan",
+    "SR": "Suriname", "SE": "Sweden", "CH": "Switzerland", "SY": "Syria",
+    "TW": "Taiwan", "TJ": "Tajikistan", "TZ": "Tanzania", "TH": "Thailand",
+    "TL": "Timor-Leste", "TG": "Togo", "TO": "Tonga",
+    "TT": "Trinidad and Tobago", "TN": "Tunisia", "TR": "Turkey",
+    "TM": "Turkmenistan", "TV": "Tuvalu", "UG": "Uganda", "UA": "Ukraine",
+    "AE": "United Arab Emirates", "GB": "United Kingdom",
+    "US": "United States", "UY": "Uruguay", "UZ": "Uzbekistan",
+    "VU": "Vanuatu", "VE": "Venezuela", "VN": "Vietnam", "YE": "Yemen",
+    "ZM": "Zambia", "ZW": "Zimbabwe",
+  };
 
   Future<String> _resolveCountryName(String countryCode) async {
     if (countryCode.isEmpty) return "";
-
     final code = countryCode.toUpperCase();
     try {
-      final response = await dio.get(
-        "https://restcountries.com/v3.1/alpha/$code",
-      );
-
-      if (response.data is List &&
-          (response.data as List).isNotEmpty) {
+      final response =
+          await dio.get("https://restcountries.com/v3.1/alpha/$code");
+      if (response.data is List && (response.data as List).isNotEmpty) {
         final country =
             (response.data as List).first as Map<String, dynamic>;
         final name = country["name"]?["common"]?.toString().trim();
         if (name != null && name.isNotEmpty) return name;
       }
     } catch (_) {}
-
-    return code;
+    return _countryCodeMap[code] ?? code;
   }
 
   Future<Map<String, dynamic>> getPlaceData({
@@ -387,7 +287,6 @@ class TripService {
     );
 
     final imageResults = imageResponse.data["results"];
-
     final imageUrl =
         (imageResults != null && imageResults.isNotEmpty)
             ? imageResults.first["urls"]["regular"]
@@ -419,46 +318,41 @@ class TripService {
         "messages": [
           {
             "role": "system",
-            // Stricter prompt: no prose, no currency codes, no explanation.
             "content":
                 "You must respond with ONLY 5 airport IATA codes separated "
-                "by commas, nothing else. No explanation, no currency codes, "
-                "no airport names, no punctuation besides commas. "
-                "Example output: DXB,CDG,AMS,IST,SIN"
+                "by commas, nothing else. Choose destinations that have "
+                "direct scheduled flights from the origin airport. "
+                "No explanation, no currency codes, no airport names, "
+                "no punctuation besides commas. "
+                "Example output: DXB,CDG,AMS,IST,SIN",
           },
           {
             "role": "user",
             "content":
-                "Budget: $budget EGP. Origin airport: $origin.$excludeText"
-          }
+                "Budget: $budget EGP. Origin airport: $origin.$excludeText",
+          },
         ],
       },
     );
 
-    final text = response.data["choices"][0]["message"]["content"]
-        .toString()
-        .trim();
+    final text =
+        response.data["choices"][0]["message"]["content"].toString().trim();
 
     print("Raw Groq response: \"$text\"");
 
-   
     final candidateTokens = RegExp(r'\b[A-Za-z]{3}\b')
         .allMatches(text)
         .map((m) => m.group(0)!.toUpperCase())
         .toList();
 
     const stopwords = {
-      // Common English words
       'THE', 'AND', 'FOR', 'ARE', 'BUT', 'NOT', 'YOU', 'ALL',
       'CAN', 'HER', 'WAS', 'ONE', 'OUR', 'OUT', 'DAY', 'GET',
       'HAS', 'HIM', 'HIS', 'HOW', 'MAN', 'NEW', 'NOW', 'OLD',
       'SEE', 'TWO', 'WAY', 'WHO', 'BOY', 'DID', 'ITS', 'LET',
       'PUT', 'SAY', 'SHE', 'TOO', 'USE', 'YES', 'YET', 'SUR',
-      // Currency / unit codes the model mentions when explaining the budget.
-      // FIX #2: these were missing before.
       'EGP', 'USD', 'EUR', 'GBP', 'AED', 'SAR', 'KWD', 'QAR',
       'JPY', 'CNY', 'INR', 'TRY', 'MAD', 'NGN', 'KES', 'ZAR',
-      // Other common non-IATA tokens that appear in prose
       'APX', 'APP', 'EST', 'ETA', 'ETD', 'INT', 'LOC', 'MIN',
       'MAX', 'PER', 'REF', 'TBD', 'TBC', 'VIA',
     };
@@ -467,21 +361,19 @@ class TripService {
         .where((e) => RegExp(r'^[A-Z]{3}$').hasMatch(e))
         .where((e) => !stopwords.contains(e))
         .where((e) => e != origin.toUpperCase())
-        .toSet() // de-dupe
+        .toSet()
         .toList();
 
     print("Generated destinations: $destinations");
 
     if (destinations.isEmpty) {
       throw Exception(
-        "Could not parse any IATA codes from Groq response: \"$text\"",
-      );
+          "Could not parse any IATA codes from Groq response: \"$text\"");
     }
 
     return destinations;
   }
 
-  
   Future<String> _resolveTripCountryName({
     required Map<String, dynamic> airportDetails,
     required Map<String, dynamic> flightData,
@@ -523,9 +415,8 @@ class TripService {
 
     for (final destination in cappedDestinations) {
       try {
-        // Small inter-destination delay to avoid hitting per-second limits.
         if (trips.isNotEmpty) {
-          await Future.delayed(const Duration(milliseconds: 600));
+          await Future.delayed(const Duration(milliseconds: 300));
         }
 
         final airportDetails = await getAirportDetails(destination);
@@ -546,22 +437,19 @@ class TripService {
             destination: destination,
           );
         } catch (e) {
-          print(
-            "getFlightData failed for $origin → $destination, "
-            "using placeholder. Reason: $e",
-          );
+          print("getFlightData failed for $origin → $destination: $e");
           usedFallback = true;
           flightData = {
             "flightCompany": "Unknown Airline",
             "flightCode": "N/A",
             "takeoffAirport": origin,
             "destinationAirport": destination,
-            "takeoffTime": "N/A",
-            "destinationTime": "N/A",
-            "departureDate": "N/A",
-            "arrivalDate": "N/A",
+            "takeoffTime": null,
+            "destinationTime": null,
+            "departureDate": null,
+            "arrivalDate": null,
             "takeoffCityName": origin,
-            "destinationCityName": airportDetails["cityName"],
+            "destinationCityName": cityName,
             "destinationCountryCode":
                 airportDetails["countryCode"]?.toString() ?? "",
           };
@@ -583,22 +471,14 @@ class TripService {
           "tripBudget": "$budget EGP",
           "locationName": countryName,
           "locationImage": placeData["locationImage"],
-          "departureDate":
-              (flightData["departureDate"]?.toString().trim().isNotEmpty ??
-                      false)
-                  ? flightData["departureDate"]
-                  : "null",
-          "arrivalDate":
-              (flightData["arrivalDate"]?.toString().trim().isNotEmpty ??
-                      false)
-                  ? flightData["arrivalDate"]
-                  : "null",
+          "departureDate": flightData["departureDate"],
+          "arrivalDate": flightData["arrivalDate"],
           "flightCompany": flightData["flightCompany"],
           "flightCode": flightData["flightCode"],
           "takeoffCity": flightData["takeoffCityName"],
           "takeoffAirport": flightData["takeoffAirport"],
           "takeoffTime": flightData["takeoffTime"],
-          "destinationCity": flightData["destinationCityName"],
+          "destinationCity": cityName,
           "destinationAirport": flightData["destinationAirport"],
           "destinationTime": flightData["destinationTime"],
           "isRealFlightData": !usedFallback,
