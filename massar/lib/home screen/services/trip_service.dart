@@ -46,11 +46,13 @@ class TripService {
     required String origin,
     required int budget,
     List<String> excludeCities = const [],
+    String? tripType,
   }) async {
     final destinations = await _groqService.getAIDestinations(
       budget: budget,
       origin: origin,
       excludeCities: excludeCities,
+      tripType: tripType,
     );
 
     final cappedDestinations = destinations.take(5).toList();

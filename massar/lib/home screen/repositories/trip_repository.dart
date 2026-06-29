@@ -10,11 +10,13 @@ class TripRepository {
     required String origin,
     required int budget,
     List<String> excludeCities = const [],
+    String? tripType,
   }) async {
     final data = await tripService.getTripSuggestions(
       origin: origin,
       budget: budget,
       excludeCities: excludeCities,
+      tripType: tripType,
     );
 
     return data.map((e) => TripModel.fromJson(e)).toList();

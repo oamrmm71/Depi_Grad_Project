@@ -38,10 +38,21 @@ class GroqService {
     required int budget,
     required String origin,
     List<String> excludeCities = const [],
+    String? tripType,
   }) async {
     final excludeText = excludeCities.isNotEmpty
         ? " Do not suggest airports for these cities: ${excludeCities.join(', ')}."
         : "";
+
+    final tripTypeHint = switch (tripType) {
+      'Tour Package' =>
+        ' Focus on destinations with rich cultural heritage, famous landmarks, and guided tour opportunities.',
+      'Budget Package' =>
+        ' Focus on budget-friendly destinations where the budget goes far — affordable flights and low-cost accommodation.',
+      'Trip Package' =>
+        ' Focus on diverse leisure and adventure destinations ideal for short getaways and varied experiences.',
+      _ => '',
+    };
 
     final text = await _chat(
       temperature: 1.2,
@@ -58,7 +69,8 @@ class GroqService {
         },
         {
           "role": "user",
-          "content": "Budget: $budget EGP. Origin airport: $origin.$excludeText",
+          "content":
+              "Budget: $budget EGP. Origin airport: $origin.$excludeText$tripTypeHint",
         },
       ],
     );

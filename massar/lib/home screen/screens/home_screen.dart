@@ -192,7 +192,13 @@ class HomeScreen extends StatelessWidget {
                     fontSize: 14,
                     fontWeight: FontWeight.w500,
                     borderRadius: 30,
-                    onTap: () {},
+                    onTap: () {
+                      context.read<TripCubit>().fetchTrips(
+                        origin: "CAI",
+                        budget: 1000000,
+                        tripType: 'Tour Package',
+                      );
+                    },
                   ),
 
                   const SizedBox(width: 8),
@@ -204,7 +210,13 @@ class HomeScreen extends StatelessWidget {
                     fontSize: 14,
                     fontWeight: FontWeight.w500,
                     borderRadius: 30,
-                    onTap: () {},
+                    onTap: () {
+                      context.read<TripCubit>().fetchTrips(
+                        origin: "CAI",
+                        budget: 1000000,
+                        tripType: 'Budget Package',
+                      );
+                    },
                   ),
 
                   const SizedBox(width: 8),
@@ -216,7 +228,13 @@ class HomeScreen extends StatelessWidget {
                     fontSize: 14,
                     fontWeight: FontWeight.w500,
                     borderRadius: 30,
-                    onTap: () {},
+                    onTap: () {
+                      context.read<TripCubit>().fetchTrips(
+                        origin: "CAI",
+                        budget: 1000000,
+                        tripType: 'Trip Package',
+                      );
+                    },
                   ),
                 ],
               ),

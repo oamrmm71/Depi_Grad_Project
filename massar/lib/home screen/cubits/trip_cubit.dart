@@ -13,6 +13,7 @@ class TripCubit extends Cubit<TripState> {
     required String origin,
     required int budget,
     bool loadMore = false,
+    String? tripType,
   }) async {
     if (_isFetching) return;
 
@@ -20,7 +21,9 @@ class TripCubit extends Cubit<TripState> {
       _isFetching = true;
       List<TripModel> currentTrips = [];
 
-      if (state is TripLoaded) {
+      if (tripType != null) {
+        emit(TripLoading());
+      } else if (state is TripLoaded) {
         currentTrips = List.from((state as TripLoaded).trips);
       } else if (!loadMore) {
         emit(TripLoading());
@@ -33,6 +36,7 @@ class TripCubit extends Cubit<TripState> {
         origin: origin,
         budget: budget,
         excludeCities: excludeCities,
+        tripType: tripType,
       );
 
       final existingCities =
