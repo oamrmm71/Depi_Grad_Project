@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:massar/theme/app_colors.dart';
 import 'package:massar/custom%20widgets/glass_button.dart';
 import 'package:massar/custom%20widgets/notification_card.dart';
 
@@ -71,9 +72,9 @@ class NotificationsScreen extends StatelessWidget {
                 begin: Alignment.topRight,
                 end: Alignment.bottomLeft,
                 colors: [
-                  Color(0xFF00287C),
-                  Color(0xFF01253D),
-                  Color(0xFF00133F),
+                  AppColors.screenBgGrad1,
+                  AppColors.screenBgGrad2,
+                  AppColors.screenBgGrad3,
                 ],
                 stops: [0.0, 0.45, 1.0],
               ),
@@ -87,9 +88,9 @@ class NotificationsScreen extends StatelessWidget {
                 center: const Alignment(-0.9, 0.9),
                 radius: 1.15,
                 colors: [
-                  const Color(0xFFBAD1FF).withValues(alpha: 0.28),
-                  const Color(0xFFBAD1FF).withValues(alpha: 0.08),
-                  Colors.transparent,
+                  AppColors.glowHigh,
+                  AppColors.glowLow,
+                  AppColors.transparent,
                 ],
                 stops: const [0.0, 0.55, 1.0],
               ),
@@ -111,7 +112,7 @@ class NotificationsScreen extends StatelessWidget {
                         borderRadius: 50,
                         child: const Icon(
                           Icons.arrow_back_ios_new,
-                          color: Colors.white,
+                          color: AppColors.white,
                           size: 20,
                         ),
                         onTap: () => Navigator.pop(context),
@@ -126,7 +127,7 @@ class NotificationsScreen extends StatelessWidget {
                               fontSize: 28,
                               fontWeight: FontWeight.w200,
                               fontStyle: FontStyle.italic,
-                              color: Colors.white,
+                              color: AppColors.white,
                               height: 0.9,
                             ),
                           ),
@@ -135,7 +136,7 @@ class NotificationsScreen extends StatelessWidget {
                             style: GoogleFonts.poppins(
                               fontSize: 26,
                               fontWeight: FontWeight.w700,
-                              color: Colors.white,
+                              color: AppColors.white,
                             ),
                           ),
                         ],

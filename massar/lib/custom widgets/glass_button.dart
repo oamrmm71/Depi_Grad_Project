@@ -1,6 +1,7 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:massar/theme/app_colors.dart';
 
 class GlassButton extends StatelessWidget {
   final String? text;
@@ -39,10 +40,10 @@ class GlassButton extends StatelessWidget {
             width: width,
             height: height,
             decoration: BoxDecoration(
-              color: Colors.white.withOpacity(0.12),
+              color: AppColors.glassFill,
               borderRadius: BorderRadius.circular(borderRadius),
               border: Border.all(
-                color: Colors.white.withOpacity(0.18),
+                color: AppColors.glassBorder,
                 width: 1,
               ),
             ),
@@ -52,7 +53,7 @@ class GlassButton extends StatelessWidget {
                 Text(
                   text ?? '',
                   style: GoogleFonts.poppins(
-                    color: Colors.white,
+                    color: AppColors.white,
                     fontSize: fontSize,
                     fontWeight: fontWeight,
                   ),

@@ -1,6 +1,7 @@
 import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
+import 'package:massar/theme/app_colors.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:massar/home%20screen/models/trip_model.dart';
 import 'package:massar/home%20screen/screens/travel_detail_screen.dart';
@@ -44,7 +45,7 @@ class TravelCard extends StatelessWidget {
                 Text(
                   title,
                   style: GoogleFonts.poppins(
-                    color: const Color(0xFF002B45),
+                    color: AppColors.cardDark,
                     fontSize: 40,
                     fontWeight: FontWeight.w700,
                     height: 1,
@@ -56,7 +57,7 @@ class TravelCard extends StatelessWidget {
                   Text(
                     location,
                     style: GoogleFonts.poppins(
-                      color: const Color(0xFF002B45),
+                      color: AppColors.cardDark,
                       fontSize: 20,
                       fontWeight: FontWeight.w500,
                     ),
@@ -76,7 +77,7 @@ class TravelCard extends StatelessWidget {
                 height: 68,
                 decoration: const BoxDecoration(
                   shape: BoxShape.circle,
-                  color: Color(0xFF002B45),
+                  color: AppColors.cardDark,
                 ),
                 child: GestureDetector(
                   onTap: () {
@@ -90,7 +91,7 @@ class TravelCard extends StatelessWidget {
                   },
                   child: const Icon(
                     Icons.north_east,
-                    color: Colors.white,
+                    color: AppColors.white,
                     size: 34,
                   ),
                 ),
@@ -262,9 +263,9 @@ class _TravelCardImagePainter extends CustomPainter {
         filterQuality: FilterQuality.medium,
       );
     } else if (failed) {
-      canvas.drawRect(bounds, Paint()..color = Colors.grey.shade600);
+      canvas.drawRect(bounds, Paint()..color = AppColors.imageFailed);
     } else {
-      canvas.drawRect(bounds, Paint()..color = Colors.grey.shade700);
+      canvas.drawRect(bounds, Paint()..color = AppColors.imageLoading);
     }
 
     canvas.restore();
@@ -280,7 +281,7 @@ class TravelCardBorderPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     final paint = Paint()
-      ..color = Colors.white.withOpacity(0.55)
+      ..color = AppColors.cardBorderPaint
       ..style = PaintingStyle.stroke
       ..strokeWidth = 1.4;
 

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:massar/theme/app_colors.dart';
 
 class FlightLocationWidget extends StatelessWidget {
   final String city;
@@ -23,7 +24,7 @@ class FlightLocationWidget extends StatelessWidget {
           style: GoogleFonts.poppins(
             fontSize: 16,
             fontWeight: FontWeight.w300,
-            color: Colors.white,
+            color: AppColors.white,
             height: 0.8,
           ),
         ),
@@ -32,7 +33,7 @@ class FlightLocationWidget extends StatelessWidget {
           style: GoogleFonts.poppins(
             fontSize: 32,
             fontWeight: FontWeight.w600,
-            color: Colors.white,
+            color: AppColors.white,
           ),
         ),
         if (time != null)
@@ -41,7 +42,7 @@ class FlightLocationWidget extends StatelessWidget {
             style: GoogleFonts.poppins(
               fontSize: 16,
               fontWeight: FontWeight.w300,
-              color: Colors.white,
+              color: AppColors.white,
               height: 0.8,
             ),
           ),

@@ -1,5 +1,6 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
+import 'package:massar/theme/app_colors.dart';
 
 class BottomNavGlass extends StatelessWidget {
   final int selectedIndex;
@@ -33,10 +34,10 @@ class BottomNavGlass extends StatelessWidget {
           child: Container(
             height: 82,
             decoration: BoxDecoration(
-              color: Colors.white.withOpacity(0.12),
+              color: AppColors.glassFill,
               borderRadius: BorderRadius.circular(45),
               border: Border.all(
-                color: Colors.white.withOpacity(0.18),
+                color: AppColors.glassBorder,
                 width: 1,
               ),
             ),
@@ -54,12 +55,12 @@ class BottomNavGlass extends StatelessWidget {
                       shape: BoxShape.circle,
                       color:
                           index == selectedIndex
-                              ? Colors.white.withOpacity(0.12)
-                              : Colors.transparent,
+                              ? AppColors.glassFill
+                              : AppColors.transparent,
                       border:
                           index == selectedIndex
                               ? Border.all(
-                                color: Colors.white.withOpacity(0.18),
+                                color: AppColors.glassBorder,
                                 width: 1,
                               )
                               : null,
@@ -68,7 +69,7 @@ class BottomNavGlass extends StatelessWidget {
                     child: Icon(
                       icons[index],
                       size: index == 2 ? 40 : 36,
-                      color: const Color(0xff01103a),
+                      color: AppColors.navIcon,
                     ),
                   ),
                 ),

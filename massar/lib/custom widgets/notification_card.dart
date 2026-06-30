@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:massar/custom%20widgets/glass_container.dart';
+import 'package:massar/theme/app_colors.dart';
 
 class NotificationItem {
   final IconData icon;
@@ -29,11 +30,11 @@ class NotificationCard extends StatelessWidget {
       borderRadius: 24,
       padding: const EdgeInsets.all(18),
       backgroundColor: item.isUnread
-          ? Colors.white.withValues(alpha: 0.16)
-          : Colors.white.withValues(alpha: 0.08),
+          ? AppColors.notifUnreadFill
+          : AppColors.notifReadFill,
       borderColor: item.isUnread
-          ? Colors.white.withValues(alpha: 0.30)
-          : Colors.white.withValues(alpha: 0.12),
+          ? AppColors.notifUnreadBorder
+          : AppColors.notifReadBorder,
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -41,9 +42,9 @@ class NotificationCard extends StatelessWidget {
             width: 46,
             height: 46,
             borderRadius: 50,
-            backgroundColor: Colors.white.withValues(alpha: 0.15),
-            borderColor: Colors.white.withValues(alpha: 0.25),
-            child: Icon(item.icon, color: Colors.white, size: 22),
+            backgroundColor: AppColors.notifIconBg,
+            borderColor: AppColors.notifIconBorder,
+            child: Icon(item.icon, color: AppColors.white, size: 22),
           ),
 
           const SizedBox(width: 14),
@@ -62,7 +63,7 @@ class NotificationCard extends StatelessWidget {
                         fontWeight: item.isUnread
                             ? FontWeight.w600
                             : FontWeight.w500,
-                        color: Colors.white,
+                        color: AppColors.white,
                       ),
                     ),
                     Row(
@@ -73,7 +74,7 @@ class NotificationCard extends StatelessWidget {
                             height: 7,
                             margin: const EdgeInsets.only(right: 6, top: 1),
                             decoration: const BoxDecoration(
-                              color: Color(0xFF7EB3FF),
+                              color: AppColors.unreadDot,
                               shape: BoxShape.circle,
                             ),
                           ),
@@ -82,7 +83,7 @@ class NotificationCard extends StatelessWidget {
                           style: GoogleFonts.poppins(
                             fontSize: 11,
                             fontWeight: FontWeight.w300,
-                            color: Colors.white.withValues(alpha: 0.6),
+                            color: AppColors.whiteDim,
                           ),
                         ),
                       ],
@@ -95,7 +96,7 @@ class NotificationCard extends StatelessWidget {
                   style: GoogleFonts.poppins(
                     fontSize: 12,
                     fontWeight: FontWeight.w300,
-                    color: Colors.white.withValues(alpha: 0.75),
+                    color: AppColors.whiteMuted,
                     height: 1.5,
                   ),
                 ),

@@ -2,6 +2,7 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:massar/home%20screen/models/trip_plan_model.dart';
+import 'package:massar/theme/app_colors.dart';
 
 class TourAccommodationCard extends StatelessWidget {
   final AccommodationModel accommodation;
@@ -18,10 +19,10 @@ class TourAccommodationCard extends StatelessWidget {
           width: double.infinity,
           padding: const EdgeInsets.all(20),
           decoration: BoxDecoration(
-            color: Colors.white.withValues(alpha: 0.12),
+            color: AppColors.glassFill,
             borderRadius: BorderRadius.circular(20),
             border: Border.all(
-              color: Colors.white.withValues(alpha: 0.18),
+              color: AppColors.glassBorder,
               width: 1,
             ),
           ),
@@ -33,7 +34,7 @@ class TourAccommodationCard extends StatelessWidget {
                 style: GoogleFonts.poppins(
                   fontSize: 13,
                   fontWeight: FontWeight.w600,
-                  color: Colors.white,
+                  color: AppColors.white,
                 ),
               ),
               Text(
@@ -41,7 +42,7 @@ class TourAccommodationCard extends StatelessWidget {
                 style: GoogleFonts.poppins(
                   fontSize: 12,
                   fontWeight: FontWeight.w300,
-                  color: Colors.white.withValues(alpha: 0.7),
+                  color: AppColors.whiteSubtle,
                 ),
               ),
               const SizedBox(height: 14),
@@ -50,7 +51,7 @@ class TourAccommodationCard extends StatelessWidget {
                 style: GoogleFonts.poppins(
                   fontSize: 22,
                   fontWeight: FontWeight.w700,
-                  color: Colors.white,
+                  color: AppColors.white,
                   height: 1.1,
                 ),
               ),
@@ -63,7 +64,7 @@ class TourAccommodationCard extends StatelessWidget {
                     style: GoogleFonts.poppins(
                       fontSize: 13,
                       fontWeight: FontWeight.w400,
-                      color: Colors.white,
+                      color: AppColors.white,
                     ),
                   ),
                   Text(
@@ -71,7 +72,7 @@ class TourAccommodationCard extends StatelessWidget {
                     style: GoogleFonts.poppins(
                       fontSize: 13,
                       fontWeight: FontWeight.w400,
-                      color: Colors.white,
+                      color: AppColors.white,
                     ),
                   ),
                 ],
@@ -84,7 +85,7 @@ class TourAccommodationCard extends StatelessWidget {
                   style: GoogleFonts.poppins(
                     fontSize: 16,
                     fontWeight: FontWeight.w500,
-                    color: Colors.white,
+                    color: AppColors.white,
                   ),
                 ),
               ),
@@ -116,10 +117,10 @@ class TourAttractionCard extends StatelessWidget {
           width: double.infinity,
           padding: const EdgeInsets.all(20),
           decoration: BoxDecoration(
-            color: Colors.white.withValues(alpha: 0.12),
+            color: AppColors.glassFill,
             borderRadius: BorderRadius.circular(20),
             border: Border.all(
-              color: Colors.white.withValues(alpha: 0.18),
+              color: AppColors.glassBorder,
               width: 1,
             ),
           ),
@@ -131,7 +132,7 @@ class TourAttractionCard extends StatelessWidget {
                 style: GoogleFonts.poppins(
                   fontSize: 13,
                   fontWeight: FontWeight.w600,
-                  color: Colors.white,
+                  color: AppColors.white,
                 ),
               ),
               Text(
@@ -139,7 +140,7 @@ class TourAttractionCard extends StatelessWidget {
                 style: GoogleFonts.poppins(
                   fontSize: 12,
                   fontWeight: FontWeight.w300,
-                  color: Colors.white.withValues(alpha: 0.7),
+                  color: AppColors.whiteSubtle,
                 ),
               ),
               const SizedBox(height: 14),
@@ -148,7 +149,7 @@ class TourAttractionCard extends StatelessWidget {
                 style: GoogleFonts.poppins(
                   fontSize: 22,
                   fontWeight: FontWeight.w700,
-                  color: Colors.white,
+                  color: AppColors.white,
                   height: 1.1,
                 ),
               ),
@@ -161,7 +162,7 @@ class TourAttractionCard extends StatelessWidget {
                     style: GoogleFonts.poppins(
                       fontSize: 16,
                       fontWeight: FontWeight.w500,
-                      color: Colors.white,
+                      color: AppColors.white,
                     ),
                   ),
                 ),

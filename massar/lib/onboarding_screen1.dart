@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:massar/custom%20widgets/glass_button.dart';
 import 'package:massar/home%20screen/screens/home_screen.dart';
+import 'package:massar/theme/app_colors.dart';
 
 class Onboarding1 extends StatelessWidget {
   const Onboarding1({super.key});
@@ -15,15 +16,15 @@ class Onboarding1 extends StatelessWidget {
           end: Alignment(-1.0, 0.2),
           stops: [0.0, 0.22, 0.44, 1.0],
           colors: [
-            Color(0xFF0B63D6),
-            Color(0xFF0A58BE),
-            Color(0xFF00355F),
-            Color(0xFF001F33),
+            AppColors.onboardingGrad1,
+            AppColors.onboardingGrad2,
+            AppColors.onboardingGrad3,
+            AppColors.onboardingGrad4,
           ],
         ),
       ),
       child: Scaffold(
-        backgroundColor: Colors.transparent,
+        backgroundColor: AppColors.transparent,
         body: Stack(
           children: [
             Positioned(
@@ -43,7 +44,7 @@ class Onboarding1 extends StatelessWidget {
                 style: GoogleFonts.poppins(
                   fontSize: 40,
                   fontWeight: FontWeight.w600,
-                  color: Color(0xffF5F5F5),
+                  color: AppColors.onboardingText,
                 ),
               ),
             ),
@@ -55,7 +56,7 @@ class Onboarding1 extends StatelessWidget {
                 style: GoogleFonts.poppins(
                   fontSize: 24,
                   fontWeight: FontWeight.w200,
-                  color: Color(0xffF5F5F5),
+                  color: AppColors.onboardingText,
                   height: 1.2,
                 ),
               ),

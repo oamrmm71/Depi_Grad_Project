@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:massar/theme/app_colors.dart';
 import 'package:massar/custom%20widgets/bottom_nav_glass.dart';
 import 'package:massar/custom%20widgets/glass_button.dart';
 import 'package:flutter_card_swiper/flutter_card_swiper.dart';
@@ -37,9 +38,9 @@ class HomeScreen extends StatelessWidget {
                 begin: Alignment.topRight,
                 end: Alignment.bottomLeft,
                 colors: [
-                  Color(0xFF00287C),
-                  Color(0xFF01253D),
-                  Color(0xFF00133F),
+                  AppColors.screenBgGrad1,
+                  AppColors.screenBgGrad2,
+                  AppColors.screenBgGrad3,
                 ],
                 stops: [0.0, 0.45, 1.0],
               ),
@@ -53,9 +54,9 @@ class HomeScreen extends StatelessWidget {
                 center: const Alignment(-0.9, 0.9),
                 radius: 1.15,
                 colors: [
-                  const Color(0xFFBAD1FF).withOpacity(0.28),
-                  const Color(0xFFBAD1FF).withOpacity(0.08),
-                  Colors.transparent,
+                  AppColors.glowHigh,
+                  AppColors.glowLow,
+                  AppColors.transparent,
                 ],
                 stops: const [0.0, 0.55, 1.0],
               ),
@@ -72,7 +73,7 @@ class HomeScreen extends StatelessWidget {
               children: [
                 CircleAvatar(
                   radius: 28,
-                  backgroundColor: Colors.white.withOpacity(0.2),
+                  backgroundColor: AppColors.avatarBg,
                   child: ClipOval(
                     child: Image.asset(
                       'lib/assets/profile.png',
@@ -91,7 +92,7 @@ class HomeScreen extends StatelessWidget {
                         borderRadius: 50,
                         child: const Icon(
                           Icons.notifications_on,
-                          color: Colors.white,
+                          color: AppColors.white,
                           size: 30,
                         ),
                         onTap: () {
@@ -111,7 +112,7 @@ class HomeScreen extends StatelessWidget {
                       borderRadius: 50,
                       child: const Icon(
                         Icons.settings,
-                        color: Colors.white,
+                        color: AppColors.white,
                         size: 30,
                       ),
                       onTap: () {},
@@ -131,7 +132,7 @@ class HomeScreen extends StatelessWidget {
                 Text(
                   'Explore The',
                   style: GoogleFonts.poppins(
-                    color: Colors.white,
+                    color: AppColors.white,
                     fontSize: 34,
                     fontWeight: FontWeight.w200,
                     fontStyle: FontStyle.italic,
@@ -140,7 +141,7 @@ class HomeScreen extends StatelessWidget {
                 Text(
                   'WORLD WITH AI',
                   style: GoogleFonts.poppins(
-                    color: Colors.white,
+                    color: AppColors.white,
                     fontSize: 40,
                     fontWeight: FontWeight.w600,
                   ),
@@ -163,7 +164,7 @@ class HomeScreen extends StatelessWidget {
                     borderRadius: 50,
                     child: const Icon(
                       Icons.search,
-                      color: Colors.white,
+                      color: AppColors.white,
                       size: 24,
                     ),
                     onTap: () {},
@@ -177,7 +178,7 @@ class HomeScreen extends StatelessWidget {
                     borderRadius: 50,
                     child: const Icon(
                       Icons.filter_alt_outlined,
-                      color: Colors.white,
+                      color: AppColors.white,
                       size: 26,
                     ),
                     onTap: () {},
@@ -250,7 +251,7 @@ class HomeScreen extends StatelessWidget {
                 builder: (context, state) {
                   if (state is TripLoading) {
                     return const Center(
-                      child: CircularProgressIndicator(color: Colors.white),
+                      child: CircularProgressIndicator(color: AppColors.white),
                     );
                   }
 
@@ -258,7 +259,7 @@ class HomeScreen extends StatelessWidget {
                     return Center(
                       child: Text(
                         state.message,
-                        style: const TextStyle(color: Colors.white),
+                        style: const TextStyle(color: AppColors.white),
                       ),
                     );
                   }
@@ -269,7 +270,7 @@ class HomeScreen extends StatelessWidget {
                         return const Center(
                           child: Text(
                             "No trips found",
-                            style: TextStyle(color: Colors.white),
+                            style: TextStyle(color: AppColors.white),
                           ),
                         );
                       }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:massar/theme/app_colors.dart';
 
 class GlowCircle extends StatelessWidget {
   final double radius;
@@ -22,7 +23,7 @@ class GlowCircle extends StatelessWidget {
             color.withOpacity(0.9), // center
             color.withOpacity(0.5),
             color.withOpacity(0.2),
-            Colors.transparent, // faded edge
+            AppColors.transparent, // faded edge
           ],
           stops: const [0.0, 0.35, 0.7, 1.0],
         ),

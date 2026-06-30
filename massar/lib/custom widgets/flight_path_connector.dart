@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:massar/theme/app_colors.dart';
 
 class FlightPathConnector extends StatelessWidget {
   final double circleRadius;
@@ -11,7 +12,7 @@ class FlightPathConnector extends StatelessWidget {
     this.circleRadius = 10,
     this.lineHeight = 50,
     this.lineWidth = 2,
-    this.color = Colors.white,
+    this.color = AppColors.white,
   });
 
   @override

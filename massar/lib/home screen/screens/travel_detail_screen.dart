@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:massar/theme/app_colors.dart';
 import 'package:massar/custom%20widgets/bottom_nav_glass.dart';
 import 'package:massar/custom%20widgets/flight_path_connector.dart';
 import 'package:massar/custom%20widgets/glass_button.dart';
@@ -28,9 +29,9 @@ class TravelDetailScreen extends StatelessWidget {
                 begin: Alignment.topRight,
                 end: Alignment.bottomLeft,
                 colors: [
-                  Color(0xFF00287C),
-                  Color(0xFF01253D),
-                  Color(0xFF00133F),
+                  AppColors.screenBgGrad1,
+                  AppColors.screenBgGrad2,
+                  AppColors.screenBgGrad3,
                 ],
                 stops: [0.0, 0.45, 1.0],
               ),
@@ -44,9 +45,9 @@ class TravelDetailScreen extends StatelessWidget {
                 center: const Alignment(-0.9, 0.9),
                 radius: 1.15,
                 colors: [
-                  const Color(0xFFBAD1FF).withOpacity(0.28),
-                  const Color(0xFFBAD1FF).withOpacity(0.08),
-                  Colors.transparent,
+                  AppColors.glowHigh,
+                  AppColors.glowLow,
+                  AppColors.transparent,
                 ],
                 stops: const [0.0, 0.55, 1.0],
               ),
@@ -79,7 +80,7 @@ class TravelDetailScreen extends StatelessWidget {
                               fontSize: 42,
                               fontWeight: FontWeight.w200,
                               fontStyle: FontStyle.italic,
-                              color: Colors.white,
+                              color: AppColors.white,
                               height: 0.9,
                             ),
                           ),
@@ -88,7 +89,7 @@ class TravelDetailScreen extends StatelessWidget {
                             style: GoogleFonts.poppins(
                               fontSize: 44,
                               fontWeight: FontWeight.w600,
-                              color: Colors.white,
+                              color: AppColors.white,
                             ),
                           ),
                         ],
@@ -104,7 +105,7 @@ class TravelDetailScreen extends StatelessWidget {
                               style: GoogleFonts.poppins(
                                 fontSize: 14,
                                 fontWeight: FontWeight.w500,
-                                color: Colors.white,
+                                color: AppColors.white,
                               ),
                             ),
                             onTap: () {},
@@ -115,7 +116,7 @@ class TravelDetailScreen extends StatelessWidget {
                             borderRadius: 50,
                             child: const Icon(
                               Icons.close,
-                              color: Colors.white,
+                              color: AppColors.white,
                               size: 26,
                             ),
                             onTap: () => Navigator.pop(context),
@@ -136,7 +137,7 @@ class TravelDetailScreen extends StatelessWidget {
                       style: GoogleFonts.poppins(
                         fontSize: 20,
                         fontWeight: FontWeight.w300,
-                        color: Colors.white,
+                        color: AppColors.white,
                       ),
                     ),
 
@@ -166,12 +167,7 @@ class TravelDetailScreen extends StatelessWidget {
                                           children: [
                                             GlowCircle(
                                               radius: 10,
-                                              color: const Color.fromARGB(
-                                                69,
-                                                92,
-                                                0,
-                                                28,
-                                              ),
+                                              color: AppColors.flightGlow,
                                             ),
                                             const SizedBox(width: 10),
                                             Text(
@@ -179,7 +175,7 @@ class TravelDetailScreen extends StatelessWidget {
                                               style: GoogleFonts.poppins(
                                                 fontSize: 16,
                                                 fontWeight: FontWeight.w500,
-                                                color: Colors.white,
+                                                color: AppColors.white,
                                               ),
                                             ),
                                           ],
@@ -190,7 +186,7 @@ class TravelDetailScreen extends StatelessWidget {
                                             style: GoogleFonts.poppins(
                                               fontSize: 14,
                                               fontWeight: FontWeight.w400,
-                                              color: Colors.white,
+                                              color: AppColors.white,
                                             ),
                                           ),
                                       ],
@@ -206,7 +202,7 @@ class TravelDetailScreen extends StatelessWidget {
                                           style: GoogleFonts.poppins(
                                             fontSize: 14,
                                             fontWeight: FontWeight.w400,
-                                            color: Colors.white,
+                                            color: AppColors.white,
                                           ),
                                         ),
                                       ),
@@ -228,23 +224,13 @@ class TravelDetailScreen extends StatelessWidget {
                                           children: [
                                             GlowCircle(
                                               radius: 40,
-                                              color: const Color.fromARGB(
-                                                69,
-                                                255,
-                                                216,
-                                                228,
-                                              ),
+                                              color: AppColors.planeGlow,
                                             ),
                                             Transform.rotate(
                                               angle: 1.57,
                                               child: const Icon(
                                                 Icons.airplanemode_active,
-                                                color: Color.fromARGB(
-                                                  255,
-                                                  0,
-                                                  9,
-                                                  46,
-                                                ),
+                                                color: AppColors.planeIcon,
                                                 size: 28,
                                               ),
                                             ),
@@ -282,7 +268,7 @@ class TravelDetailScreen extends StatelessWidget {
                                         style: GoogleFonts.poppins(
                                           fontSize: 16,
                                           fontWeight: FontWeight.w300,
-                                          color: Colors.white,
+                                          color: AppColors.white,
                                         ),
                                       ),
                                       Text(
@@ -290,7 +276,7 @@ class TravelDetailScreen extends StatelessWidget {
                                         style: GoogleFonts.poppins(
                                           fontSize: 16,
                                           fontWeight: FontWeight.w300,
-                                          color: Colors.white,
+                                          color: AppColors.white,
                                         ),
                                       ),
                                     ],
@@ -305,7 +291,7 @@ class TravelDetailScreen extends StatelessWidget {
                                 circleRadius: 6,
                                 lineHeight: 60,
                                 lineWidth: 2,
-                                color: Colors.white,
+                                color: AppColors.white,
                               ),
                             ),
                             const SizedBox(height: 20),
@@ -326,7 +312,7 @@ class TravelDetailScreen extends StatelessWidget {
                                     circleRadius: 6,
                                     lineHeight: 40,
                                     lineWidth: 2,
-                                    color: Colors.white,
+                                    color: AppColors.white,
                                   ),
                                 );
 
@@ -383,7 +369,7 @@ class TravelDetailScreen extends StatelessWidget {
                                     circleRadius: 6,
                                     lineHeight: 40,
                                     lineWidth: 2,
-                                    color: Colors.white,
+                                    color: AppColors.white,
                                   ),
                                 ),
                                 const SizedBox(height: 4),
@@ -407,12 +393,7 @@ class TravelDetailScreen extends StatelessWidget {
                                             children: [
                                               GlowCircle(
                                                 radius: 10,
-                                                color: const Color.fromARGB(
-                                                  69,
-                                                  92,
-                                                  0,
-                                                  28,
-                                                ),
+                                                color: AppColors.flightGlow,
                                               ),
                                               const SizedBox(width: 10),
                                               Text(
@@ -420,7 +401,7 @@ class TravelDetailScreen extends StatelessWidget {
                                                 style: GoogleFonts.poppins(
                                                   fontSize: 16,
                                                   fontWeight: FontWeight.w500,
-                                                  color: Colors.white,
+                                                  color: AppColors.white,
                                                 ),
                                               ),
                                             ],
@@ -431,7 +412,7 @@ class TravelDetailScreen extends StatelessWidget {
                                               style: GoogleFonts.poppins(
                                                 fontSize: 14,
                                                 fontWeight: FontWeight.w400,
-                                                color: Colors.white,
+                                                color: AppColors.white,
                                               ),
                                             ),
                                         ],
@@ -446,7 +427,7 @@ class TravelDetailScreen extends StatelessWidget {
                                             style: GoogleFonts.poppins(
                                               fontSize: 14,
                                               fontWeight: FontWeight.w400,
-                                              color: Colors.white,
+                                              color: AppColors.white,
                                             ),
                                           ),
                                         ),
@@ -465,23 +446,13 @@ class TravelDetailScreen extends StatelessWidget {
                                             children: [
                                               GlowCircle(
                                                 radius: 40,
-                                                color: const Color.fromARGB(
-                                                  69,
-                                                  255,
-                                                  216,
-                                                  228,
-                                                ),
+                                                color: AppColors.planeGlow,
                                               ),
                                               Transform.rotate(
                                                 angle: 1.57,
                                                 child: const Icon(
                                                   Icons.airplanemode_active,
-                                                  color: Color.fromARGB(
-                                                    255,
-                                                    0,
-                                                    9,
-                                                    46,
-                                                  ),
+                                                  color: AppColors.planeIcon,
                                                   size: 28,
                                                 ),
                                               ),
@@ -505,7 +476,7 @@ class TravelDetailScreen extends StatelessWidget {
                               height: 55,
                               child: ElevatedButton(
                                 style: ElevatedButton.styleFrom(
-                                  backgroundColor: const Color.fromARGB(221, 222, 247, 255),
+                                  backgroundColor: AppColors.reserveBtnBg,
                                   shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(30),
                                   ),
@@ -515,7 +486,7 @@ class TravelDetailScreen extends StatelessWidget {
                                 },
                                 child: const Text('Reserve',
                                   style: TextStyle(
-                                    color: Color.fromARGB(255, 0, 9, 46),
+                                    color: AppColors.reserveBtnText,
                                     fontSize: 18,
                                     fontWeight: FontWeight.bold,
                                   ),
