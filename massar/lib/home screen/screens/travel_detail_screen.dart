@@ -5,6 +5,7 @@ import 'package:massar/custom%20widgets/flight_path_connector.dart';
 import 'package:massar/custom%20widgets/glass_button.dart';
 import 'package:massar/custom%20widgets/glass_container.dart';
 import 'package:massar/custom%20widgets/glow_circle.dart';
+import 'package:massar/custom%20widgets/flight_location_widget.dart';
 import 'package:massar/custom%20widgets/tour_info_card.dart';
 
 import '../models/trip_model.dart';
@@ -216,7 +217,7 @@ class TravelDetailScreen extends StatelessWidget {
                                       mainAxisAlignment:
                                           MainAxisAlignment.spaceEvenly,
                                       children: [
-                                        _locationWidget(
+                                        FlightLocationWidget(
                                           city: trip.takeoffCity,
                                           code: trip.takeoffAirport,
                                           time: trip.takeoffTime,
@@ -250,7 +251,7 @@ class TravelDetailScreen extends StatelessWidget {
                                           ],
                                         ),
 
-                                        _locationWidget(
+                                        FlightLocationWidget(
                                           city: trip.destinationCity,
                                           code: trip.destinationAirport,
                                           time: trip.destinationTime,
@@ -263,39 +264,39 @@ class TravelDetailScreen extends StatelessWidget {
                             ),
 
                             if (trip.ticketPrice != null)
-                            GlassContainer(
-                              width: double.infinity,
-                              height: 54,
-                              borderRadius: 20,
-                              child: Padding(
-                                padding: const EdgeInsets.only(
-                                  left: 20.0,
-                                  right: 20.0,
-                                ),
-                                child: Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Text(
-                                      'Economy class',
-                                      style: GoogleFonts.poppins(
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.w300,
-                                        color: Colors.white,
+                              GlassContainer(
+                                width: double.infinity,
+                                height: 54,
+                                borderRadius: 20,
+                                child: Padding(
+                                  padding: const EdgeInsets.only(
+                                    left: 20.0,
+                                    right: 20.0,
+                                  ),
+                                  child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Text(
+                                        'Economy class',
+                                        style: GoogleFonts.poppins(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.w300,
+                                          color: Colors.white,
+                                        ),
                                       ),
-                                    ),
-                                    Text(
-                                      trip.ticketPrice!,
-                                      style: GoogleFonts.poppins(
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.w300,
-                                        color: Colors.white,
+                                      Text(
+                                        trip.ticketPrice!,
+                                        style: GoogleFonts.poppins(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.w300,
+                                          color: Colors.white,
+                                        ),
                                       ),
-                                    ),
-                                  ],
+                                    ],
+                                  ),
                                 ),
                               ),
-                            ),
 
                             const SizedBox(height: 20),
 
@@ -329,10 +330,16 @@ class TravelDetailScreen extends StatelessWidget {
                                   ),
                                 );
 
-                                for (int i = 0; i < plan.accommodations.length; i++) {
-                                  widgets.add(TourAccommodationCard(
-                                    accommodation: plan.accommodations[i],
-                                  ));
+                                for (
+                                  int i = 0;
+                                  i < plan.accommodations.length;
+                                  i++
+                                ) {
+                                  widgets.add(
+                                    TourAccommodationCard(
+                                      accommodation: plan.accommodations[i],
+                                    ),
+                                  );
                                   if (i < plan.accommodations.length - 1 ||
                                       plan.attractions.isNotEmpty ||
                                       hasReturnFlight) {
@@ -342,11 +349,17 @@ class TravelDetailScreen extends StatelessWidget {
                                   }
                                 }
 
-                                for (int i = 0; i < plan.attractions.length; i++) {
-                                  widgets.add(TourAttractionCard(
-                                    attraction: plan.attractions[i],
-                                    cityCountry: cityCountry,
-                                  ));
+                                for (
+                                  int i = 0;
+                                  i < plan.attractions.length;
+                                  i++
+                                ) {
+                                  widgets.add(
+                                    TourAttractionCard(
+                                      attraction: plan.attractions[i],
+                                      cityCountry: cityCountry,
+                                    ),
+                                  );
                                   if (i < plan.attractions.length - 1 ||
                                       hasReturnFlight) {
                                     widgets.add(const SizedBox(height: 4));
@@ -383,7 +396,8 @@ class TravelDetailScreen extends StatelessWidget {
                                   borderRadius: 40,
                                   padding: const EdgeInsets.all(20),
                                   child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
                                     children: [
                                       Row(
                                         mainAxisAlignment:
@@ -394,7 +408,11 @@ class TravelDetailScreen extends StatelessWidget {
                                               GlowCircle(
                                                 radius: 10,
                                                 color: const Color.fromARGB(
-                                                    69, 92, 0, 28),
+                                                  69,
+                                                  92,
+                                                  0,
+                                                  28,
+                                                ),
                                               ),
                                               const SizedBox(width: 10),
                                               Text(
@@ -420,7 +438,9 @@ class TravelDetailScreen extends StatelessWidget {
                                       ),
                                       if (trip.returnFlightCompany != null)
                                         Padding(
-                                          padding: const EdgeInsets.only(left: 30),
+                                          padding: const EdgeInsets.only(
+                                            left: 30,
+                                          ),
                                           child: Text(
                                             trip.returnFlightCompany!,
                                             style: GoogleFonts.poppins(
@@ -435,7 +455,7 @@ class TravelDetailScreen extends StatelessWidget {
                                         mainAxisAlignment:
                                             MainAxisAlignment.spaceEvenly,
                                         children: [
-                                          _locationWidget(
+                                          FlightLocationWidget(
                                             city: trip.destinationCity,
                                             code: trip.destinationAirport,
                                             time: trip.returnTakeoffTime,
@@ -446,20 +466,28 @@ class TravelDetailScreen extends StatelessWidget {
                                               GlowCircle(
                                                 radius: 40,
                                                 color: const Color.fromARGB(
-                                                    69, 255, 216, 228),
+                                                  69,
+                                                  255,
+                                                  216,
+                                                  228,
+                                                ),
                                               ),
                                               Transform.rotate(
                                                 angle: 1.57,
                                                 child: const Icon(
                                                   Icons.airplanemode_active,
                                                   color: Color.fromARGB(
-                                                      255, 0, 9, 46),
+                                                    255,
+                                                    0,
+                                                    9,
+                                                    46,
+                                                  ),
                                                   size: 28,
                                                 ),
                                               ),
                                             ],
                                           ),
-                                          _locationWidget(
+                                          FlightLocationWidget(
                                             city: trip.takeoffCity,
                                             code: trip.takeoffAirport,
                                             time: trip.returnDestinationTime,
@@ -471,7 +499,31 @@ class TravelDetailScreen extends StatelessWidget {
                                 ),
                               ),
                             ],
-
+                            SizedBox(height: 20),
+                            SizedBox(
+                              width: double.infinity,
+                              height: 55,
+                              child: ElevatedButton(
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: const Color.fromARGB(221, 222, 247, 255),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(30),
+                                  ),
+                                ),
+                                onPressed: () {
+                                  // Handle button press
+                                },
+                                child: const Text('Reserve',
+                                  style: TextStyle(
+                                    color: Color.fromARGB(255, 0, 9, 46),
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                )
+                              ),
+                              
+                            ),
+                            SizedBox(height: 20),
                           ],
                         ),
                       ),
@@ -505,45 +557,6 @@ class TravelDetailScreen extends StatelessWidget {
           ),
         ],
       ),
-    );
-  }
-
-  static Widget _locationWidget({
-    required String city,
-    required String code,
-    required String? time,
-  }) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          city,
-          style: GoogleFonts.poppins(
-            fontSize: 16,
-            fontWeight: FontWeight.w300,
-            color: Colors.white,
-            height: 0.8,
-          ),
-        ),
-        Text(
-          code,
-          style: GoogleFonts.poppins(
-            fontSize: 32,
-            fontWeight: FontWeight.w600,
-            color: Colors.white,
-          ),
-        ),
-        if (time != null)
-          Text(
-            time,
-            style: GoogleFonts.poppins(
-              fontSize: 16,
-              fontWeight: FontWeight.w300,
-              color: Colors.white,
-              height: 0.8,
-            ),
-          ),
-      ],
     );
   }
 }
