@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:massar/custom%20widgets/glass_button.dart';
-import 'package:massar/home%20screen/screens/home_screen.dart';
+import 'package:massar/onboarding/onboarding_screen6.dart';
 import 'package:massar/theme/app_colors.dart';
 
 class Onboarding1 extends StatelessWidget {
@@ -72,7 +72,7 @@ class Onboarding1 extends StatelessWidget {
                 fontSize: 18,
                 fontWeight: FontWeight.w500,
                 onTap: () {
-                  Navigator.push(context, MaterialPageRoute(builder: (context) => const HomeScreen()));
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => const OnboardingScreen6()));
                 },
               ),
             ),
@@ -81,4 +81,6 @@ class Onboarding1 extends StatelessWidget {
       ),
     );
   }
+
+
 }

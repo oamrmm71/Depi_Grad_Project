@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:massar/theme/app_colors.dart';
+import 'package:massar/onboarding/onboarding_screen7.dart';
 
-class FeaturesScreen extends StatelessWidget {
-  const FeaturesScreen({super.key});
+class OnboardingScreen6 extends StatelessWidget {
+  const OnboardingScreen6({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -72,7 +73,14 @@ class FeaturesScreen extends StatelessWidget {
                 width: double.infinity,
                 height: 58,
                 child: ElevatedButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const OnboardingScreen7(),
+                      ),
+                    );
+                  },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: AppColors.navIcon,
                     foregroundColor: AppColors.white,

@@ -1,9 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:massar/theme/app_colors.dart';
+import 'package:massar/home%20screen/screens/home_screen.dart';
 import 'dart:math' as math;
 
-class AirplaneModeScreen extends StatelessWidget {
-  const AirplaneModeScreen({super.key});
+class OnboardingScreen7 extends StatelessWidget {
+  const OnboardingScreen7({super.key});
+
+  void _goHome(BuildContext context) {
+    Navigator.pushAndRemoveUntil(
+      context,
+      MaterialPageRoute(builder: (context) => const HomeScreen()),
+      (route) => false,
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -48,7 +57,7 @@ class AirplaneModeScreen extends StatelessWidget {
                 width: double.infinity,
                 height: 58,
                 child: ElevatedButton(
-                  onPressed: () {},
+                  onPressed: () => _goHome(context),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: AppColors.navIcon,
                     foregroundColor: AppColors.white,
@@ -73,7 +82,7 @@ class AirplaneModeScreen extends StatelessWidget {
                 width: double.infinity,
                 height: 58,
                 child: ElevatedButton(
-                  onPressed: () {},
+                  onPressed: () => _goHome(context),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: AppColors.white,
                     foregroundColor: AppColors.navIcon,
@@ -113,7 +122,6 @@ class AirplaneIllustration extends StatelessWidget {
       child: Stack(
         alignment: Alignment.center,
         children: [
-          // Outer circle
           Container(
             width: 270,
             height: 270,
@@ -129,8 +137,6 @@ class AirplaneIllustration extends StatelessWidget {
               ],
             ),
           ),
-
-          // Inner circle
           Container(
             width: 145,
             height: 145,
@@ -145,8 +151,6 @@ class AirplaneIllustration extends StatelessWidget {
               ),
             ),
           ),
-
-          // Icons
           _circleIcon("assets/youtube.png", 0),
           _circleIcon("assets/tiktok.png", 45),
           _circleIcon("assets/instagram.png", 90),
@@ -162,7 +166,6 @@ class AirplaneIllustration extends StatelessWidget {
 
   Widget _circleIcon(String asset, double angle) {
     const double radius = 105;
-
     final radians = angle * 3.1415926535 / 180;
 
     return Transform.translate(
@@ -183,4 +186,3 @@ class Math {
   static double cos(double x) => math.cos(x);
   static double sin(double x) => math.sin(x);
 }
-
