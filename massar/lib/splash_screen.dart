@@ -1,6 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:massar/onboarding_screen1.dart';
+import 'package:massar/onboarding/onboarding_screen1.dart';
 import 'package:massar/theme/app_colors.dart';
 
 class SplashScreen extends StatefulWidget {
