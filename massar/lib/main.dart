@@ -15,6 +15,8 @@ import 'package:massar/onboarding/onboarding_screen1.dart';
 import 'package:massar/onboarding/onboarding_screen6.dart';
 import 'package:massar/onboarding/onboarding_screen7.dart';
 
+import 'package:massar/Profile/profile_screen.dart';
+
 import 'splash_screen.dart';
 
 /// Route names
@@ -24,6 +26,7 @@ class Routes {
   static const String onboarding6 = '/onboarding6';
   static const String onboarding7 = '/onboarding7';
   static const String home = '/home';
+  static const String profile = '/profile';
 }
 
 Future<void> main() async {
@@ -97,6 +100,11 @@ class MainApp extends StatelessWidget {
           case Routes.home:
             return MaterialPageRoute(
               builder: (_) => const HomeScreen(),
+            );
+
+          case Routes.profile:
+            return MaterialPageRoute(
+              builder: (_) => const ProfileScreen(),
             );
 
           default:
