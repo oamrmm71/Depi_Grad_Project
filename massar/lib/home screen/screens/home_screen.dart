@@ -287,12 +287,7 @@ class _HomeScreenState extends State<HomeScreen> {
             bottom: 20,
             left: 0,
             right: 0,
-            child: BottomNavGlass(
-              selectedIndex: 0,
-              onTap: (index) {
-                print(index);
-              },
-            ),
+            child: BottomNavGlass(currentIndex: 0),
           ),
         ],
       ),

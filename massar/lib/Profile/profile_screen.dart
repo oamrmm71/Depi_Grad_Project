@@ -283,12 +283,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
                 Padding(
                   padding: const EdgeInsets.only(bottom: 12),
-                  child: BottomNavGlass(
-                    selectedIndex: 4,
-                    onTap: (index) {
-                      // TODO: handle nav l kol el pages
-                    },
-                  ),
+                  child: BottomNavGlass(currentIndex: 4),
                 ),
               ],
             ),
