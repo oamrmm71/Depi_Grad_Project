@@ -1,7 +1,9 @@
-import 'package:flutter/material.dart';
-import 'package:massar/theme/app_colors.dart';
-import 'package:massar/home%20screen/screens/home_screen.dart';
 import 'dart:math' as math;
+
+import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:massar/home%20screen/screens/home_screen.dart';
+import 'package:massar/theme/app_colors.dart';
 
 class OnboardingScreen7 extends StatelessWidget {
   const OnboardingScreen7({super.key});
@@ -25,10 +27,10 @@ class OnboardingScreen7 extends StatelessWidget {
             children: [
               const SizedBox(height: 28),
 
-              const Text(
+              Text(
                 "Airplane Mode",
                 textAlign: TextAlign.center,
-                style: TextStyle(
+                style: GoogleFonts.poppins(
                   fontSize: 28,
                   fontWeight: FontWeight.w800,
                   color: AppColors.navIcon,
@@ -40,9 +42,9 @@ class OnboardingScreen7 extends StatelessWidget {
               Text(
                 "Airplane Mode saves battery, avoids\nroaming, and keeps your trip stress-free.",
                 textAlign: TextAlign.center,
-                style: TextStyle(
+                style: GoogleFonts.poppins(
                   fontSize: 15,
-                  color: AppColors.navIcon.withOpacity(.65),
+                  color: AppColors.navIcon.withValues(alpha: 0.65),
                   height: 1.3,
                 ),
               ),
@@ -66,11 +68,12 @@ class OnboardingScreen7 extends StatelessWidget {
                       borderRadius: BorderRadius.circular(30),
                     ),
                   ),
-                  child: const Text(
+                  child: Text(
                     "Allow",
-                    style: TextStyle(
+                    style: GoogleFonts.poppins(
                       fontSize: 22,
                       fontWeight: FontWeight.w700,
+                      color: AppColors.white,
                     ),
                   ),
                 ),
@@ -92,11 +95,12 @@ class OnboardingScreen7 extends StatelessWidget {
                       borderRadius: BorderRadius.circular(30),
                     ),
                   ),
-                  child: const Text(
+                  child: Text(
                     "Skip",
-                    style: TextStyle(
+                    style: GoogleFonts.poppins(
                       fontSize: 22,
                       fontWeight: FontWeight.w700,
+                      color: AppColors.navIcon,
                     ),
                   ),
                 ),
@@ -126,7 +130,7 @@ class AirplaneIllustration extends StatelessWidget {
             width: 270,
             height: 270,
             decoration: BoxDecoration(
-              color: AppColors.white.withOpacity(.45),
+              color: AppColors.white.withValues(alpha: 0.45),
               shape: BoxShape.circle,
               boxShadow: [
                 BoxShadow(
@@ -146,19 +150,26 @@ class AirplaneIllustration extends StatelessWidget {
             ),
             child: Center(
               child: Image.asset(
-                "assets/glass.png",
+                "lib/assets/glass.png",
                 width: 85,
+                errorBuilder: (context, error, stackTrace) {
+                  return const Icon(
+                    Icons.image_not_supported,
+                    size: 50,
+                    color: Colors.grey,
+                  );
+                },
               ),
             ),
           ),
-          _circleIcon("assets/youtube.png", 0),
-          _circleIcon("assets/tiktok.png", 45),
-          _circleIcon("assets/instagram.png", 90),
-          _circleIcon("assets/call.png", 135),
-          _circleIcon("assets/snapchat.png", 180),
-          _circleIcon("assets/whatsapp.png", 225),
-          _circleIcon("assets/facebook.png", 270),
-          _circleIcon("assets/facetime.png", 315),
+          _circleIcon("lib/assets/youtube.png", 0),
+          _circleIcon("lib/assets/tiktok.png", 45),
+          _circleIcon("lib/assets/instagram.png", 90),
+          _circleIcon("lib/assets/call.png", 135),
+          _circleIcon("lib/assets/snapchat.png", 180),
+          _circleIcon("lib/assets/whatsapp.png", 225),
+          _circleIcon("lib/assets/facebook.png", 270),
+          _circleIcon("lib/assets/facetime.png", 315),
         ],
       ),
     );
@@ -166,23 +177,25 @@ class AirplaneIllustration extends StatelessWidget {
 
   Widget _circleIcon(String asset, double angle) {
     const double radius = 105;
-    final radians = angle * 3.1415926535 / 180;
+    final radians = angle * math.pi / 180;
 
     return Transform.translate(
       offset: Offset(
-        radius * Math.cos(radians),
-        radius * Math.sin(radians),
+        radius * math.cos(radians),
+        radius * math.sin(radians),
       ),
       child: Image.asset(
         asset,
         width: 38,
         height: 38,
+        errorBuilder: (context, error, stackTrace) {
+          return const Icon(
+            Icons.image_not_supported,
+            size: 30,
+            color: Colors.grey,
+          );
+        },
       ),
     );
   }
-}
-
-class Math {
-  static double cos(double x) => math.cos(x);
-  static double sin(double x) => math.sin(x);
 }
