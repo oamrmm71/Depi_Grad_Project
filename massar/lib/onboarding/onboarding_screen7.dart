@@ -151,7 +151,7 @@ class _AirplaneIllustrationState extends State<AirplaneIllustration>
   static const _icons = [
     "lib/assets/youtube.png",
     "lib/assets/tiktok.png",
-    "lib/assets/instagram.png",
+    "lib/assets/instgram.png",
     "lib/assets/call.png",
     "lib/assets/snapchat.png",
     "lib/assets/whatsapp.png",
