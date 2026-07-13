@@ -217,31 +217,19 @@ class _AirplaneIllustrationState extends State<AirplaneIllustration>
             ),
             child: Center(
               child: Image.asset(
-                "lib/assets/glass.png",
-                width: centerImage,
-                fit: BoxFit.contain,
+                "assets/glass.png",
+                width: 85,
               ),
             ),
           ),
-
-          AnimatedBuilder(
-            animation: _controller,
-            builder: (context, _) {
-              final sweep = _controller.value * 360;
-              return Stack(
-                alignment: Alignment.center,
-                children: [
-                  for (var i = 0; i < _icons.length; i++)
-                    _circleIcon(
-                      asset: _icons[i],
-                      angle: (i * 360 / _icons.length) + sweep,
-                      radius: radius,
-                      iconSize: iconSize,
-                    ),
-                ],
-              );
-            },
-          ),
+          _circleIcon("assets/youtube.png", 0),
+          _circleIcon("assets/tiktok.png", 45),
+          _circleIcon("assets/instagram.png", 90),
+          _circleIcon("assets/call.png", 135),
+          _circleIcon("assets/snapchat.png", 180),
+          _circleIcon("assets/whatsapp.png", 225),
+          _circleIcon("assets/facebook.png", 270),
+          _circleIcon("assets/facetime.png", 315),
         ],
       ),
     );

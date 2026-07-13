@@ -41,55 +41,43 @@ class OnboardingScreen6 extends StatelessWidget {
 
                     const Spacer(),
 
-                    Transform.scale(
-                      scale: 1.5,
-                      child: const FeatureItem(
-                        image: "lib/assets/time sand.png",
-                        text:
-                            "Plan your journey\ntimeline with smart\nitineraries.",
-                        rotation: -0.08,
-                        imageLeft: true,
-                      ),
-                    ),
+              const FeatureItem(
+                image: "assets/time sand.png",
+                text:
+                    "Plan your journey\ntimeline with smart\nitineraries.",
+                rotation: -0.08,
+                imageLeft: true,
+              ),
 
                     const Spacer(),
 
-                    Transform.scale(
-                      scale: 1.5,
-                      child: const FeatureItem(
-                        image: "lib/assets/maps.png",
-                        text:
-                            "Plan your journey\ntimeline with smart\nitineraries.",
-                        rotation: 0.08,
-                        imageLeft: false,
-                      ),
-                    ),
+              const FeatureItem(
+                image: "assets/maps.png",
+                text:
+                    "Plan your journey\ntimeline with smart\nitineraries.",
+                rotation: 0.08,
+                imageLeft: false,
+              ),
 
                     const Spacer(),
 
-                    Transform.scale(
-                      scale: 1.5,
-                      child: const FeatureItem(
-                        image: "lib/assets/tower.png",
-                        text:
-                            "Discover iconic\nlandmarks and\nunforgettable\nexperiences.",
-                        rotation: -0.05,
-                        imageLeft: true,
-                      ),
-                    ),
+              const FeatureItem(
+                image: "assets/tower.png",
+                text:
+                    "Discover iconic\nlandmarks and\nunforgettable\nexperiences.",
+                rotation: -0.05,
+                imageLeft: true,
+              ),
 
                     const Spacer(),
 
-                    Transform.scale(
-                      scale: 1.5,
-                      child: const FeatureItem(
-                        image: "lib/assets/clock.png",
-                        text:
-                            "Stay on track with live\ntrip schedules and\nreminders.",
-                        rotation: 0,
-                        imageLeft: false,
-                      ),
-                    ),
+              const FeatureItem(
+                image: "assets/clock.png",
+                text:
+                    "Stay on track with live\ntrip schedules and\nreminders.",
+                rotation: 0,
+                imageLeft: false,
+              ),
 
                     const Spacer(),
                   ],
