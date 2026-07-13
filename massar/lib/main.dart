@@ -16,6 +16,7 @@ import 'package:massar/onboarding/onboarding_screen6.dart';
 import 'package:massar/onboarding/onboarding_screen7.dart';
 
 import 'package:massar/Profile/profile_screen.dart';
+import 'package:massar/flights%20screen/screens/flights_screen.dart';
 
 import 'routes.dart';
 import 'splash_screen.dart';
@@ -77,13 +78,12 @@ class MainApp extends StatelessWidget {
             return MaterialPageRoute(
               builder: (_) => const Onboarding1(),
             );
-            
 
-        case Routes.onboarding2:
-          return MaterialPageRoute(
-            builder: (_) => const Onboarding2(),
-          );
-  
+          case Routes.onboarding2:
+            return MaterialPageRoute(
+              builder: (_) => const Onboarding2(),
+            );
+
           case Routes.onboarding6:
             return MaterialPageRoute(
               builder: (_) => const OnboardingScreen6(),
@@ -97,6 +97,11 @@ class MainApp extends StatelessWidget {
           case Routes.home:
             return MaterialPageRoute(
               builder: (_) => const HomeScreen(),
+            );
+
+          case Routes.flights:
+            return MaterialPageRoute(
+              builder: (_) => const FlightsScreen(),
             );
 
           case Routes.profile:
