@@ -50,19 +50,20 @@ class OnboardingScreen7 extends StatelessWidget {
                     "Airplane Mode",
                     textAlign: TextAlign.center,
                     style: GoogleFonts.poppins(
-                      fontSize: titleSize,
-                      fontWeight: FontWeight.w800,
+                      fontSize: 40,
+                      fontWeight: FontWeight.w700,
                       color: AppColors.navIcon,
                     ),
                   ),
 
-                  SizedBox(height: size.height * .015),
+                  SizedBox(height: size.height * .006),
 
                   Text(
-                    "Airplane Mode saves battery,\navoids roaming, and keeps\nyour trip stress-free.",
+                    "Airplane Mode saves battery,avoids\n roaming, and keeps your trip stress-free.",
                     textAlign: TextAlign.center,
                     style: GoogleFonts.poppins(
-                      fontSize: bodySize,
+                      fontSize: 16,
+                      fontWeight: FontWeight.w300,
                       color: AppColors.navIcon.withValues(alpha: .65),
                       height: 1.4,
                     ),
@@ -76,7 +77,7 @@ class OnboardingScreen7 extends StatelessWidget {
 
                   SizedBox(
                     width: double.infinity,
-                    height: buttonHeight,
+                    height: 52,
                     child: ElevatedButton(
                       onPressed: () => _goHome(context),
                       style: ElevatedButton.styleFrom(
@@ -90,8 +91,8 @@ class OnboardingScreen7 extends StatelessWidget {
                       child: Text(
                         "Allow",
                         style: GoogleFonts.poppins(
-                          fontSize: buttonFont,
-                          fontWeight: FontWeight.w700,
+                          fontSize: 18,
+                          fontWeight: FontWeight.w500,
                           color: AppColors.white,
                         ),
                       ),
@@ -102,7 +103,7 @@ class OnboardingScreen7 extends StatelessWidget {
 
                   SizedBox(
                     width: double.infinity,
-                    height: buttonHeight,
+                    height: 50,
                     child: ElevatedButton(
                       onPressed: () => _goHome(context),
                       style: ElevatedButton.styleFrom(
@@ -117,8 +118,8 @@ class OnboardingScreen7 extends StatelessWidget {
                       child: Text(
                         "Skip",
                         style: GoogleFonts.poppins(
-                          fontSize: buttonFont,
-                          fontWeight: FontWeight.w700,
+                          fontSize: 18,
+                          fontWeight: FontWeight.w500,
                           color: AppColors.navIcon,
                         ),
                       ),
@@ -143,7 +144,7 @@ class AirplaneIllustration extends StatelessWidget {
   Widget build(BuildContext context) {
     final width = MediaQuery.of(context).size.width;
 
-    final circleSize = (width * .70).clamp(240.0, 330.0);
+    final circleSize = (width * .80).clamp(240.0, 330.0);
     final outerCircle = circleSize;
     final innerCircle = circleSize * .54;
 
