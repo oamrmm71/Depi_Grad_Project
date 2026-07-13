@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:massar/home%20screen/screens/home_screen.dart';
 import 'package:massar/theme/app_colors.dart';
+import 'package:massar/auth/login.dart';
 
 class OnboardingScreen7 extends StatelessWidget {
   const OnboardingScreen7({super.key});
@@ -12,7 +13,7 @@ class OnboardingScreen7 extends StatelessWidget {
     Navigator.pushAndRemoveUntil(
       context,
       MaterialPageRoute(
-        builder: (_) => const HomeScreen(),
+        builder: (_) => const LoginScreen(),
       ),
       (route) => false,
     );
@@ -217,19 +218,31 @@ class _AirplaneIllustrationState extends State<AirplaneIllustration>
             ),
             child: Center(
               child: Image.asset(
-                "assets/glass.png",
-                width: 85,
+                "lib/assets/glass.png",
+                width: centerImage,
+                fit: BoxFit.contain,
               ),
             ),
           ),
-          _circleIcon("assets/youtube.png", 0),
-          _circleIcon("assets/tiktok.png", 45),
-          _circleIcon("assets/instagram.png", 90),
-          _circleIcon("assets/call.png", 135),
-          _circleIcon("assets/snapchat.png", 180),
-          _circleIcon("assets/whatsapp.png", 225),
-          _circleIcon("assets/facebook.png", 270),
-          _circleIcon("assets/facetime.png", 315),
+
+          AnimatedBuilder(
+            animation: _controller,
+            builder: (context, _) {
+              final sweep = _controller.value * 360;
+              return Stack(
+                alignment: Alignment.center,
+                children: [
+                  for (var i = 0; i < _icons.length; i++)
+                    _circleIcon(
+                      asset: _icons[i],
+                      angle: (i * 360 / _icons.length) + sweep,
+                      radius: radius,
+                      iconSize: iconSize,
+                    ),
+                ],
+              );
+            },
+          ),
         ],
       ),
     );
