@@ -28,8 +28,8 @@ class OnboardingScreen6 extends StatelessWidget {
                 "With Massar\nYou can:",
                 textAlign: TextAlign.center,
                 style: GoogleFonts.poppins(
-                  fontSize: titleSize,
-                  fontWeight: FontWeight.w800,
+                  fontSize: 40,
+                  fontWeight: FontWeight.w700,
                   color: AppColors.navIcon,
                   height: 1.1,
                 ),
@@ -100,8 +100,8 @@ class OnboardingScreen6 extends StatelessWidget {
                   child: Text(
                     "Lets start..",
                     style: GoogleFonts.poppins(
-                      fontSize: buttonFont,
-                      fontWeight: FontWeight.w700,
+                      fontSize: 18,
+                      fontWeight: FontWeight.w500,
                       color: AppColors.white,
                     ),
                   ),
