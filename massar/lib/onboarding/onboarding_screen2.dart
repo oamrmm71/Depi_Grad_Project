@@ -37,7 +37,7 @@ class _Onboarding2State extends State<Onboarding2> {
         onTap: () {
           Navigator.pushReplacementNamed(
             context,
-            Routes.onboarding6,
+            Routes.onboarding4,
           );
         },
         child: Scaffold(
