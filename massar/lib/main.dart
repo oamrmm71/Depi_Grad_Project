@@ -10,7 +10,7 @@ import 'package:massar/home%20screen/services/flight_service.dart';
 import 'package:massar/home%20screen/services/groq_service.dart';
 import 'package:massar/home%20screen/services/image_service.dart';
 import 'package:massar/home%20screen/services/trip_service.dart';
-
+import 'package:massar/onboarding/onboarding_screen2.dart';
 import 'package:massar/onboarding/onboarding_screen1.dart';
 import 'package:massar/onboarding/onboarding_screen6.dart';
 import 'package:massar/onboarding/onboarding_screen7.dart';
@@ -77,7 +77,13 @@ class MainApp extends StatelessWidget {
             return MaterialPageRoute(
               builder: (_) => const Onboarding1(),
             );
+            
 
+        case Routes.onboarding2:
+          return MaterialPageRoute(
+            builder: (_) => const Onboarding2(),
+          );
+  
           case Routes.onboarding6:
             return MaterialPageRoute(
               builder: (_) => const OnboardingScreen6(),
