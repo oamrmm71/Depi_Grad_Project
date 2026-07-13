@@ -11,103 +11,124 @@ class OnboardingScreen7 extends StatelessWidget {
   void _goHome(BuildContext context) {
     Navigator.pushAndRemoveUntil(
       context,
-      MaterialPageRoute(builder: (context) => const HomeScreen()),
+      MaterialPageRoute(
+        builder: (_) => const HomeScreen(),
+      ),
       (route) => false,
     );
   }
 
   @override
   Widget build(BuildContext context) {
+    final size = MediaQuery.of(context).size;
+
+    final maxContentWidth = size.width > 700 ? 650.0 : size.width;
+
+    final titleSize = (size.width * 0.065).clamp(24.0, 32.0);
+    final bodySize = (size.width * 0.036).clamp(14.0, 17.0);
+    final buttonFont = (size.width * 0.048).clamp(18.0, 22.0);
+
+    final buttonHeight = (size.height * .075).clamp(54.0, 60.0);
+
     return Scaffold(
       backgroundColor: AppColors.splashBg,
       body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 30),
-          child: Column(
-            children: [
-              const SizedBox(height: 28),
-
-              Text(
-                "Airplane Mode",
-                textAlign: TextAlign.center,
-                style: GoogleFonts.poppins(
-                  fontSize: 28,
-                  fontWeight: FontWeight.w800,
-                  color: AppColors.navIcon,
-                ),
+        child: Center(
+          child: ConstrainedBox(
+            constraints: BoxConstraints(
+              maxWidth: maxContentWidth,
+            ),
+            child: Padding(
+              padding: EdgeInsets.symmetric(
+                horizontal: size.width * .06,
               ),
+              child: Column(
+                children: [
+                  const Spacer(),
 
-              const SizedBox(height: 12),
-
-              Text(
-                "Airplane Mode saves battery, avoids\nroaming, and keeps your trip stress-free.",
-                textAlign: TextAlign.center,
-                style: GoogleFonts.poppins(
-                  fontSize: 15,
-                  color: AppColors.navIcon.withValues(alpha: 0.65),
-                  height: 1.3,
-                ),
-              ),
-
-              const SizedBox(height: 42),
-
-              const AirplaneIllustration(),
-
-              const Spacer(),
-
-              SizedBox(
-                width: double.infinity,
-                height: 58,
-                child: ElevatedButton(
-                  onPressed: () => _goHome(context),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: AppColors.navIcon,
-                    foregroundColor: AppColors.white,
-                    elevation: 0,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(30),
-                    ),
-                  ),
-                  child: Text(
-                    "Allow",
+                  Text(
+                    "Airplane Mode",
+                    textAlign: TextAlign.center,
                     style: GoogleFonts.poppins(
-                      fontSize: 22,
-                      fontWeight: FontWeight.w700,
-                      color: AppColors.white,
-                    ),
-                  ),
-                ),
-              ),
-
-              const SizedBox(height: 16),
-
-              SizedBox(
-                width: double.infinity,
-                height: 58,
-                child: ElevatedButton(
-                  onPressed: () => _goHome(context),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: AppColors.white,
-                    foregroundColor: AppColors.navIcon,
-                    elevation: 5,
-                    shadowColor: AppColors.flightGlow,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(30),
-                    ),
-                  ),
-                  child: Text(
-                    "Skip",
-                    style: GoogleFonts.poppins(
-                      fontSize: 22,
-                      fontWeight: FontWeight.w700,
+                      fontSize: titleSize,
+                      fontWeight: FontWeight.w800,
                       color: AppColors.navIcon,
                     ),
                   ),
-                ),
-              ),
 
-              const SizedBox(height: 24),
-            ],
+                  SizedBox(height: size.height * .015),
+
+                  Text(
+                    "Airplane Mode saves battery,\navoids roaming, and keeps\nyour trip stress-free.",
+                    textAlign: TextAlign.center,
+                    style: GoogleFonts.poppins(
+                      fontSize: bodySize,
+                      color: AppColors.navIcon.withValues(alpha: .65),
+                      height: 1.4,
+                    ),
+                  ),
+
+                  const Spacer(),
+
+                  const AirplaneIllustration(),
+
+                  const Spacer(),
+
+                  SizedBox(
+                    width: double.infinity,
+                    height: buttonHeight,
+                    child: ElevatedButton(
+                      onPressed: () => _goHome(context),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: AppColors.navIcon,
+                        foregroundColor: AppColors.white,
+                        elevation: 0,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(30),
+                        ),
+                      ),
+                      child: Text(
+                        "Allow",
+                        style: GoogleFonts.poppins(
+                          fontSize: buttonFont,
+                          fontWeight: FontWeight.w700,
+                          color: AppColors.white,
+                        ),
+                      ),
+                    ),
+                  ),
+
+                  SizedBox(height: size.height * .02),
+
+                  SizedBox(
+                    width: double.infinity,
+                    height: buttonHeight,
+                    child: ElevatedButton(
+                      onPressed: () => _goHome(context),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: AppColors.white,
+                        foregroundColor: AppColors.navIcon,
+                        elevation: 5,
+                        shadowColor: AppColors.flightGlow,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(30),
+                        ),
+                      ),
+                      child: Text(
+                        "Skip",
+                        style: GoogleFonts.poppins(
+                          fontSize: buttonFont,
+                          fontWeight: FontWeight.w700,
+                          color: AppColors.navIcon,
+                        ),
+                      ),
+                    ),
+                  ),
+
+                  SizedBox(height: size.height * .03),
+                ],
+              ),
+            ),
           ),
         ),
       ),
@@ -120,30 +141,41 @@ class AirplaneIllustration extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final width = MediaQuery.of(context).size.width;
+
+    final circleSize = (width * .70).clamp(240.0, 330.0);
+    final outerCircle = circleSize;
+    final innerCircle = circleSize * .54;
+
+    final centerImage = circleSize * .31;
+    final radius = circleSize * .39;
+    final iconSize = circleSize * .14;
+
     return SizedBox(
-      width: 280,
-      height: 280,
+      width: outerCircle,
+      height: outerCircle,
       child: Stack(
         alignment: Alignment.center,
         children: [
           Container(
-            width: 270,
-            height: 270,
+            width: outerCircle,
+            height: outerCircle,
             decoration: BoxDecoration(
-              color: AppColors.white.withValues(alpha: 0.45),
               shape: BoxShape.circle,
+              color: AppColors.white.withValues(alpha: .45),
               boxShadow: [
                 BoxShadow(
                   color: AppColors.flightGlow,
-                  blurRadius: 10,
+                  blurRadius: 12,
                   offset: const Offset(0, 5),
                 ),
               ],
             ),
           ),
+
           Container(
-            width: 145,
-            height: 145,
+            width: innerCircle,
+            height: innerCircle,
             decoration: const BoxDecoration(
               color: AppColors.white,
               shape: BoxShape.circle,
@@ -151,32 +183,77 @@ class AirplaneIllustration extends StatelessWidget {
             child: Center(
               child: Image.asset(
                 "lib/assets/glass.png",
-                width: 85,
-                errorBuilder: (context, error, stackTrace) {
-                  return const Icon(
-                    Icons.image_not_supported,
-                    size: 50,
-                    color: Colors.grey,
-                  );
-                },
+                width: centerImage,
+                fit: BoxFit.contain,
               ),
             ),
           ),
-          _circleIcon("lib/assets/youtube.png", 0),
-          _circleIcon("lib/assets/tiktok.png", 45),
-          _circleIcon("lib/assets/instagram.png", 90),
-          _circleIcon("lib/assets/call.png", 135),
-          _circleIcon("lib/assets/snapchat.png", 180),
-          _circleIcon("lib/assets/whatsapp.png", 225),
-          _circleIcon("lib/assets/facebook.png", 270),
-          _circleIcon("lib/assets/facetime.png", 315),
+                    _circleIcon(
+            asset: "lib/assets/youtube.png",
+            angle: 0,
+            radius: radius,
+            iconSize: iconSize,
+          ),
+
+          _circleIcon(
+            asset: "lib/assets/tiktok.png",
+            angle: 45,
+            radius: radius,
+            iconSize: iconSize,
+          ),
+
+          _circleIcon(
+            asset: "lib/assets/instagram.png",
+            angle: 90,
+            radius: radius,
+            iconSize: iconSize,
+          ),
+
+          _circleIcon(
+            asset: "lib/assets/call.png",
+            angle: 135,
+            radius: radius,
+            iconSize: iconSize,
+          ),
+
+          _circleIcon(
+            asset: "lib/assets/snapchat.png",
+            angle: 180,
+            radius: radius,
+            iconSize: iconSize,
+          ),
+
+          _circleIcon(
+            asset: "lib/assets/whatsapp.png",
+            angle: 225,
+            radius: radius,
+            iconSize: iconSize,
+          ),
+
+          _circleIcon(
+            asset: "lib/assets/facebook.png",
+            angle: 270,
+            radius: radius,
+            iconSize: iconSize,
+          ),
+
+          _circleIcon(
+            asset: "lib/assets/facetime.png",
+            angle: 315,
+            radius: radius,
+            iconSize: iconSize,
+          ),
         ],
       ),
     );
   }
 
-  Widget _circleIcon(String asset, double angle) {
-    const double radius = 105;
+  Widget _circleIcon({
+    required String asset,
+    required double angle,
+    required double radius,
+    required double iconSize,
+  }) {
     final radians = angle * math.pi / 180;
 
     return Transform.translate(
@@ -184,17 +261,20 @@ class AirplaneIllustration extends StatelessWidget {
         radius * math.cos(radians),
         radius * math.sin(radians),
       ),
-      child: Image.asset(
-        asset,
-        width: 38,
-        height: 38,
-        errorBuilder: (context, error, stackTrace) {
-          return const Icon(
-            Icons.image_not_supported,
-            size: 30,
-            color: Colors.grey,
-          );
-        },
+      child: SizedBox(
+        width: iconSize,
+        height: iconSize,
+        child: Image.asset(
+          asset,
+          fit: BoxFit.contain,
+          errorBuilder: (_, __, ___) {
+            return Icon(
+              Icons.image_not_supported_outlined,
+              size: iconSize * .8,
+              color: Colors.grey,
+            );
+          },
+        ),
       ),
     );
   }
