@@ -137,8 +137,42 @@ class OnboardingScreen7 extends StatelessWidget {
   }
 }
 
-class AirplaneIllustration extends StatelessWidget {
+class AirplaneIllustration extends StatefulWidget {
   const AirplaneIllustration({super.key});
+
+  @override
+  State<AirplaneIllustration> createState() => _AirplaneIllustrationState();
+}
+
+class _AirplaneIllustrationState extends State<AirplaneIllustration>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _controller;
+
+  static const _icons = [
+    "lib/assets/youtube.png",
+    "lib/assets/tiktok.png",
+    "lib/assets/instagram.png",
+    "lib/assets/call.png",
+    "lib/assets/snapchat.png",
+    "lib/assets/whatsapp.png",
+    "lib/assets/facebook.png",
+    "lib/assets/facetime.png",
+  ];
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      vsync: this,
+      duration: const Duration(seconds: 16),
+    )..repeat();
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -189,60 +223,24 @@ class AirplaneIllustration extends StatelessWidget {
               ),
             ),
           ),
+
+          AnimatedBuilder(
+            animation: _controller,
+            builder: (context, _) {
+              final sweep = _controller.value * 360;
+              return Stack(
+                alignment: Alignment.center,
+                children: [
+                  for (var i = 0; i < _icons.length; i++)
                     _circleIcon(
-            asset: "lib/assets/youtube.png",
-            angle: 0,
-            radius: radius,
-            iconSize: iconSize,
-          ),
-
-          _circleIcon(
-            asset: "lib/assets/tiktok.png",
-            angle: 45,
-            radius: radius,
-            iconSize: iconSize,
-          ),
-
-          _circleIcon(
-            asset: "lib/assets/instagram.png",
-            angle: 90,
-            radius: radius,
-            iconSize: iconSize,
-          ),
-
-          _circleIcon(
-            asset: "lib/assets/call.png",
-            angle: 135,
-            radius: radius,
-            iconSize: iconSize,
-          ),
-
-          _circleIcon(
-            asset: "lib/assets/snapchat.png",
-            angle: 180,
-            radius: radius,
-            iconSize: iconSize,
-          ),
-
-          _circleIcon(
-            asset: "lib/assets/whatsapp.png",
-            angle: 225,
-            radius: radius,
-            iconSize: iconSize,
-          ),
-
-          _circleIcon(
-            asset: "lib/assets/facebook.png",
-            angle: 270,
-            radius: radius,
-            iconSize: iconSize,
-          ),
-
-          _circleIcon(
-            asset: "lib/assets/facetime.png",
-            angle: 315,
-            radius: radius,
-            iconSize: iconSize,
+                      asset: _icons[i],
+                      angle: (i * 360 / _icons.length) + sweep,
+                      radius: radius,
+                      iconSize: iconSize,
+                    ),
+                ],
+              );
+            },
           ),
         ],
       ),
