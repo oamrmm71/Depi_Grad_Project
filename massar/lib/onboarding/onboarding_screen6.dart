@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:massar/theme/app_colors.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:massar/onboarding/onboarding_screen7.dart';
+import 'package:massar/theme/app_colors.dart';
 
 class OnboardingScreen6 extends StatelessWidget {
   const OnboardingScreen6({super.key});
@@ -16,10 +17,10 @@ class OnboardingScreen6 extends StatelessWidget {
             children: [
               const SizedBox(height: 18),
 
-              const Text(
+              Text(
                 "With Massar\nYou can:",
                 textAlign: TextAlign.center,
-                style: TextStyle(
+                style: GoogleFonts.poppins(
                   fontSize: 26,
                   fontWeight: FontWeight.w800,
                   color: AppColors.navIcon,
@@ -30,7 +31,7 @@ class OnboardingScreen6 extends StatelessWidget {
               const SizedBox(height: 45),
 
               const FeatureItem(
-                image: "assets/time sand.png",
+                image: "lib/assets/time sand.png",
                 text:
                     "Plan your journey\ntimeline with smart\nitineraries.",
                 rotation: -0.08,
@@ -40,7 +41,7 @@ class OnboardingScreen6 extends StatelessWidget {
               const SizedBox(height: 30),
 
               const FeatureItem(
-                image: "assets/maps.png",
+                image: "lib/assets/maps.png",
                 text:
                     "Plan your journey\ntimeline with smart\nitineraries.",
                 rotation: 0.08,
@@ -50,7 +51,7 @@ class OnboardingScreen6 extends StatelessWidget {
               const SizedBox(height: 30),
 
               const FeatureItem(
-                image: "assets/tower.png",
+                image: "lib/assets/tower.png",
                 text:
                     "Discover iconic\nlandmarks and\nunforgettable\nexperiences.",
                 rotation: -0.05,
@@ -60,7 +61,7 @@ class OnboardingScreen6 extends StatelessWidget {
               const SizedBox(height: 30),
 
               const FeatureItem(
-                image: "assets/clock.png",
+                image: "lib/assets/clock.png",
                 text:
                     "Stay on track with live\ntrip schedules and\nreminders.",
                 rotation: 0,
@@ -89,11 +90,12 @@ class OnboardingScreen6 extends StatelessWidget {
                       borderRadius: BorderRadius.circular(30),
                     ),
                   ),
-                  child: const Text(
+                  child: Text(
                     "Lets start..",
-                    style: TextStyle(
+                    style: GoogleFonts.poppins(
                       fontSize: 22,
                       fontWeight: FontWeight.w700,
+                      color: AppColors.white,
                     ),
                   ),
                 ),
@@ -130,6 +132,13 @@ class FeatureItem extends StatelessWidget {
       child: Image.asset(
         image,
         fit: BoxFit.contain,
+        errorBuilder: (context, error, stackTrace) {
+          return const Icon(
+            Icons.broken_image,
+            size: 40,
+            color: Colors.grey,
+          );
+        },
       ),
     );
 
@@ -151,14 +160,14 @@ class FeatureItem extends StatelessWidget {
             ),
           ],
         ),
-        child: Text(
+                child: Text(
           text,
           textAlign: TextAlign.center,
-          style: const TextStyle(
+          style: GoogleFonts.poppins(
             fontSize: 14,
-            height: 1.1,
             fontWeight: FontWeight.w800,
             color: AppColors.navIcon,
+            height: 1.1,
           ),
         ),
       ),
@@ -170,10 +179,14 @@ class FeatureItem extends StatelessWidget {
           ? [
               imageWidget,
               const SizedBox(width: 10),
-              Flexible(child: textWidget),
+              Flexible(
+                child: textWidget,
+              ),
             ]
           : [
-              Flexible(child: textWidget),
+              Flexible(
+                child: textWidget,
+              ),
               const SizedBox(width: 10),
               imageWidget,
             ],
