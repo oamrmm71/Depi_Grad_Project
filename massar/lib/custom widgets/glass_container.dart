@@ -36,7 +36,7 @@ class GlassContainer extends StatelessWidget {
           height: height,
           padding: padding,
           decoration: BoxDecoration(
-            color: backgroundColor ?? AppColors.glassFill,
+          color: backgroundColor ?? AppColors.transparent,
             borderRadius: BorderRadius.circular(borderRadius),
             border: Border.all(
               color: borderColor ?? AppColors.glassBorder,

@@ -3,8 +3,8 @@ import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import 'package:massar/theme/app_colors.dart';
-import 'package:massar/custom widgets/bottom_nav_glass.dart';
-import 'package:massar/custom widgets/glass_container.dart';
+import 'package:massar/custom%20widgets/bottom_nav_glass.dart';
+import 'package:massar/custom%20widgets/glass_container.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -56,13 +56,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
           Container(
             decoration: const BoxDecoration(
               gradient: LinearGradient(
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
+                begin: Alignment.topRight,
+                end: Alignment.bottomLeft,
                 colors: [
                   AppColors.screenBgGrad1,
                   AppColors.screenBgGrad2,
                   AppColors.screenBgGrad3,
                 ],
+                stops: [0.0, 0.45, 1.0],
               ),
             ),
           ),
@@ -70,29 +71,42 @@ class _ProfileScreenState extends State<ProfileScreen> {
           Container(
             decoration: BoxDecoration(
               gradient: RadialGradient(
-                center: const Alignment(-0.95, 0.95),
-                radius: 1.25,
+                center: const Alignment(-0.9, 0.9),
+                radius: 1.15,
                 colors: [
                   AppColors.glowHigh,
                   AppColors.glowLow,
-                  Colors.transparent,
+                  AppColors.transparent,
                 ],
+                stops: const [0.0, 0.55, 1.0],
               ),
             ),
           ),
 
+
           SafeArea(
             child: Center(
               child: ConstrainedBox(
-                constraints: BoxConstraints(maxWidth: maxWidth),
+                constraints: BoxConstraints(
+                  maxWidth: maxWidth,
+                ),
+
                 child: Column(
                   children: [
+
                     Expanded(
                       child: SingleChildScrollView(
-                        padding: const EdgeInsets.fromLTRB(24, 18, 24, 20),
+                        padding: const EdgeInsets.fromLTRB(
+                          24,
+                          18,
+                          24,
+                          20,
+                        ),
+
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
+
                             Text(
                               "MY",
                               style: GoogleFonts.poppins(
@@ -104,6 +118,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             ),
 
                             const SizedBox(height: 2),
+
                             Text(
                               "PROFILE",
                               style: GoogleFonts.poppins(
@@ -113,7 +128,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               ),
                             ),
 
-                            SizedBox(height: size.height * .03),
+
+                            SizedBox(
+                              height: size.height * .03,
+                            ),
+
 
                             Center(
                               child: Column(
@@ -121,13 +140,17 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                   Container(
                                     width: avatarSize + 8,
                                     height: avatarSize + 8,
+
                                     decoration: BoxDecoration(
                                       shape: BoxShape.circle,
+
                                       color: AppColors.avatarBg,
+
                                       border: Border.all(
                                         color: AppColors.glassBorder,
                                         width: 2,
                                       ),
+
                                       boxShadow: [
                                         BoxShadow(
                                           color: Colors.black.withOpacity(.28),
@@ -136,13 +159,16 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                         ),
                                       ],
                                     ),
+
                                     child: Padding(
                                       padding: const EdgeInsets.all(4),
+
                                       child: ClipOval(
                                         child: Image.asset(
                                           "lib/assets/profile.png",
                                           fit: BoxFit.cover,
-                                          errorBuilder: (_, __, ___) {
+
+                                          errorBuilder: (_,__,___){
                                             return Container(
                                               color: AppColors.imageFailed,
                                               child: const Icon(
@@ -157,122 +183,156 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                     ),
                                   ),
 
+
                                   const SizedBox(height: 10),
 
                                   Container(
                                     height: 30,
                                     width: 90,
+
                                     decoration: BoxDecoration(
                                       color: AppColors.cardDark,
-                                      borderRadius: BorderRadius.circular(30),
+                                      borderRadius:
+                                          BorderRadius.circular(30),
+
                                       boxShadow: [
                                         BoxShadow(
-                                          color: Colors.black.withOpacity(.20),
+                                          color: Colors.black.withOpacity(.2),
                                           blurRadius: 8,
                                           offset: const Offset(0, 3),
                                         ),
                                       ],
                                     ),
-                                    child: Material(
-                                      color: Colors.transparent,
-                                      child: InkWell(
-                                        borderRadius: BorderRadius.circular(30),
-                                        onTap: () {},
-                                        child: Center(
-                                          child: Text(
-                                            "Edit",
-                                            style: GoogleFonts.poppins(
-                                              color: AppColors.white,
-                                              fontSize: 10,
-                                              fontWeight: FontWeight.w500,
-                                            ),
+
+                                    child: InkWell(
+                                      borderRadius:
+                                          BorderRadius.circular(30),
+
+                                      onTap: () {},
+
+                                      child: Center(
+                                        child: Text(
+                                          "Edit",
+                                          style: GoogleFonts.poppins(
+                                            color: AppColors.white,
+                                            fontSize: 10,
+                                            fontWeight:
+                                                FontWeight.w500,
                                           ),
                                         ),
                                       ),
                                     ),
                                   ),
 
-                                  SizedBox(height: size.height * .03),
+
+                                  SizedBox(
+                                    height: size.height * .03,
+                                  ),
+
 
                                   Row(
                                     children: [
+
                                       Expanded(
                                         child: _buildField(
-                                          controller: _firstNameController,
+                                          controller:
+                                              _firstNameController,
                                           hint: "First Name",
                                           icon: Icons.person_outline,
-                                          textInputAction: TextInputAction.next,
-                                          autofillHints: const [
-                                            AutofillHints.givenName,
-                                          ],
+                                          textInputAction:
+                                              TextInputAction.next,
                                         ),
                                       ),
+
                                       const SizedBox(width: 10),
+
+
                                       Expanded(
                                         child: _buildField(
-                                          controller: _lastNameController,
+                                          controller:
+                                              _lastNameController,
                                           hint: "Last Name",
                                           icon: Icons.person_outline,
-                                          textInputAction: TextInputAction.next,
-                                          autofillHints: const [
-                                            AutofillHints.familyName,
-                                          ],
+                                          textInputAction:
+                                              TextInputAction.next,
                                         ),
                                       ),
+
                                     ],
                                   ),
 
+
                                   const SizedBox(height: 10),
+
 
                                   _buildField(
-                                    controller: _cardNumberController,
+                                    controller:
+                                        _cardNumberController,
                                     hint: "Card Number",
-                                    keyboardType: TextInputType.number,
-                                    textInputAction: TextInputAction.next,
+                                    keyboardType:
+                                        TextInputType.number,
                                     inputFormatters: [
-                                      FilteringTextInputFormatter.digitsOnly,
-                                      LengthLimitingTextInputFormatter(16),
+                                      FilteringTextInputFormatter
+                                          .digitsOnly,
+
+                                      LengthLimitingTextInputFormatter(
+                                          16),
                                     ],
+                                    textInputAction:
+                                        TextInputAction.next,
                                   ),
 
+
                                   const SizedBox(height: 10),
+
 
                                   Row(
                                     children: [
+
                                       Expanded(
                                         flex: 6,
                                         child: _buildField(
-                                          controller: _cardExpiryController,
+                                          controller:
+                                              _cardExpiryController,
                                           hint: "Card Expiry",
-                                          keyboardType: TextInputType.datetime,
-                                          textInputAction: TextInputAction.next,
+                                          keyboardType:
+                                              TextInputType.datetime,
                                         ),
                                       ),
+
                                       const SizedBox(width: 10),
+
                                       Expanded(
                                         flex: 4,
                                         child: _buildField(
-                                          controller: _cvvController,
+                                          controller:
+                                              _cvvController,
                                           hint: "CVV",
-                                          keyboardType: TextInputType.number,
-                                          textInputAction: TextInputAction.next,
+                                          keyboardType:
+                                              TextInputType.number,
                                           inputFormatters: [
-                                            FilteringTextInputFormatter.digitsOnly,
-                                            LengthLimitingTextInputFormatter(4),
+                                            FilteringTextInputFormatter
+                                                .digitsOnly,
+
+                                            LengthLimitingTextInputFormatter(
+                                                4),
                                           ],
                                         ),
                                       ),
+
                                     ],
                                   ),
-
+                                                                    
                                   const SizedBox(height: 10),
 
                                   _buildField(
                                     controller: _passportController,
                                     hint: "Passport No.",
-                                    icon: Icons.mail_outline,
-                                    textInputAction: TextInputAction.next,
+                                    icon: Icons.badge_outlined,
+                                    textInputAction:
+                                        TextInputAction.next,
                                   ),
+
 
                                   const SizedBox(height: 10),
 
@@ -280,77 +340,109 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                     controller: _emailController,
                                     hint: "Email",
                                     icon: Icons.mail_outline,
-                                    keyboardType: TextInputType.emailAddress,
-                                    textInputAction: TextInputAction.next,
-                                    autofillHints: const [AutofillHints.email],
+                                    keyboardType:
+                                        TextInputType.emailAddress,
+                                    textInputAction:
+                                        TextInputAction.next,
                                   ),
 
-                                  const SizedBox(height: 10),
 
+                                  const SizedBox(height: 10),
                                   _buildField(
                                     controller: _passwordController,
                                     hint: "Password",
                                     icon: Icons.lock_outline,
                                     obscureText: true,
-                                    textInputAction: TextInputAction.next,
-                                    autofillHints: const [
-                                      AutofillHints.newPassword,
-                                    ],
+                                    textInputAction:
+                                        TextInputAction.next,
                                   ),
 
-                                  const SizedBox(height: 10),
 
+                                  const SizedBox(height: 10),
                                   _buildField(
-                                    controller: _confirmPasswordController,
+                                    controller:
+                                        _confirmPasswordController,
                                     hint: "Confirm Password",
                                     icon: Icons.lock_outline,
                                     obscureText: true,
-                                    textInputAction: TextInputAction.done,
-                                    autofillHints: const [
-                                      AutofillHints.newPassword,
-                                    ],
+                                    textInputAction:
+                                        TextInputAction.done,
                                   ),
 
-                                  SizedBox(height: size.height * .03),
 
+                                  SizedBox(
+                                    height: size.height * .03,
+                                  ),
+
+
+                                  // SAVE BUTTON
                                   Container(
                                     width: double.infinity,
                                     height: buttonHeight,
+
                                     decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(30),
+                                      borderRadius:
+                                          BorderRadius.circular(30),
+
                                       boxShadow: [
                                         BoxShadow(
-                                          color: Colors.black.withOpacity(.25),
+                                          color: Colors.black
+                                              .withOpacity(.25),
                                           blurRadius: 12,
-                                          offset: const Offset(0, 5),
+                                          offset:
+                                              const Offset(0, 5),
                                         ),
                                       ],
                                     ),
+
                                     child: ElevatedButton(
                                       onPressed: () {
-                                        // TODO: Save profile
+                                        // TODO: SAVE PROFILE
                                       },
-                                      style: ElevatedButton.styleFrom(
-                                        backgroundColor: AppColors.reserveBtnBg,
-                                        foregroundColor: AppColors.reserveBtnText,
+
+                                      style:
+                                          ElevatedButton.styleFrom(
+                                        backgroundColor:
+                                            AppColors.reserveBtnBg,
+
+                                        foregroundColor:
+                                            AppColors.reserveBtnText,
+
                                         elevation: 0,
-                                        shadowColor: Colors.transparent,
-                                        shape: RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.circular(30),
+
+                                        shadowColor:
+                                            Colors.transparent,
+
+                                        shape:
+                                            RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(
+                                                  30),
                                         ),
                                       ),
+
                                       child: Text(
                                         "Save",
-                                        style: GoogleFonts.poppins(
-                                          color: AppColors.reserveBtnText,
+
+                                        style:
+                                            GoogleFonts.poppins(
+                                          color:
+                                              AppColors.reserveBtnText,
+
                                           fontSize: 18,
-                                          fontWeight: FontWeight.w700,
+
+                                          fontWeight:
+                                              FontWeight.w700,
                                         ),
                                       ),
                                     ),
                                   ),
 
-                                  SizedBox(height: size.height * .02),
+
+                                  SizedBox(
+                                    height: size.height * .02,
+                                  ),
+
                                 ],
                               ),
                             ),
@@ -358,7 +450,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         ),
                       ),
                     ),
-                    const BottomNavGlass(currentIndex: 4),
+
+
+                    const BottomNavGlass(
+                      currentIndex: 4,
+                    ),
+
                   ],
                 ),
               ),
@@ -372,65 +469,118 @@ class _ProfileScreenState extends State<ProfileScreen> {
   Widget _buildField({
     required TextEditingController controller,
     required String hint,
+
     IconData? icon,
+
     bool obscureText = false,
+
     TextInputType? keyboardType,
+
     TextInputAction? textInputAction,
+
     List<TextInputFormatter>? inputFormatters,
-    Iterable<String>? autofillHints,
+
   }) {
+
     return GlassContainer(
-      height: 38,
+
+      height: 42,
+
       borderRadius: 24,
-      padding: const EdgeInsets.symmetric(horizontal: 12),
-      child: Row(
-        children: [
-          if (icon != null) ...[
-            Container(
-              width: 24,
-              height: 24,
-              decoration: BoxDecoration(
-                color: AppColors.notifIconBg,
-                shape: BoxShape.circle,
-                border: Border.all(color: AppColors.notifIconBorder),
-              ),
-              child: Icon(
-                icon,
-                size: 14,
-                color: AppColors.whiteSubtle,
-              ),
-            ),
-            const SizedBox(width: 8),
-          ],
-          Expanded(
-            child: TextField(
-              controller: controller,
-              obscureText: obscureText,
-              keyboardType: keyboardType,
-              textInputAction: textInputAction,
-              inputFormatters: inputFormatters,
-              autofillHints: autofillHints,
-              cursorColor: AppColors.white,
-              style: GoogleFonts.poppins(
-                color: AppColors.white,
-                fontSize: 13,
-                fontWeight: FontWeight.w400,
-              ),
-              decoration: InputDecoration(
-                border: InputBorder.none,
-                isCollapsed: true,
-                contentPadding: EdgeInsets.zero,
-                hintText: hint,
-                hintStyle: GoogleFonts.poppins(
-                  color: AppColors.whiteDim,
-                  fontSize: 12.5,
-                  fontWeight: FontWeight.w400,
-                ),
-              ),
-            ),
-          ),
-        ],
+
+      backgroundColor: AppColors.transparent,
+
+      padding: const EdgeInsets.symmetric(
+        horizontal: 14,
       ),
+
+
+      child: Row(
+
+        children: [
+
+
+          if (icon != null) ...[
+
+            Icon(
+              icon,
+              color: AppColors.white,
+              size: 18,
+            ),
+
+            const SizedBox(
+              width: 10,
+            ),
+
+          ],
+
+
+
+          Expanded(
+
+            child: TextField(
+
+              controller: controller,
+
+              obscureText: obscureText,
+
+              keyboardType: keyboardType,
+
+              textInputAction: textInputAction,
+
+              inputFormatters: inputFormatters,
+
+              cursorColor: AppColors.white,
+
+
+              style: GoogleFonts.poppins(
+
+                color: AppColors.white,
+
+                fontSize: 13,
+
+                fontWeight: FontWeight.w400,
+
+              ),
+
+
+
+              decoration: InputDecoration(
+
+                border: InputBorder.none,
+
+                enabledBorder: InputBorder.none,
+
+                focusedBorder: InputBorder.none,
+
+                isCollapsed: true,
+
+
+                hintText: hint,
+
+
+                hintStyle: GoogleFonts.poppins(
+
+                  color: AppColors.whiteDim,
+
+                  fontSize: 12.5,
+
+                  fontWeight: FontWeight.w400,
+
+                ),
+
+              ),
+
+            ),
+
+          ),
+
+        ],
+
+      ),
+
     );
+
   }
+
 }
