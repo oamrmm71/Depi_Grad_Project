@@ -8,27 +8,34 @@ class OnboardingScreen6 extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final size = MediaQuery.of(context).size;
+
+    final horizontalPadding = size.width * 0.06;
+    final titleSize = (size.width * 0.06).clamp(24.0, 30.0);
+    final buttonFont = (size.width * 0.05).clamp(18.0, 22.0);
+    final buttonHeight = (size.height * 0.075).clamp(54.0, 60.0);
+
     return Scaffold(
       backgroundColor: AppColors.splashBg,
       body: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 26),
+          padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
           child: Column(
             children: [
-              const SizedBox(height: 18),
+              const Spacer(),
 
               Text(
                 "With Massar\nYou can:",
                 textAlign: TextAlign.center,
                 style: GoogleFonts.poppins(
-                  fontSize: 26,
+                  fontSize: titleSize,
                   fontWeight: FontWeight.w800,
                   color: AppColors.navIcon,
                   height: 1.1,
                 ),
               ),
 
-              const SizedBox(height: 45),
+              const Spacer(),
 
               const FeatureItem(
                 image: "lib/assets/time sand.png",
@@ -38,7 +45,7 @@ class OnboardingScreen6 extends StatelessWidget {
                 imageLeft: true,
               ),
 
-              const SizedBox(height: 30),
+              const Spacer(),
 
               const FeatureItem(
                 image: "lib/assets/maps.png",
@@ -48,7 +55,7 @@ class OnboardingScreen6 extends StatelessWidget {
                 imageLeft: false,
               ),
 
-              const SizedBox(height: 30),
+              const Spacer(),
 
               const FeatureItem(
                 image: "lib/assets/tower.png",
@@ -58,7 +65,7 @@ class OnboardingScreen6 extends StatelessWidget {
                 imageLeft: true,
               ),
 
-              const SizedBox(height: 30),
+              const Spacer(),
 
               const FeatureItem(
                 image: "lib/assets/clock.png",
@@ -72,13 +79,13 @@ class OnboardingScreen6 extends StatelessWidget {
 
               SizedBox(
                 width: double.infinity,
-                height: 58,
+                height: buttonHeight,
                 child: ElevatedButton(
                   onPressed: () {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => const OnboardingScreen7(),
+                        builder: (_) => const OnboardingScreen7(),
                       ),
                     );
                   },
@@ -93,7 +100,7 @@ class OnboardingScreen6 extends StatelessWidget {
                   child: Text(
                     "Lets start..",
                     style: GoogleFonts.poppins(
-                      fontSize: 22,
+                      fontSize: buttonFont,
                       fontWeight: FontWeight.w700,
                       color: AppColors.white,
                     ),
@@ -101,7 +108,7 @@ class OnboardingScreen6 extends StatelessWidget {
                 ),
               ),
 
-              const SizedBox(height: 18),
+              SizedBox(height: size.height * 0.025),
             ],
           ),
         ),
@@ -126,16 +133,20 @@ class FeatureItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final width = MediaQuery.of(context).size.width;
+
+    final imageSize = (width * 0.16).clamp(60.0, 80.0);
+    final textFont = (width * 0.032).clamp(13.0, 16.0);
+
     final imageWidget = SizedBox(
-      width: 72,
-      height: 72,
+      width: imageSize,
+      height: imageSize,
       child: Image.asset(
         image,
         fit: BoxFit.contain,
-        errorBuilder: (context, error, stackTrace) {
+        errorBuilder: (_, __, ___) {
           return const Icon(
             Icons.broken_image,
-            size: 40,
             color: Colors.grey,
           );
         },
@@ -146,12 +157,12 @@ class FeatureItem extends StatelessWidget {
       angle: rotation,
       child: Container(
         padding: const EdgeInsets.symmetric(
-          horizontal: 12,
-          vertical: 8,
+          horizontal: 14,
+          vertical: 10,
         ),
         decoration: BoxDecoration(
           color: AppColors.white,
-          borderRadius: BorderRadius.circular(8),
+          borderRadius: BorderRadius.circular(10),
           boxShadow: [
             BoxShadow(
               color: AppColors.flightGlow,
@@ -164,32 +175,43 @@ class FeatureItem extends StatelessWidget {
           text,
           textAlign: TextAlign.center,
           style: GoogleFonts.poppins(
-            fontSize: 14,
-            fontWeight: FontWeight.w800,
+            fontSize: textFont,
+            fontWeight: FontWeight.w700,
             color: AppColors.navIcon,
-            height: 1.1,
+            height: 1.15,
           ),
         ),
       ),
     );
 
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: imageLeft
-          ? [
-              imageWidget,
-              const SizedBox(width: 10),
-              Flexible(
-                child: textWidget,
-              ),
-            ]
-          : [
-              Flexible(
-                child: textWidget,
-              ),
-              const SizedBox(width: 10),
-              imageWidget,
-            ],
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        return Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: imageLeft
+              ? [
+                  imageWidget,
+                  SizedBox(width: constraints.maxWidth * 0.04),
+                  Expanded(
+                    child: Align(
+                      alignment: Alignment.centerLeft,
+                      child: textWidget,
+                    ),
+                  ),
+                ]
+              : [
+                  Expanded(
+                    child: Align(
+                      alignment: Alignment.centerRight,
+                      child: textWidget,
+                    ),
+                  ),
+                  SizedBox(width: constraints.maxWidth * 0.04),
+                  imageWidget,
+                ],
+        );
+      },
     );
   }
 }
