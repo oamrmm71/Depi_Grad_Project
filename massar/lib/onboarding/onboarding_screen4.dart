@@ -1,4 +1,5 @@
 ﻿import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:massar/theme/app_colors.dart';
 import 'package:massar/routes.dart';
 import 'package:massar/custom widgets/flight_path_painter.dart';
@@ -64,19 +65,21 @@ class OnboardingScreen4 extends StatelessWidget {
                     children: [
                       SizedBox(height: 24),
                       Text(
-                        'Create and organize your full itinerary. Save places you want to visit. Keep flights, stays, and plans in one place. Access everything anytime, anywhere',
-                        style: TextStyle(
-                          fontSize: 15,
-                          fontWeight: FontWeight.w300,
+                        'Create and organize your full itinerary. Save places you want to visit. Keep flights, stays, and plans in one place. Access everything anytime, anywhere.',
+                        style: GoogleFonts.poppins(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w200,
+                          
                           color: const Color(0xFF01253D),
                         ),
                       ),
                       SizedBox(height: 10),
                       Text(
                         'Stressless Planning',
-                        style: TextStyle(
+                        style: GoogleFonts.poppins(
+                          
                           fontWeight: FontWeight.w600,
-                          fontSize: 32,
+                          fontSize: 30,
                         ),
                       ),
                       SizedBox(height: 20),
@@ -86,7 +89,7 @@ class OnboardingScreen4 extends StatelessWidget {
                           onPressed: () {
                             Navigator.pushReplacementNamed(
                               context,
-                              Routes.onboarding6,
+                              Routes.onboarding5,
                             );
                           },
                           style: ElevatedButton.styleFrom(
@@ -99,7 +102,7 @@ class OnboardingScreen4 extends StatelessWidget {
                           ),
                           child: Text(
                             "Continue",
-                            style: TextStyle(
+                            style: GoogleFonts.poppins(
                               fontSize: 18,
                               fontWeight: FontWeight.w500,
                               color: AppColors.white,
