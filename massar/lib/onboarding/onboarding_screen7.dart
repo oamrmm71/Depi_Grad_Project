@@ -50,19 +50,20 @@ class OnboardingScreen7 extends StatelessWidget {
                     "Airplane Mode",
                     textAlign: TextAlign.center,
                     style: GoogleFonts.poppins(
-                      fontSize: titleSize,
-                      fontWeight: FontWeight.w800,
+                      fontSize: 40,
+                      fontWeight: FontWeight.w700,
                       color: AppColors.navIcon,
                     ),
                   ),
 
-                  SizedBox(height: size.height * .015),
+                  SizedBox(height: size.height * .006),
 
                   Text(
-                    "Airplane Mode saves battery,\navoids roaming, and keeps\nyour trip stress-free.",
+                    "Airplane Mode saves battery,avoids\n roaming, and keeps your trip stress-free.",
                     textAlign: TextAlign.center,
                     style: GoogleFonts.poppins(
-                      fontSize: bodySize,
+                      fontSize: 16,
+                      fontWeight: FontWeight.w300,
                       color: AppColors.navIcon.withValues(alpha: .65),
                       height: 1.4,
                     ),
@@ -76,7 +77,7 @@ class OnboardingScreen7 extends StatelessWidget {
 
                   SizedBox(
                     width: double.infinity,
-                    height: buttonHeight,
+                    height: 52,
                     child: ElevatedButton(
                       onPressed: () => _goHome(context),
                       style: ElevatedButton.styleFrom(
@@ -90,8 +91,8 @@ class OnboardingScreen7 extends StatelessWidget {
                       child: Text(
                         "Allow",
                         style: GoogleFonts.poppins(
-                          fontSize: buttonFont,
-                          fontWeight: FontWeight.w700,
+                          fontSize: 18,
+                          fontWeight: FontWeight.w500,
                           color: AppColors.white,
                         ),
                       ),
@@ -102,7 +103,7 @@ class OnboardingScreen7 extends StatelessWidget {
 
                   SizedBox(
                     width: double.infinity,
-                    height: buttonHeight,
+                    height: 50,
                     child: ElevatedButton(
                       onPressed: () => _goHome(context),
                       style: ElevatedButton.styleFrom(
@@ -117,8 +118,8 @@ class OnboardingScreen7 extends StatelessWidget {
                       child: Text(
                         "Skip",
                         style: GoogleFonts.poppins(
-                          fontSize: buttonFont,
-                          fontWeight: FontWeight.w700,
+                          fontSize: 18,
+                          fontWeight: FontWeight.w500,
                           color: AppColors.navIcon,
                         ),
                       ),
@@ -136,14 +137,48 @@ class OnboardingScreen7 extends StatelessWidget {
   }
 }
 
-class AirplaneIllustration extends StatelessWidget {
+class AirplaneIllustration extends StatefulWidget {
   const AirplaneIllustration({super.key});
+
+  @override
+  State<AirplaneIllustration> createState() => _AirplaneIllustrationState();
+}
+
+class _AirplaneIllustrationState extends State<AirplaneIllustration>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _controller;
+
+  static const _icons = [
+    "lib/assets/youtube.png",
+    "lib/assets/tiktok.png",
+    "lib/assets/instgram.png",
+    "lib/assets/call.png",
+    "lib/assets/snapchat.png",
+    "lib/assets/whatsapp.png",
+    "lib/assets/facebook.png",
+    "lib/assets/facetime.png",
+  ];
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      vsync: this,
+      duration: const Duration(seconds: 16),
+    )..repeat();
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     final width = MediaQuery.of(context).size.width;
 
-    final circleSize = (width * .70).clamp(240.0, 330.0);
+    final circleSize = (width * .80).clamp(240.0, 330.0);
     final outerCircle = circleSize;
     final innerCircle = circleSize * .54;
 
@@ -188,60 +223,24 @@ class AirplaneIllustration extends StatelessWidget {
               ),
             ),
           ),
+
+          AnimatedBuilder(
+            animation: _controller,
+            builder: (context, _) {
+              final sweep = _controller.value * 360;
+              return Stack(
+                alignment: Alignment.center,
+                children: [
+                  for (var i = 0; i < _icons.length; i++)
                     _circleIcon(
-            asset: "lib/assets/youtube.png",
-            angle: 0,
-            radius: radius,
-            iconSize: iconSize,
-          ),
-
-          _circleIcon(
-            asset: "lib/assets/tiktok.png",
-            angle: 45,
-            radius: radius,
-            iconSize: iconSize,
-          ),
-
-          _circleIcon(
-            asset: "lib/assets/instagram.png",
-            angle: 90,
-            radius: radius,
-            iconSize: iconSize,
-          ),
-
-          _circleIcon(
-            asset: "lib/assets/call.png",
-            angle: 135,
-            radius: radius,
-            iconSize: iconSize,
-          ),
-
-          _circleIcon(
-            asset: "lib/assets/snapchat.png",
-            angle: 180,
-            radius: radius,
-            iconSize: iconSize,
-          ),
-
-          _circleIcon(
-            asset: "lib/assets/whatsapp.png",
-            angle: 225,
-            radius: radius,
-            iconSize: iconSize,
-          ),
-
-          _circleIcon(
-            asset: "lib/assets/facebook.png",
-            angle: 270,
-            radius: radius,
-            iconSize: iconSize,
-          ),
-
-          _circleIcon(
-            asset: "lib/assets/facetime.png",
-            angle: 315,
-            radius: radius,
-            iconSize: iconSize,
+                      asset: _icons[i],
+                      angle: (i * 360 / _icons.length) + sweep,
+                      radius: radius,
+                      iconSize: iconSize,
+                    ),
+                ],
+              );
+            },
           ),
         ],
       ),
