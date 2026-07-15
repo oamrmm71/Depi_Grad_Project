@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "382116774206",
+    "project_id": "depi-grad-f8228",
+    "storage_bucket": "depi-grad-f8228.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:382116774206:android:6258bf0a2e278f4536ac6f",
+        "android_client_info": {
+          "package_name": "com.example.massar"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDChcIMN-Pl4i3IMvi5gAYLpZFkW4H8eMA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

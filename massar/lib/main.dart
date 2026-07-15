@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-
 import 'package:massar/home%20screen/cubits/trip_cubit.dart';
 import 'package:massar/home%20screen/repositories/trip_repository.dart';
 import 'package:massar/home%20screen/screens/home_screen.dart';
@@ -17,9 +16,12 @@ import 'package:massar/onboarding/onboarding_screen7.dart';
 import 'package:massar/auth/login.dart';
 import 'package:massar/Profile/profile_screen.dart';
 import 'package:massar/flights%20screen/screens/flights_screen.dart';
-
+import 'package:massar/auth/signup.dart';
 import 'routes.dart';
 import 'splash_screen.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'firebase_options.dart';
+
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -44,7 +46,9 @@ Future<void> main() async {
   );
 
   final tripRepository = TripRepository(tripService);
-
+    await Firebase.initializeApp(
+      options: DefaultFirebaseOptions.currentPlatform,
+    );
   runApp(
     BlocProvider(
       create: (_) => TripCubit(tripRepository)
@@ -97,6 +101,11 @@ class MainApp extends StatelessWidget {
           case Routes.login:
             return MaterialPageRoute(
               builder: (_) => const LoginScreen(),
+            );
+          
+          case Routes.signup:
+            return MaterialPageRoute(
+              builder: (_) => const SignupScreen(),
             );
 
           case Routes.home:

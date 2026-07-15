@@ -1,14 +1,37 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:massar/theme/app_colors.dart';
+import 'package:massar/services/auth_services.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
-class LoginScreen extends StatelessWidget {
+class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
+
+  @override
+  State<LoginScreen> createState() => _LoginScreenState();
+}
+
+class _LoginScreenState extends State<LoginScreen> {
+  late final TextEditingController emailController;
+  late final TextEditingController passwordController;
+
+  @override
+  void initState() {
+    super.initState();
+    emailController = TextEditingController();
+    passwordController = TextEditingController();
+  }
+
+  @override
+  void dispose() {
+    emailController.dispose();
+    passwordController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
-
     return Scaffold(
       backgroundColor: AppColors.splashBg,
       body: SafeArea(
@@ -96,6 +119,7 @@ class LoginScreen extends StatelessWidget {
                     _textField(
                       hint: "Email",
                       icon: Icons.email_outlined,
+                      controller: emailController,
                     ),
 
                     const SizedBox(height: 16),
@@ -104,6 +128,7 @@ class LoginScreen extends StatelessWidget {
                       hint: "Password",
                       icon: Icons.lock_outline,
                       obscure: true,
+                      controller: passwordController,
                     ),
 
                     const SizedBox(height: 28),
@@ -112,7 +137,39 @@ class LoginScreen extends StatelessWidget {
                       width: double.infinity,
                       height: 58,
                       child: ElevatedButton(
-                        onPressed: () {},
+                          onPressed: () async {
+                              try {
+                                await AuthService().login(
+                                  email: emailController.text,
+                                  password: passwordController.text,
+                                );
+
+                                if (context.mounted) {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(content: Text("Login Successful")),
+                                  );
+
+                                  Navigator.pushReplacementNamed(context, "/home");
+                                }
+                              } on FirebaseAuthException catch (e) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    content: Text("${e.code}\n${e.message}"),
+                                  ),
+                                );
+
+                                debugPrint("Firebase Error: ${e.code}");
+                                debugPrint(e.message);
+                              } catch (e) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    content: Text(e.toString()),
+                                  ),
+                                );
+
+                                debugPrint(e.toString());
+                              }
+                            },
                         style: ElevatedButton.styleFrom(
                           backgroundColor: AppColors.cardDark,
                           foregroundColor: Colors.white,
@@ -136,8 +193,15 @@ class LoginScreen extends StatelessWidget {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        GestureDetector(
-                          onTap: () {},
+                        TextButton(
+                          onPressed: () {
+                            Navigator.pushNamed(context, '/signup');
+                          },
+                          style: TextButton.styleFrom(
+                            padding: EdgeInsets.zero,
+                            minimumSize: const Size(0, 0),
+                            tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                          ),
                           child: Text(
                             "its my first time",
                             style: GoogleFonts.poppins(
@@ -173,6 +237,7 @@ class LoginScreen extends StatelessWidget {
   }
 
   Widget _textField({
+    required TextEditingController controller,
     required String hint,
     required IconData icon,
     bool obscure = false,
