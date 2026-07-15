@@ -11,6 +11,9 @@ import 'package:massar/home%20screen/services/image_service.dart';
 import 'package:massar/home%20screen/services/trip_service.dart';
 import 'package:massar/onboarding/onboarding_screen2.dart';
 import 'package:massar/onboarding/onboarding_screen1.dart';
+import 'package:massar/onboarding/onboarding_screen3.dart';
+import 'package:massar/onboarding/onboarding_screen4.dart';
+import 'package:massar/onboarding/onboarding_screen5.dart';
 import 'package:massar/onboarding/onboarding_screen6.dart';
 import 'package:massar/onboarding/onboarding_screen7.dart';
 import 'package:massar/auth/login.dart';
@@ -30,9 +33,7 @@ Future<void> main() async {
 
   final countryService = CountryService();
 
-  final flightService = FlightService(
-    countryService: countryService,
-  );
+  final flightService = FlightService(countryService: countryService);
 
   final groqService = GroqService();
 
@@ -51,11 +52,8 @@ Future<void> main() async {
     );
   runApp(
     BlocProvider(
-      create: (_) => TripCubit(tripRepository)
-        ..fetchTrips(
-          origin: "CAI",
-          budget: 1000000,
-        ),
+      create: (_) =>
+          TripCubit(tripRepository)..fetchTrips(origin: "CAI", budget: 1000000),
       child: const MainApp(),
     ),
   );
@@ -74,62 +72,44 @@ class MainApp extends StatelessWidget {
       onGenerateRoute: (settings) {
         switch (settings.name) {
           case Routes.splash:
-            return MaterialPageRoute(
-              builder: (_) => const SplashScreen(),
-            );
+            return MaterialPageRoute(builder: (_) => const SplashScreen());
 
           case Routes.onboarding1:
-            return MaterialPageRoute(
-              builder: (_) => const Onboarding1(),
-            );
+            return MaterialPageRoute(builder: (_) => const Onboarding1());
 
           case Routes.onboarding2:
-            return MaterialPageRoute(
-              builder: (_) => const Onboarding2(),
-            );
-
+            return MaterialPageRoute(builder: (_) => const Onboarding2());
+          case Routes.onboarding3:
+            return MaterialPageRoute(builder: (_) => const OnboardingScreen3());
+          case Routes.onboarding4:
+            return MaterialPageRoute(builder: (_) => const OnboardingScreen4());
+            case Routes.onboarding5:
+            return MaterialPageRoute(builder: (_) => const OnboardingScreen5());
           case Routes.onboarding6:
-            return MaterialPageRoute(
-              builder: (_) => const OnboardingScreen6(),
-            );
+            return MaterialPageRoute(builder: (_) => const OnboardingScreen6());
 
           case Routes.onboarding7:
-            return MaterialPageRoute(
-              builder: (_) => const OnboardingScreen7(),
-            );
+            return MaterialPageRoute(builder: (_) => const OnboardingScreen7());
 
           case Routes.login:
             return MaterialPageRoute(
               builder: (_) => const LoginScreen(),
             );
-          
-          case Routes.signup:
-            return MaterialPageRoute(
-              builder: (_) => const SignupScreen(),
-            );
 
           case Routes.home:
-            return MaterialPageRoute(
-              builder: (_) => const HomeScreen(),
-            );
+            return MaterialPageRoute(builder: (_) => const HomeScreen());
 
           case Routes.flights:
-            return MaterialPageRoute(
-              builder: (_) => const FlightsScreen(),
-            );
+            return MaterialPageRoute(builder: (_) => const FlightsScreen());
 
           case Routes.profile:
-            return MaterialPageRoute(
-              builder: (_) => const ProfileScreen(),
-            );
+            return MaterialPageRoute(builder: (_) => const ProfileScreen());
 
           default:
             return MaterialPageRoute(
               builder: (_) => Scaffold(
                 body: Center(
-                  child: Text(
-                    'No route defined for ${settings.name}',
-                  ),
+                  child: Text('No route defined for ${settings.name}'),
                 ),
               ),
             );
