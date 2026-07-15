@@ -1,4 +1,3 @@
-import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:massar/theme/app_colors.dart';
@@ -31,12 +30,15 @@ class _SignupScreenState extends State<SignupScreen> {
         child: SingleChildScrollView(
           child: Column(
             children: [
-              SizedBox(
-                height: size.height * .34,
-                width: double.infinity,
-                child: Image.asset(
-                  "lib/assets/plan.png", 
-                  fit: BoxFit.cover,
+             SizedBox(
+                height: 480,
+                width: 550,
+                child: Transform.rotate(
+                  angle: 15 * 3.1415927 / -10, 
+                  child: Image.asset(
+                    "lib/assets/plan2.png",
+                    fit: BoxFit.cover,
+                  ),
                 ),
               ),
 
