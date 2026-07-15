@@ -51,10 +51,10 @@ class _LoginScreenState extends State<LoginScreen> {
                     Align(
                       alignment: Alignment.bottomCenter,
                       child: Container(
-                        height: size.height * .30,
+                        height: size.height * .39,
                         decoration: BoxDecoration(
                           gradient: RadialGradient(
-                            center: const Alignment(0, 1.15),
+                            center: const Alignment(0, 1.55),
                             radius: 1.25,
                             colors: [
                               Colors.white.withOpacity(.45),
@@ -68,7 +68,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
                     // Plane Image
                    Positioned(
-                      top: -180,
+                      top: -215,
                       left: -20,
                       right: -20,
                       child: Image.asset(
