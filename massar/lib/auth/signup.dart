@@ -82,7 +82,8 @@ class _SignupScreenState extends State<SignupScreen> {
                     const SizedBox(height: 16),
 
                     _glassField(
-                      hint: "Card Number",
+                      hint: "    Card Number",
+                      controller: cardNumberController,
                     ),
 
                     const SizedBox(height: 16),
@@ -91,7 +92,7 @@ class _SignupScreenState extends State<SignupScreen> {
                       children: [
                         Expanded(
                           child: _glassField(
-                            hint: "Card Expiry",
+                            hint: "    Card Expiry",
                             controller: expiryController,
                           ),
                         ),
@@ -100,7 +101,7 @@ class _SignupScreenState extends State<SignupScreen> {
 
                         Expanded(
                           child: _glassField(
-                            hint: "CVV",
+                            hint: "    CVV",
                             controller: cvvController,
                           ),
                         ),

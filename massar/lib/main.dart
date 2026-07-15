@@ -95,6 +95,10 @@ class MainApp extends StatelessWidget {
             return MaterialPageRoute(
               builder: (_) => const LoginScreen(),
             );
+          case Routes.signup:
+            return MaterialPageRoute(
+              builder: (_) => const SignupScreen(),
+            );
 
           case Routes.home:
             return MaterialPageRoute(builder: (_) => const HomeScreen());

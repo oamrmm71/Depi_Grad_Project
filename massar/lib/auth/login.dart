@@ -263,6 +263,7 @@ class _LoginScreenState extends State<LoginScreen> {
         ],
       ),
       child: TextField(
+        controller: controller,
         obscureText: obscure,
         style: GoogleFonts.poppins(
           color: AppColors.navIcon,
