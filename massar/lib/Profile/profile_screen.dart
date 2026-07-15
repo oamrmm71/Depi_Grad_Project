@@ -46,7 +46,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
     final titleSize = (size.width * .07).clamp(26.0, 30.0);
     final subtitleSize = (size.width * .04).clamp(15.0, 18.0);
-    final avatarSize = (size.width * .24).clamp(88.0, 110.0);
+    final avatarSize = 157;
     final buttonHeight = (size.height * .065).clamp(42.0, 48.0);
 
     return Scaffold(
@@ -109,28 +109,29 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
                             Text(
                               "MY",
-                              style: GoogleFonts.poppins(
-                                fontStyle: FontStyle.italic,
-                                fontWeight: FontWeight.w300,
-                                color: AppColors.whiteMuted,
-                                fontSize: subtitleSize,
-                              ),
+                            style: GoogleFonts.poppins(
+                              fontSize: 42,
+                              fontWeight: FontWeight.w200,
+                              fontStyle: FontStyle.italic,
+                              color: AppColors.white,
+                              height: 0.9,
+                            ),
                             ),
 
                             const SizedBox(height: 2),
 
                             Text(
                               "PROFILE",
-                              style: GoogleFonts.poppins(
-                                fontWeight: FontWeight.w700,
-                                color: AppColors.white,
-                                fontSize: titleSize,
-                              ),
+                            style: GoogleFonts.poppins(
+                              fontSize: 44,
+                              fontWeight: FontWeight.w600,
+                              color: AppColors.white,
+                            ),
                             ),
 
 
                             SizedBox(
-                              height: size.height * .03,
+                              height: size.height * .01,
                             ),
 
 
@@ -138,8 +139,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               child: Column(
                                 children: [
                                   Container(
-                                    width: avatarSize + 8,
-                                    height: avatarSize + 8,
+                                    width: 157 ,
+                                    height: 157 ,
 
                                     decoration: BoxDecoration(
                                       shape: BoxShape.circle,
@@ -215,7 +216,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                           "Edit",
                                           style: GoogleFonts.poppins(
                                             color: AppColors.white,
-                                            fontSize: 10,
+                                            fontSize: 12,
                                             fontWeight:
                                                 FontWeight.w500,
                                           ),
@@ -403,7 +404,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                       style:
                                           ElevatedButton.styleFrom(
                                         backgroundColor:
-                                            AppColors.reserveBtnBg,
+                                            const Color.fromARGB(221, 255, 255, 255),
 
                                         foregroundColor:
                                             AppColors.reserveBtnText,
@@ -484,7 +485,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
     return GlassContainer(
 
-      height: 42,
+      height: 48,
 
       borderRadius: 24,
 
@@ -563,9 +564,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
                   color: AppColors.whiteDim,
 
-                  fontSize: 12.5,
+                  fontSize: 13,
 
-                  fontWeight: FontWeight.w400,
+                  fontWeight: FontWeight.w300,
 
                 ),
 

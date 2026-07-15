@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:massar/home%20screen/screens/home_screen.dart';
 import 'package:massar/theme/app_colors.dart';
+import 'package:massar/auth/login.dart';
 
 class OnboardingScreen7 extends StatelessWidget {
   const OnboardingScreen7({super.key});
@@ -12,7 +13,7 @@ class OnboardingScreen7 extends StatelessWidget {
     Navigator.pushAndRemoveUntil(
       context,
       MaterialPageRoute(
-        builder: (_) => const HomeScreen(),
+        builder: (_) => const LoginScreen(),
       ),
       (route) => false,
     );
