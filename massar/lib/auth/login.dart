@@ -212,7 +212,9 @@ class _LoginScreenState extends State<LoginScreen> {
                           ),
                         ),
                         GestureDetector(
-                          onTap: () {},
+                          onTap: () {
+                            Navigator.pushNamed(context, '/forget_password');
+                          },
                           child: Text(
                             "Forgot my password",
                             style: GoogleFonts.poppins(

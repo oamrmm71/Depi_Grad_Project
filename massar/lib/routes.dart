@@ -9,6 +9,7 @@ class Routes {
   static const String onboarding7 = '/onboarding7';
   static const String login = '/login';
   static const String signup = '/signup';
+  static const String forgetPassword = '/forget_password';
   static const String home = '/home';
   static const String flights = '/flights';
   static const String profile = '/profile';
