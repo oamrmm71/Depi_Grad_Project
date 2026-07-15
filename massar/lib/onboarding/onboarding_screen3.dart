@@ -31,7 +31,7 @@ class OnboardingScreen3 extends StatelessWidget {
         body: Stack(
           children: [
             Positioned(
-              top: size.height * 0.02,
+              top: size.height * 0,
               left: 0,
               right: 0,
               child: IgnorePointer(
@@ -45,7 +45,7 @@ class OnboardingScreen3 extends StatelessWidget {
             Positioned(
               left: 28,
               right: 28,
-              top: size.height * 0.54,
+              top: size.height * 0.48,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -58,15 +58,15 @@ class OnboardingScreen3 extends StatelessWidget {
                       color: AppColors.onboardingText,
                     ),
                   ),
-                  const SizedBox(height: 12),
+                  const SizedBox(height: 50),
                   SizedBox(
-                    width: size.width * 0.74,
+                    width: size.width * 0.9,
                     child: Text(
                       'Not sure where to go next? We help you explore destinations that match your mood, your budget, and your travel style. Whether you\'re craving a peaceful escape or a busy city experience, your journey starts here.',
                       style: GoogleFonts.poppins(
-                        fontSize: bodyFont,
-                        fontWeight: FontWeight.w300,
-                        height: 1.08,
+                        fontSize: 20,
+                        fontWeight: FontWeight.w200,
+                        height: 1.2,
                         color: AppColors.white,
                       ),
                     ),
