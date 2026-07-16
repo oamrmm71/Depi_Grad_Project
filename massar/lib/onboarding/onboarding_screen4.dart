@@ -37,38 +37,44 @@ class OnboardingScreen4 extends StatelessWidget {
                   ),
                 ),
               ),
-              Positioned.fill(
-                child: Image.asset(
-                  'lib/assets/black_map.png',
-                  fit: BoxFit.cover,
+              Transform.scale(
+                scale: 1.1,
+                child: Transform.translate(
+                  offset: Offset(10, 0),
+                  child: Positioned.fill(
+                    child: Image.asset(
+                      'lib/assets/black_map.png',
+                      fit: BoxFit.fitWidth,
+                    ),
+                  ),
                 ),
               ),
-              Positioned.fill(child: CustomPaint(painter: FlightPathPainter())),
+              Positioned.fill(child: CustomPaint(painter: FlightPathPainter()),top: -100, bottom: 0,),
               Positioned(
-                left: screenWidth * .18,
-                top: screenHeight * .20,
+                left: screenWidth * .16,
+                top: screenHeight * .12,
                 child: _buildPin(),
               ),
 
               Positioned(
                 right: screenWidth * .17,
-                top: screenHeight * .5,
+                top: screenHeight * .43,
                 child: _buildPin(),
               ),
               Align(
                 alignment: Alignment.bottomCenter,
                 child: Padding(
-                  padding: const EdgeInsets.all(24),
+                  padding: const EdgeInsets.only(left:24, right: 24, bottom: 60),
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      SizedBox(height: 24),
+                      SizedBox(height: 20),
                       Text(
                         'Create and organize your full itinerary. Save places you want to visit. Keep flights, stays, and plans in one place. Access everything anytime, anywhere.',
                         style: GoogleFonts.poppins(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w200,
+                          fontSize: 20,
+                          fontWeight: FontWeight.w300,
                           
                           color: const Color(0xFF01253D),
                         ),
@@ -77,9 +83,9 @@ class OnboardingScreen4 extends StatelessWidget {
                       Text(
                         'Stressless Planning',
                         style: GoogleFonts.poppins(
-                          
+                          color: AppColors.onboardingGrad4,
                           fontWeight: FontWeight.w600,
-                          fontSize: 30,
+                          fontSize: 32,
                         ),
                       ),
                       SizedBox(height: 20),
@@ -98,14 +104,21 @@ class OnboardingScreen4 extends StatelessWidget {
                             elevation: 0,
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(30),
+                              
                             ),
                           ),
-                          child: Text(
-                            "Continue",
-                            style: GoogleFonts.poppins(
-                              fontSize: 18,
-                              fontWeight: FontWeight.w500,
-                              color: AppColors.white,
+                          child: SizedBox(
+                            height: 50,
+                            width: double.infinity,
+                            child: Center(
+                              child: Text(
+                                "Continue",
+                                style: GoogleFonts.poppins(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.w500,
+                                  color: AppColors.white,
+                                ),
+                              ),
                             ),
                           ),
                         ),

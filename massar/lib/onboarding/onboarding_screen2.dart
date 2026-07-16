@@ -21,9 +21,9 @@ class _Onboarding2State extends State<Onboarding2> {
     return Container(
       decoration: const BoxDecoration(
         gradient: LinearGradient(
-          begin: Alignment(1.0, -0.6),
-          end: Alignment(-1.0, 0.2),
-          stops: [0.0, 0.22, 0.44, 1.0],
+          begin: Alignment(-1.0, -0.6),
+          end: Alignment(1.0, 0.2),
+          stops: [0.0, 0.05, 0.3, 1.0],
           colors: [
             AppColors.onboardingGrad1,
             AppColors.onboardingGrad2,
@@ -45,11 +45,11 @@ class _Onboarding2State extends State<Onboarding2> {
           body: Stack(
             children: [
               Positioned(
-                top: -size.height * 0.02,
+                top: -10 ,
                 left: 0,
                 right: 0,
                 child: Opacity(
-                  opacity: 0.55,
+                  opacity: 0.85,
                   child: Image.asset(
                     'lib/assets/map.png',
                     width: size.width,
@@ -59,37 +59,15 @@ class _Onboarding2State extends State<Onboarding2> {
               ),
 
               Positioned(
-                bottom: size.height * 0.001,
+                bottom: size.height * 0,
                 right: -size.width * 0.005,
                 child: Transform.rotate(
                   angle: 0.01,
                   child: Image.asset(
                     'lib/assets/plan.png',
-                    width: size.width * 0.75,
+                    width: size.width * 0.9,
                     fit: BoxFit.contain,
                   ),
-                ),
-              ),
-
-              Positioned(
-                right: 16,
-                top: size.height * 0.5 - (pageCount * 12),
-                child: Column(
-                  children: List.generate(pageCount, (index) {
-                    final isActive = index == currentPage;
-
-                    return Container(
-                      margin: const EdgeInsets.symmetric(vertical: 4),
-                      width: isActive ? 8 : 6,
-                      height: isActive ? 8 : 6,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: isActive
-                            ? Colors.white
-                            : Colors.white.withOpacity(0.35),
-                      ),
-                    );
-                  }),
                 ),
               ),
 
@@ -103,22 +81,38 @@ class _Onboarding2State extends State<Onboarding2> {
                     RichText(
                       text: TextSpan(
                         style: GoogleFonts.poppins(
-                          fontSize: 34,
-                          fontWeight: FontWeight.w700,
+                          fontSize: 40,
+                          fontWeight: FontWeight.w600,
                           color: Colors.white,
                           height: 1.2,
                         ),
                         children: [
                           const TextSpan(
-                            text: 'Want to plan\nyour next trip ',
+                            text: 'Want to plan',
+                          ),
+                          
+                        ],
+                      ),
+                    ),
+                    RichText(
+                      text: TextSpan(
+                        style: GoogleFonts.poppins(
+                          fontSize: 30,
+                          fontWeight: FontWeight.w200,
+                          color: Colors.white,
+                          height: 1.2,
+                        ),
+                        children: [
+                          const TextSpan(
+                            text: 'your next trip',
                           ),
                           WidgetSpan(
                             alignment: PlaceholderAlignment.middle,
                             child: Padding(
-                              padding: const EdgeInsets.only(left: 4),
+                              padding: const EdgeInsets.only(left: 10),
                               child: Image.asset(
                                 'lib/assets/Frame.png',
-                                height: 42,
+                                height: 38,
                                 fit: BoxFit.contain,
                               ),
                             ),
@@ -127,12 +121,12 @@ class _Onboarding2State extends State<Onboarding2> {
                       ),
                     ),
 
-                    const SizedBox(height: 18),
+                    const SizedBox(height: 20),
 
                     Text(
-                      'Preparing your experience...',
+                      'Press anywhere to continue',
                       style: GoogleFonts.poppins(
-                        fontSize: 13,
+                        fontSize: 14,
                         color: Colors.white.withOpacity(0.7),
                         letterSpacing: 0.3,
                       ),

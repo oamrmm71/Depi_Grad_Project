@@ -18,6 +18,7 @@ import 'package:massar/onboarding/onboarding_screen6.dart';
 import 'package:massar/onboarding/onboarding_screen7.dart';
 import 'package:massar/auth/forget_password.dart';
 import 'package:massar/auth/login.dart';
+import 'package:massar/auth/welcome.dart';
 import 'package:massar/Profile/profile_screen.dart';
 import 'package:massar/flights%20screen/screens/flights_screen.dart';
 import 'package:massar/auth/signup.dart';
@@ -95,6 +96,10 @@ class MainApp extends StatelessWidget {
           case Routes.login:
             return MaterialPageRoute(
               builder: (_) => const LoginScreen(),
+            );
+          case Routes.welcome:
+            return MaterialPageRoute(
+              builder: (_) => const WelcomeScreen(),
             );
           case Routes.signup:
             return MaterialPageRoute(
