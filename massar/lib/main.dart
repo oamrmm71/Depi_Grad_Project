@@ -22,6 +22,7 @@ import 'package:massar/auth/welcome.dart';
 import 'package:massar/Profile/profile_screen.dart';
 import 'package:massar/flights%20screen/screens/flights_screen.dart';
 import 'package:massar/auth/signup.dart';
+import 'package:massar/expense_tracker/expense_tracker_screen.dart';
 import 'routes.dart';
 import 'splash_screen.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -108,6 +109,10 @@ class MainApp extends StatelessWidget {
           case Routes.forgetPassword:
             return MaterialPageRoute(
               builder: (_) => const ForgetPasswordScreen(),
+            );
+            case Routes.expenseTracker:
+            return MaterialPageRoute(
+              builder: (_) => ExpenseTrackerScreen(),
             );
 
           case Routes.home:

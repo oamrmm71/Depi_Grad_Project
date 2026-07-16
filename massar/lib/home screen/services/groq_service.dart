@@ -29,6 +29,7 @@ class GroqService {
         "messages": messages,
       },
     );
+
     return response.data["choices"][0]["message"]["content"]
         .toString()
         .trim();
@@ -78,16 +79,16 @@ class GroqService {
     print("Raw Groq response: \"$text\"");
 
     const stopwords = {
-      'THE', 'AND', 'FOR', 'ARE', 'BUT', 'NOT', 'YOU', 'ALL',
-      'CAN', 'HER', 'WAS', 'ONE', 'OUR', 'OUT', 'DAY', 'GET',
-      'HAS', 'HIM', 'HIS', 'HOW', 'MAN', 'NEW', 'NOW', 'OLD',
-      'SEE', 'TWO', 'WAY', 'WHO', 'BOY', 'DID', 'ITS', 'LET',
-      'PUT', 'SAY', 'SHE', 'TOO', 'USE', 'YES', 'YET', 'SUR',
-      'EGP', 'USD', 'EUR', 'GBP', 'AED', 'SAR', 'KWD', 'QAR',
-      'JPY', 'CNY', 'INR', 'TRY', 'MAD', 'NGN', 'KES', 'ZAR',
-      'APX', 'APP', 'EST', 'ETA', 'ETD', 'INT', 'LOC', 'MIN',
-      'MAX', 'PER', 'REF', 'TBD', 'TBC', 'VIA',
-    };
+  'THE','AND','FOR','ARE','BUT','NOT','YOU','ALL',
+  'CAN','HER','WAS','ONE','OUR','OUT','DAY','GET',
+  'HAS','HIM','HIS','HOW','MAN','NEW','NOW','OLD',
+  'SEE','TWO','WAY','WHO','BOY','DID','ITS','LET',
+  'PUT','SAY','SHE','TOO','USE','YES','YET','SUR',
+  'EGP','USD','EUR','GBP','AED','SAR','KWD','QAR',
+  'JPY','CNY','INR','TRY','MAD','NGN','KES','ZAR',
+  'APX','APP','EST','ETA','ETD','INT','LOC','MIN',
+  'MAX','PER','REF','TBD','TBC','VIA',
+};
 
     final destinations = RegExp(r'\b[A-Za-z]{3}\b')
         .allMatches(text)
@@ -104,6 +105,7 @@ class GroqService {
       throw Exception(
           "Could not parse any IATA codes from Groq response: \"$text\"");
     }
+
     return destinations;
   }
 
@@ -130,10 +132,15 @@ class GroqService {
           },
         ],
       );
+
       final price =
           int.tryParse(RegExp(r'\d+').firstMatch(text)?.group(0) ?? "");
-      if (price != null && price > 0) return "\$$price";
+
+      if (price != null && price > 0) {
+        return "\$$price";
+      }
     } catch (_) {}
+
     return null;
   }
 
@@ -173,10 +180,71 @@ class GroqService {
           .trim();
 
       return TripPlanModel.fromJson(
-          jsonDecode(jsonStr) as Map<String, dynamic>);
+        jsonDecode(jsonStr) as Map<String, dynamic>,
+      );
     } catch (e) {
       print("generateTripPlan error: $e");
       return null;
+    }
+  }
+
+  Future<List<dynamic>> generateExpensePlan({
+    required String cityName,
+    required String countryName,
+    required int days,
+  }) async {
+    try {
+      final raw = await _chat(
+        temperature: 0.5,
+        messages: [
+          {
+            "role": "system",
+            "content":
+                "You are a travel expense planner. Reply ONLY with valid JSON. "
+                "Do not use markdown or code fences."
+          },
+          {
+            "role": "user",
+            "content": """
+            Generate a realistic expense schedule for a tourist.
+
+            City: $cityName
+            Country: $countryName
+            Trip Duration: $days days
+
+            Return ONLY this JSON format:
+
+            [
+              {
+                "day":1,
+                "place":"Eiffel Tower",
+                "entryFee":200,
+                "transport":200,
+                "total":400
+              }
+            ]
+
+            Rules:
+
+            - Generate 2-3 attractions per day.
+            - Prices must be in EGP.
+            - total = entryFee + transport.
+            - Use real tourist attractions.
+            - Return ONLY JSON.
+            """
+          }
+        ],
+      );
+
+      final jsonString = raw
+          .replaceAll(RegExp(r'^```json\s*', multiLine: true), '')
+          .replaceAll(RegExp(r'^```\s*', multiLine: true), '')
+          .trim();
+
+      return jsonDecode(jsonString) as List<dynamic>;
+    } catch (e) {
+      print("generateExpensePlan error: $e");
+      return [];
     }
   }
 }

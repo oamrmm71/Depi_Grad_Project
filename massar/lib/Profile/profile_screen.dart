@@ -1,16 +1,15 @@
 import 'dart:convert';
 import 'dart:typed_data';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
-
 import 'package:massar/theme/app_colors.dart';
 import 'package:massar/custom%20widgets/bottom_nav_glass.dart';
 import 'package:massar/custom%20widgets/glass_container.dart';
+
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -26,13 +25,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
   final _cardExpiryController = TextEditingController();
   final _passportController = TextEditingController();
   final _emailController = TextEditingController();
-
   final _passwordController = TextEditingController();
   final _confirmPasswordController = TextEditingController();
 
   Uint8List? _profileImageBytes;
   bool _isPickingImage = false;
-
   bool _isEditing = false;
   bool _isLoading = true;
   bool _isSaving = false;
