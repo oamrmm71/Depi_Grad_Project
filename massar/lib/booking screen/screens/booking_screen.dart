@@ -100,7 +100,7 @@ class _BookingScreenViewState extends State<BookingScreenView> {
                             ),
                             const SizedBox(width: 12),
                             Image.asset(
-                              'assets/images/arrow.png',
+                              'lib/assets/arrow.png',
                               width: 37,
                               height: 37,
                               color: AppColors.white.withOpacity(0.8),
@@ -151,7 +151,7 @@ class _BookingScreenViewState extends State<BookingScreenView> {
                         children: [
                           Positioned(
                             child: Image.asset(
-                              'assets/images/seat layout.png',
+                              'lib/assets/seat layout.png',
                               fit: BoxFit.fitWidth,
                             ),
                           ),
