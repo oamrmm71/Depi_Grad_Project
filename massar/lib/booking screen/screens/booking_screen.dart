@@ -203,45 +203,32 @@ class _BookingScreenViewState extends State<BookingScreenView> {
                                         .toList()
                                   : [];
         
-                              return ElevatedButton(
-                                onPressed: selectedSeats.isEmpty
-                                    ? null
-                                    : () async {
-        
-                                        await context
-                                            .read<BookingCubit>()
-                                            .confirmBooking();
-        
-                                        if (!context.mounted) return;
-                                        showBookingConfirmed(context);
-                                      },
-                                child: Container(
-                                  width: double.infinity,
-                                  height: 50,
-                                  decoration: BoxDecoration(
-                                    color: selectedSeats.isEmpty
+                              return SizedBox(
+                                width: double.infinity,
+                                height: 54,
+                                child: ElevatedButton(
+                                  onPressed: selectedSeats.isEmpty
+                                      ? null
+                                      : () async {
+
+                                          await context
+                                              .read<BookingCubit>()
+                                              .confirmBooking();
+
+                                          if (!context.mounted) return;
+                                          showBookingConfirmed(context);
+                                        },
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: selectedSeats.isEmpty
                                         ? AppColors.screenBgGrad3
                                         : AppColors.screenBgGrad2,
-                                    borderRadius: BorderRadius.circular(25),
-                                    border: Border.all(
-                                      color: selectedSeats.isEmpty
-                                          ? Colors.white.withOpacity(0.05)
-                                          : AppColors.whiteDim,
-                                      width: 1,
+                                    disabledBackgroundColor:
+                                        AppColors.screenBgGrad3,
+                                    elevation: 0,
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(25),
                                     ),
-                                    boxShadow: selectedSeats.isNotEmpty
-                                        ? [
-                                            BoxShadow(
-                                              color: Colors.black.withOpacity(
-                                                0.3,
-                                              ),
-                                              blurRadius: 10,
-                                              offset: const Offset(0, 4),
-                                            ),
-                                          ]
-                                        : null,
                                   ),
-                                  alignment: Alignment.center,
                                   child: Text(
                                     selectedSeats.isEmpty
                                         ? 'Select Seats'
@@ -293,7 +280,7 @@ class _BookingScreenViewState extends State<BookingScreenView> {
 
         return Column(
           children: [
-            if (isAfterGap) const SizedBox(height: 8),
+            if (isAfterGap) const SizedBox(height: 10),
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 1.8),
               child: _buildRow(context, rowSeats),
@@ -325,7 +312,7 @@ class _BookingScreenViewState extends State<BookingScreenView> {
               )
               .toList(),
         ),
-        const SizedBox(width: 14),
+        const SizedBox(width: 16),
         Row(
           children: rightSeats
               .map(
