@@ -2,9 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 
-import '../../home screen/services/country_service.dart';
-import '../../home screen/services/flight_service.dart';
-import '../models/flight_model.dart';
+import 'package:massar/custom%20widgets/page_title.dart';
+import 'package:massar/flights%20screen/models/flight_model.dart';
+import 'package:massar/home%20screen/services/country_service.dart';
+import 'package:massar/home%20screen/services/flight_service.dart';
+import 'package:massar/profile/widgets/profile_background.dart';
+import 'package:massar/theme/app_colors.dart';
 
 class FlightRouteScreen extends StatefulWidget {
   final FlightModel flight;
@@ -15,7 +18,8 @@ class FlightRouteScreen extends StatefulWidget {
   });
 
   @override
-  State<FlightRouteScreen> createState() => _FlightRouteScreenState();
+  State<FlightRouteScreen> createState() =>
+      _FlightRouteScreenState();
 }
 
 class _FlightRouteScreenState extends State<FlightRouteScreen> {
@@ -43,11 +47,13 @@ class _FlightRouteScreenState extends State<FlightRouteScreen> {
 
   Future<void> _loadRoute() async {
     try {
-      final originData = await _flightService.getAirportDetails(
+      final originData =
+          await _flightService.getAirportDetails(
         widget.flight.fromAirport,
       );
 
-      final destinationData = await _flightService.getAirportDetails(
+      final destinationData =
+          await _flightService.getAirportDetails(
         widget.flight.toAirport,
       );
 
@@ -61,8 +67,11 @@ class _FlightRouteScreenState extends State<FlightRouteScreen> {
         destinationData["longitude"],
       );
 
-      _originCity = originData["cityName"];
-      _destinationCity = destinationData["cityName"];
+      _originCity =
+          originData["cityName"];
+
+      _destinationCity =
+          destinationData["cityName"];
 
       if (mounted) {
         setState(() {
@@ -91,9 +100,13 @@ class _FlightRouteScreenState extends State<FlightRouteScreen> {
 
     if (_error != null) {
       return Scaffold(
-        appBar: AppBar(),
         body: Center(
-          child: Text(_error!),
+          child: Text(
+            _error!,
+            style: const TextStyle(
+              color: AppColors.navIcon,
+            ),
+          ),
         ),
       );
     }
@@ -101,6 +114,8 @@ class _FlightRouteScreenState extends State<FlightRouteScreen> {
     return Scaffold(
       body: Stack(
         children: [
+          const ProfileBackground(),
+
           FlutterMap(
             options: MapOptions(
               initialCameraFit: CameraFit.bounds(
@@ -126,7 +141,8 @@ class _FlightRouteScreenState extends State<FlightRouteScreen> {
                   'c',
                   'd',
                 ],
-                userAgentPackageName: 'com.yourcompany.massar',
+                userAgentPackageName:
+                    'com.yourcompany.massar',
               ),
 
               PolylineLayer(
@@ -137,7 +153,7 @@ class _FlightRouteScreenState extends State<FlightRouteScreen> {
                       _destination,
                     ],
                     strokeWidth: 3,
-                    color: const Color(0xff16305B),
+                    color: AppColors.navIcon,
                   ),
                 ],
               ),
@@ -157,7 +173,7 @@ class _FlightRouteScreenState extends State<FlightRouteScreen> {
                     height: 34,
                     child: const Icon(
                       Icons.flight,
-                      color: Color(0xff16305B),
+                      color: AppColors.navIcon,
                       size: 28,
                     ),
                   ),
@@ -178,27 +194,9 @@ class _FlightRouteScreenState extends State<FlightRouteScreen> {
                 crossAxisAlignment:
                     CrossAxisAlignment.start,
                 children: [
-                  Column(
-                    crossAxisAlignment:
-                        CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        "TRIP",
-                        style: TextStyle(
-                          fontSize: 13,
-                          letterSpacing: 2,
-                          color: Colors.black.withOpacity(.45),
-                        ),
-                      ),
-                      const Text(
-                        "ROUTE",
-                        style: TextStyle(
-                          fontSize: 28,
-                          fontWeight: FontWeight.bold,
-                          color: Color(0xff16305B),
-                        ),
-                      ),
-                    ],
+                  const PageTitle(
+                    firstLine: "TRIP",
+                    secondLine: "ROUTE",
                   ),
 
                   GestureDetector(
@@ -209,7 +207,7 @@ class _FlightRouteScreenState extends State<FlightRouteScreen> {
                       width: 42,
                       height: 42,
                       decoration: BoxDecoration(
-                        color: Colors.white,
+                        color: AppColors.white,
                         shape: BoxShape.circle,
                         boxShadow: [
                           BoxShadow(
@@ -221,7 +219,7 @@ class _FlightRouteScreenState extends State<FlightRouteScreen> {
                       ),
                       child: const Icon(
                         Icons.close,
-                        color: Color(0xff16305B),
+                        color: AppColors.navIcon,
                       ),
                     ),
                   ),
@@ -229,21 +227,25 @@ class _FlightRouteScreenState extends State<FlightRouteScreen> {
               ),
             ),
           ),
-                    Positioned(
+
+          Positioned(
             left: 20,
             right: 20,
             bottom: 24,
             child: Container(
-              padding: const EdgeInsets.symmetric(
+              padding:
+                  const EdgeInsets.symmetric(
                 horizontal: 20,
                 vertical: 16,
               ),
               decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(18),
+                color: AppColors.white,
+                borderRadius:
+                    BorderRadius.circular(18),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withOpacity(.08),
+                    color:
+                        Colors.black.withOpacity(.08),
                     blurRadius: 12,
                   ),
                 ],
@@ -253,17 +255,23 @@ class _FlightRouteScreenState extends State<FlightRouteScreen> {
                     MainAxisAlignment.spaceBetween,
                 children: [
                   _AirportLabel(
-                    code: widget.flight.fromAirport,
-                    city: _originCity,
+                    code:
+                        widget.flight.fromAirport,
+                    city:
+                        _originCity,
                   ),
+
                   const Icon(
                     Icons.flight,
-                    color: Color(0xff16305B),
+                    color: AppColors.navIcon,
                     size: 20,
                   ),
+
                   _AirportLabel(
-                    code: widget.flight.toAirport,
-                    city: _destinationCity,
+                    code:
+                        widget.flight.toAirport,
+                    city:
+                        _destinationCity,
                     alignEnd: true,
                   ),
                 ],
@@ -290,25 +298,27 @@ class _AirportLabel extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Column(
-      crossAxisAlignment:
-          alignEnd
-              ? CrossAxisAlignment.end
-              : CrossAxisAlignment.start,
+      crossAxisAlignment: alignEnd
+          ? CrossAxisAlignment.end
+          : CrossAxisAlignment.start,
       children: [
         Text(
           code,
           style: const TextStyle(
             fontSize: 22,
             fontWeight: FontWeight.bold,
-            color: Color(0xff16305B),
+            color: AppColors.navIcon,
           ),
         ),
+
         const SizedBox(height: 4),
+
         Text(
           city,
           style: TextStyle(
             fontSize: 12,
-            color: Colors.black.withOpacity(.55),
+            color:
+                Colors.black.withOpacity(.55),
           ),
         ),
       ],
@@ -323,10 +333,10 @@ class _DotMarker extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: const Color(0xff16305B),
+        color: AppColors.navIcon,
         shape: BoxShape.circle,
         border: Border.all(
-          color: Colors.white,
+          color: AppColors.white,
           width: 2,
         ),
       ),
