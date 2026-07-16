@@ -1,7 +1,8 @@
 import 'package:massar/home%20screen/models/trip_model.dart';
 
 class FlightModel {
-  final String flightType; 
+  final String flightId;
+  final String flightType;
   final String flightCompany;
   final String flightCode;
   final String date;
@@ -13,6 +14,7 @@ class FlightModel {
   final String toTime;
 
   FlightModel({
+    required this.flightId,
     required this.flightType,
     required this.flightCompany,
     required this.flightCode,
@@ -25,22 +27,74 @@ class FlightModel {
     required this.toTime,
   });
 
+  Map<String, dynamic> toJson() {
+    return {
+      'flightId': flightId,
+      'flightType': flightType,
+      'flightCompany': flightCompany,
+      'flightCode': flightCode,
+      'date': date,
+      'fromCountry': fromCountry,
+      'fromAirport': fromAirport,
+      'fromTime': fromTime,
+      'toCountry': toCountry,
+      'toAirport': toAirport,
+      'toTime': toTime,
+    };
+  }
+
+  static String _buildFlightId(
+    String? flightCode,
+    String flightType,
+    String fromAirport,
+    String toAirport,
+    String date,
+  ) {
+    if (flightCode != null && flightCode.trim().isNotEmpty) {
+      return flightCode.trim();
+    }
+
+    final sanitizedDate = date.replaceAll(RegExp(r'[^A-Za-z0-9_]'), '_');
+    final sanitizedFrom = fromAirport.replaceAll(RegExp(r'[^A-Za-z0-9_]'), '_');
+    final sanitizedTo = toAirport.replaceAll(RegExp(r'[^A-Za-z0-9_]'), '_');
+    return '${flightType.replaceAll(' ', '_')}_${sanitizedFrom}_to_${sanitizedTo}_date_${sanitizedDate}'
+        .replaceAll(' ', '_');
+  }
+
   factory FlightModel.fromTrip(TripModel trip, {bool isReturn = false}) {
     if (isReturn) {
+      final flightCode = trip.returnFlightCode ?? 'TBD';
+      final date = trip.returnDepartureDate ?? 'TBD';
+      final fromAirport = trip.destinationAirport;
+      final toAirport = trip.takeoffAirport;
       return FlightModel(
+        flightId: _buildFlightId(
+          trip.returnFlightCode,
+          'Return Flight',
+          fromAirport,
+          toAirport,
+          date,
+        ),
         flightType: 'Return Flight',
         flightCompany: trip.returnFlightCompany ?? 'TBD',
-        flightCode: trip.returnFlightCode ?? 'TBD',
-        date: trip.returnDepartureDate ?? 'TBD',
+        flightCode: flightCode,
+        date: date,
         fromCountry: trip.destinationCity,
-        fromAirport: trip.destinationAirport,
+        fromAirport: fromAirport,
         fromTime: trip.returnTakeoffTime ?? 'TBD',
         toCountry: trip.takeoffCity,
-        toAirport: trip.takeoffAirport,
+        toAirport: toAirport,
         toTime: trip.returnDestinationTime ?? 'TBD',
       );
     }
     return FlightModel(
+      flightId: _buildFlightId(
+        trip.flightCode,
+        'Transit Flight',
+        trip.takeoffAirport,
+        trip.destinationAirport,
+        trip.departureDate ?? 'TBD',
+      ),
       flightType: 'Transit Flight',
       flightCompany: trip.flightCompany ?? 'TBD',
       flightCode: trip.flightCode ?? 'TBD',

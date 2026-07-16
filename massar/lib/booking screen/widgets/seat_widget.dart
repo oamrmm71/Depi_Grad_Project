@@ -19,9 +19,9 @@ class SeatWidget extends StatelessWidget {
 
     switch (seat.status) {
       case SeatStatus.available:
-        Color borderColour = const Color(0xff01253D);
-    Color bgColour = const Color(0xFFF8F8F3);
-        Color textColour = const Color(0xFF7F7F7F);
+        borderColour = const Color(0xff01253D);
+    bgColour = const Color(0xFFF8F8F3);
+     Color textColour = const Color(0xFF7F7F7F);
         break;
       case SeatStatus.selected: 
         bgColour = const Color(0xff01253D);
