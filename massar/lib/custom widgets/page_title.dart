@@ -23,7 +23,7 @@ class PageTitle extends StatelessWidget {
             fontSize: 42,
             fontWeight: FontWeight.w200,
             fontStyle: FontStyle.italic,
-            color: AppColors.white,
+            color: AppColors.screenBgGrad3,
             height: 0.9,
           ),
         ),
@@ -33,7 +33,7 @@ class PageTitle extends StatelessWidget {
           style: GoogleFonts.poppins(
             fontSize: 44,
             fontWeight: FontWeight.w600,
-            color: AppColors.white,
+            color: AppColors.screenBgGrad3,
           ),
         ),
       ],
