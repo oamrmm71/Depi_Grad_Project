@@ -2,17 +2,23 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:massar/theme/app_colors.dart';
 
-class ProfileHeader extends StatelessWidget {
-  const ProfileHeader({super.key});
+class PageTitle extends StatelessWidget {
+  final String firstLine;
+  final String secondLine;
+
+  const PageTitle({
+    super.key,
+    required this.firstLine,
+    required this.secondLine,
+  });
 
   @override
   Widget build(BuildContext context) {
     return Column(
-      crossAxisAlignment:
-          CrossAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          "MY",
+          firstLine,
           style: GoogleFonts.poppins(
             fontSize: 42,
             fontWeight: FontWeight.w200,
@@ -21,11 +27,9 @@ class ProfileHeader extends StatelessWidget {
             height: 0.9,
           ),
         ),
-
         const SizedBox(height: 2),
-
         Text(
-          "PROFILE",
+          secondLine,
           style: GoogleFonts.poppins(
             fontSize: 44,
             fontWeight: FontWeight.w600,

@@ -9,7 +9,7 @@ import 'package:massar/profile/widgets/profile_avatar.dart';
 import 'package:massar/profile/widgets/profile_background.dart';
 import 'package:massar/profile/widgets/profile_edit_chip.dart';
 import 'package:massar/profile/widgets/profile_fields.dart';
-import 'package:massar/profile/widgets/profile_header.dart';
+import 'package:massar/custom%20widgets/page_title.dart';
 import 'package:massar/profile/widgets/profile_save_button.dart';
 
 class ProfileScreen extends StatefulWidget {
@@ -252,8 +252,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               ),
                               child: Column(
                                 children: [
-                                  const ProfileHeader(),
-
+                                  const PageTitle(
+                                  firstLine: "MY",
+                                  secondLine: "PROFILE",
+                                 ),
                                   SizedBox(
                                     height:
                                         size.height * .01,
