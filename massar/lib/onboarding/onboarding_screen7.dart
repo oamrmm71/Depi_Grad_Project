@@ -12,7 +12,6 @@ class OnboardingScreen7 extends StatelessWidget {
 
   void _goHome(BuildContext context) {
     Navigator.pushAndRemoveUntil(
-    
       context,
       MaterialPageRoute(
         builder: (_) => const LoginScreen(),
@@ -44,103 +43,89 @@ class OnboardingScreen7 extends StatelessWidget {
                 ? 320.0
                 : 260.0;
 
-
     return Scaffold(
       backgroundColor: AppColors.splashBg,
       body: SafeArea(
-        child: SingleChildScrollView(
+        child: Padding(
+          padding: EdgeInsets.symmetric(
+            horizontal: size.width * horizontalPadding,
+            vertical: 20,
+          ),
           child: ConstrainedBox(
             constraints: BoxConstraints(
-              minHeight: size.height,
+              minHeight: size.height - 40,
             ),
-            child: Padding(
-              padding: EdgeInsets.symmetric(
-                horizontal: size.width * horizontalPadding,
-                vertical: 20,
-              ),
-              child: Column(
-                children: [
+            child: Column(
+              children: [
 
-                  SizedBox(
-                    height: size.height * .05,
+                SizedBox(
+                  height: size.height * .05,
+                ),
+
+                Text(
+                  "Airplane Mode",
+                  textAlign: TextAlign.center,
+                  style: GoogleFonts.poppins(
+                    fontSize: titleSize,
+                    fontWeight: FontWeight.w700,
+                    color: AppColors.navIcon,
                   ),
+                ),
 
-                  Text(
-                    "Airplane Mode",
-                    textAlign: TextAlign.center,
-                    style: GoogleFonts.poppins(
-                      fontSize: titleSize,
-                      fontWeight: FontWeight.w700,
-                      color: AppColors.navIcon,
+                SizedBox(
+                  height: size.height * .01,
+                ),
+
+                Text(
+                  "Airplane Mode saves battery, avoids\nroaming, and keeps your trip stress-free.",
+                  textAlign: TextAlign.center,
+                  style: GoogleFonts.poppins(
+                    fontSize: bodySize,
+                    fontWeight: FontWeight.w300,
+                    color: AppColors.navIcon.withValues(
+                      alpha: .65,
                     ),
+                    height: 1.4,
                   ),
+                ),
 
+                SizedBox(
+                  height: size.height * .04,
+                ),
 
-                  SizedBox(
-                    height: size.height * .01,
-                  ),
+                AirplaneIllustration(
+                  maxSize: illustrationSize,
+                ),
 
+                const Spacer(),
 
-                  Text(
-                    "Airplane Mode saves battery, avoids\nroaming, and keeps your trip stress-free.",
-                    textAlign: TextAlign.center,
-                    style: GoogleFonts.poppins(
-                      fontSize: bodySize,
-                      fontWeight: FontWeight.w300,
-                      color: AppColors.navIcon.withValues(
-                        alpha: .65,
-                      ),
-                      height: 1.4,
-                    ),
-                  ),
+                OnboardingButton(
+                  height: buttonHeight,
+                  text: "Allow",
+                  fontSize: buttonFont,
+                  backgroundColor: AppColors.navIcon,
+                  textColor: AppColors.white,
+                  onPressed: () => _goHome(context),
+                ),
 
+                SizedBox(
+                  height: size.height * .02,
+                ),
 
-                  SizedBox(
-                    height: size.height * .04,
-                  ),
+                OnboardingButton(
+                  height: buttonHeight,
+                  text: "Skip",
+                  fontSize: buttonFont,
+                  backgroundColor: AppColors.white,
+                  textColor: AppColors.navIcon,
+                  shadow: true,
+                  onPressed: () => _goHome(context),
+                ),
 
-
-                  AirplaneIllustration(
-                    maxSize: illustrationSize,
-                  ),
-
-
-                  SizedBox(
-                    height: size.height * .05,
-                  ),
-
-
-                  OnboardingButton(
-                    height: buttonHeight,
-                    text: "Allow",
-                    fontSize: buttonFont,
-                    backgroundColor: AppColors.navIcon,
-                    textColor: AppColors.white,
-                    onPressed: () => _goHome(context),
-                  ),
-
-
-                  SizedBox(
-                    height: size.height * .02,
-                  ),
-
-
-                  OnboardingButton(
-                    height: buttonHeight,
-                    text: "Skip",
-                    fontSize: buttonFont,
-                    backgroundColor: AppColors.white,
-                    textColor: AppColors.navIcon,
-                    shadow: true,
-                    onPressed: () => _goHome(context),
-                  ),
-
-
-                  SizedBox(
-                    height: size.height * .03,
-                  ),
-                ],
-              ),
+                SizedBox(
+                  height: size.height * .03,
+                ),
+              ],
             ),
           ),
         ),
@@ -148,7 +133,6 @@ class OnboardingScreen7 extends StatelessWidget {
     );
   }
 }
-
 
 
 class OnboardingButton extends StatelessWidget {
@@ -160,7 +144,6 @@ class OnboardingButton extends StatelessWidget {
   final Color textColor;
   final bool shadow;
   final VoidCallback onPressed;
-
 
   const OnboardingButton({
     super.key,
@@ -197,7 +180,6 @@ class OnboardingButton extends StatelessWidget {
           ),
         ),
 
-
         child: Text(
           text,
           style: GoogleFonts.poppins(
@@ -212,7 +194,6 @@ class OnboardingButton extends StatelessWidget {
 }
 
 
-
 class AirplaneIllustration extends StatefulWidget {
 
   final double maxSize;
@@ -222,12 +203,10 @@ class AirplaneIllustration extends StatefulWidget {
     required this.maxSize,
   });
 
-
   @override
   State<AirplaneIllustration> createState() =>
       _AirplaneIllustrationState();
 }
-
 
 
 class _AirplaneIllustrationState
@@ -271,10 +250,8 @@ class _AirplaneIllustrationState
   @override
   Widget build(BuildContext context) {
 
-
     final outerCircle = widget.maxSize;
     final innerCircle = outerCircle * .54;
-
     final centerImage = outerCircle * .31;
     final radius = outerCircle * .39;
     final iconSize = outerCircle * .14;
@@ -295,31 +272,26 @@ class _AirplaneIllustrationState
 
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-
-              color:
-                  AppColors.white.withValues(
-                    alpha: .45,
-                  ),
+              color: AppColors.white.withValues(
+                alpha: .45,
+              ),
 
               boxShadow: [
                 BoxShadow(
                   color: AppColors.flightGlow,
                   blurRadius: 12,
-                  offset:
-                      const Offset(0,5),
+                  offset: const Offset(0,5),
                 ),
               ],
             ),
           ),
 
 
-
           Container(
             width: innerCircle,
             height: innerCircle,
 
-            decoration:
-                const BoxDecoration(
+            decoration: const BoxDecoration(
               color: AppColors.white,
               shape: BoxShape.circle,
             ),
@@ -334,7 +306,6 @@ class _AirplaneIllustrationState
           ),
 
 
-
           AnimatedBuilder(
             animation: _controller,
 
@@ -343,24 +314,18 @@ class _AirplaneIllustrationState
               final rotation =
                   _controller.value * 360;
 
-
               return Stack(
-
-                alignment:
-                    Alignment.center,
+                alignment: Alignment.center,
 
                 children: [
 
-                  for(int i = 0;
-                      i < icons.length;
-                      i++)
+                  for(int i = 0; i < icons.length; i++)
 
                     _circleIcon(
                       asset: icons[i],
                       angle:
                           (i * 360 / icons.length)
                           + rotation,
-
                       radius: radius,
                       iconSize: iconSize,
                     ),
@@ -374,14 +339,12 @@ class _AirplaneIllustrationState
   }
 
 
-
   Widget _circleIcon({
     required String asset,
     required double angle,
     required double radius,
     required double iconSize,
   }) {
-
 
     final radians =
         angle * math.pi / 180;
@@ -394,25 +357,20 @@ class _AirplaneIllustrationState
         radius * math.sin(radians),
       ),
 
-
       child: SizedBox(
-
         width: iconSize,
         height: iconSize,
 
         child: Image.asset(
           asset,
-
           fit: BoxFit.contain,
 
           errorBuilder: (_,__,___) {
-
             return Icon(
               Icons.image_not_supported_outlined,
               size: iconSize * .8,
               color: Colors.grey,
             );
-
           },
         ),
       ),
