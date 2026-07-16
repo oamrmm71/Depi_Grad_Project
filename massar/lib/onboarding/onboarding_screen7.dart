@@ -1,5 +1,4 @@
 import 'dart:math' as math;
-
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:massar/auth/login.dart';
@@ -7,8 +6,6 @@ import 'package:massar/theme/app_colors.dart';
 
 class OnboardingScreen7 extends StatelessWidget {
   const OnboardingScreen7({super.key});
-
-  static const double horizontalPadding = 0.06;
 
   void _goHome(BuildContext context) {
     Navigator.pushAndRemoveUntil(
@@ -38,101 +35,89 @@ class OnboardingScreen7 extends StatelessWidget {
 
     final illustrationSize =
         size.width > 1000
-            ? 360.0
+            ? 430.0
             : size.width > 700
-                ? 320.0
-                : 260.0;
+                ? 380.0
+                : 320.0;
+
 
     return Scaffold(
       backgroundColor: AppColors.splashBg,
+
       body: SafeArea(
         child: Padding(
           padding: EdgeInsets.symmetric(
-            horizontal: size.width * horizontalPadding,
-            vertical: 20,
+            horizontal: size.width * .06,
           ),
-          child: ConstrainedBox(
-            constraints: BoxConstraints(
-              minHeight: size.height - 40,
-            ),
-            child: Column(
-              children: [
 
-                SizedBox(
-                  height: size.height * .05,
+          child: Column(
+            children: [
+
+              SizedBox(
+                height: size.height * .06,
+              ),
+
+
+              Text(
+                "Airplane Mode",
+                textAlign: TextAlign.center,
+                style: GoogleFonts.poppins(
+                  fontSize: titleSize,
+                  fontWeight: FontWeight.w700,
+                  color: AppColors.navIcon,
                 ),
+              ),
 
-                Text(
-                  "Airplane Mode",
-                  textAlign: TextAlign.center,
-                  style: GoogleFonts.poppins(
-                    fontSize: titleSize,
-                    fontWeight: FontWeight.w700,
-                    color: AppColors.navIcon,
+
+              SizedBox(
+                height: size.height * .01,
+              ),
+
+
+              Text(
+                "Airplane Mode saves battery, avoids\nroaming, and keeps your trip stress-free.",
+                textAlign: TextAlign.center,
+                style: GoogleFonts.poppins(
+                  fontSize: bodySize,
+                  fontWeight: FontWeight.w300,
+                  color: AppColors.navIcon.withValues(
+                    alpha: .65,
+                  ),
+                  height: 1.4,
+                ),
+              ),
+
+
+              Expanded(
+                child: Center(
+                  child: AirplaneIllustration(
+                    maxSize: illustrationSize,
                   ),
                 ),
+              ),
 
-                SizedBox(
-                  height: size.height * .01,
-                ),
 
-                Text(
-                  "Airplane Mode saves battery, avoids\nroaming, and keeps your trip stress-free.",
-                  textAlign: TextAlign.center,
-                  style: GoogleFonts.poppins(
-                    fontSize: bodySize,
-                    fontWeight: FontWeight.w300,
-                    color: AppColors.navIcon.withValues(
-                      alpha: .65,
-                    ),
-                    height: 1.4,
-                  ),
-                ),
+              OnboardingButton(
+                height: buttonHeight,
+                text: "Allow",
+                fontSize: buttonFont,
+                backgroundColor: AppColors.navIcon,
+                textColor: AppColors.white,
+                onPressed: () => _goHome(context),
+              ),
 
-                SizedBox(
-                  height: size.height * .04,
-                ),
 
-                AirplaneIllustration(
-                  maxSize: illustrationSize,
-                ),
-
-                const Spacer(),
-
-                OnboardingButton(
-                  height: buttonHeight,
-                  text: "Allow",
-                  fontSize: buttonFont,
-                  backgroundColor: AppColors.navIcon,
-                  textColor: AppColors.white,
-                  onPressed: () => _goHome(context),
-                ),
-
-                SizedBox(
-                  height: size.height * .02,
-                ),
-
-                OnboardingButton(
-                  height: buttonHeight,
-                  text: "Skip",
-                  fontSize: buttonFont,
-                  backgroundColor: AppColors.white,
-                  textColor: AppColors.navIcon,
-                  shadow: true,
-                  onPressed: () => _goHome(context),
-                ),
-
-                SizedBox(
-                  height: size.height * .03,
-                ),
-              ],
-            ),
+              SizedBox(
+                height: size.height * .04,
+              ),
+            ],
           ),
         ),
       ),
     );
   }
 }
+
 
 
 class OnboardingButton extends StatelessWidget {
@@ -142,8 +127,8 @@ class OnboardingButton extends StatelessWidget {
   final double fontSize;
   final Color backgroundColor;
   final Color textColor;
-  final bool shadow;
   final VoidCallback onPressed;
+
 
   const OnboardingButton({
     super.key,
@@ -153,7 +138,6 @@ class OnboardingButton extends StatelessWidget {
     required this.backgroundColor,
     required this.textColor,
     required this.onPressed,
-    this.shadow = false,
   });
 
 
@@ -163,25 +147,23 @@ class OnboardingButton extends StatelessWidget {
     return SizedBox(
       width: double.infinity,
       height: height,
+
       child: ElevatedButton(
         onPressed: onPressed,
 
         style: ElevatedButton.styleFrom(
           backgroundColor: backgroundColor,
           foregroundColor: textColor,
-          elevation: shadow ? 5 : 0,
-
-          shadowColor:
-              shadow ? AppColors.flightGlow : null,
+          elevation: 0,
 
           shape: RoundedRectangleBorder(
-            borderRadius:
-                BorderRadius.circular(30),
+            borderRadius: BorderRadius.circular(30),
           ),
         ),
 
         child: Text(
           text,
+
           style: GoogleFonts.poppins(
             fontSize: fontSize,
             fontWeight: FontWeight.w500,
@@ -194,6 +176,7 @@ class OnboardingButton extends StatelessWidget {
 }
 
 
+
 class AirplaneIllustration extends StatefulWidget {
 
   final double maxSize;
@@ -203,10 +186,12 @@ class AirplaneIllustration extends StatefulWidget {
     required this.maxSize,
   });
 
+
   @override
   State<AirplaneIllustration> createState() =>
       _AirplaneIllustrationState();
 }
+
 
 
 class _AirplaneIllustrationState
@@ -218,6 +203,7 @@ class _AirplaneIllustrationState
 
 
   static const List<String> icons = [
+
     "lib/assets/youtube.png",
     "lib/assets/tiktok.png",
     "lib/assets/instgram.png",
@@ -226,6 +212,7 @@ class _AirplaneIllustrationState
     "lib/assets/whatsapp.png",
     "lib/assets/facebook.png",
     "lib/assets/facetime.png",
+
   ];
 
 
@@ -242,138 +229,231 @@ class _AirplaneIllustrationState
 
   @override
   void dispose() {
+
     _controller.dispose();
+
     super.dispose();
   }
+
 
 
   @override
   Widget build(BuildContext context) {
 
     final outerCircle = widget.maxSize;
-    final innerCircle = outerCircle * .54;
-    final centerImage = outerCircle * .31;
-    final radius = outerCircle * .39;
-    final iconSize = outerCircle * .14;
+
+    final innerCircle =
+        outerCircle * .54;
+
+    final centerImage =
+        outerCircle * .32;
+
+    final radius =
+        outerCircle * .40;
+
+    final iconSize =
+        outerCircle * .14;
+
 
 
     return SizedBox(
+
       width: outerCircle,
       height: outerCircle,
 
+
       child: Stack(
+
         alignment: Alignment.center,
+
 
         children: [
 
+
           Container(
+
             width: outerCircle,
             height: outerCircle,
 
+
             decoration: BoxDecoration(
+
               shape: BoxShape.circle,
+
               color: AppColors.white.withValues(
                 alpha: .45,
               ),
 
+
               boxShadow: [
+
                 BoxShadow(
                   color: AppColors.flightGlow,
-                  blurRadius: 12,
-                  offset: const Offset(0,5),
+                  blurRadius: 18,
+                  offset: const Offset(0,8),
                 ),
+
               ],
+
             ),
+
           ),
+
 
 
           Container(
+
             width: innerCircle,
             height: innerCircle,
 
+
             decoration: const BoxDecoration(
+
               color: AppColors.white,
+
               shape: BoxShape.circle,
+
             ),
 
+
+
             child: Center(
+
               child: Image.asset(
+
                 "lib/assets/glass.png",
+
                 width: centerImage,
+
                 fit: BoxFit.contain,
+
               ),
+
             ),
+
           ),
 
 
+
+
           AnimatedBuilder(
+
             animation: _controller,
 
-            builder: (_, __) {
+
+            builder: (_,__) {
+
 
               final rotation =
                   _controller.value * 360;
 
+
+
               return Stack(
+
                 alignment: Alignment.center,
+
 
                 children: [
 
-                  for(int i = 0; i < icons.length; i++)
+                  for(int i = 0;
+                      i < icons.length;
+                      i++)
 
                     _circleIcon(
+
                       asset: icons[i],
+
                       angle:
                           (i * 360 / icons.length)
                           + rotation,
+
                       radius: radius,
+
                       iconSize: iconSize,
+
                     ),
+
                 ],
+
               );
+
             },
+
           ),
+
         ],
+
       ),
+
     );
+
   }
 
 
+
+
   Widget _circleIcon({
+
     required String asset,
+
     required double angle,
+
     required double radius,
+
     required double iconSize,
+
   }) {
+
 
     final radians =
         angle * math.pi / 180;
 
 
+
     return Transform.translate(
 
       offset: Offset(
+
         radius * math.cos(radians),
+
         radius * math.sin(radians),
+
       ),
+
+
 
       child: SizedBox(
+
         width: iconSize,
+
         height: iconSize,
 
+
         child: Image.asset(
+
           asset,
+
           fit: BoxFit.contain,
 
+
           errorBuilder: (_,__,___) {
+
             return Icon(
-              Icons.image_not_supported_outlined,
+
+              Icons.image_not_supported,
+
               size: iconSize * .8,
-              color: Colors.grey,
+
             );
+
           },
+
         ),
+
       ),
+
     );
+
   }
 }
