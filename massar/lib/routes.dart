@@ -16,4 +16,5 @@ class Routes {
   static const String booking = '/booking_screen';
   static const String profile = '/profile';
   static const String expenseTracker = '/expense_tracker';
+  static const String addDream = '/add_dream';
 }
