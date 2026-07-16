@@ -4,7 +4,6 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:massar/theme/app_colors.dart';
 import 'package:massar/custom%20widgets/bottom_nav_glass.dart';
 import 'package:massar/custom%20widgets/glass_container.dart';
-import 'package:massar/home%20screen/cubits/trip_cubit.dart';
 import 'package:massar/flights%20screen/cubits/flight_cubit.dart';
 import 'package:massar/flights%20screen/cubits/flight_state.dart';
 import 'package:massar/flights%20screen/models/flight_model.dart';
@@ -15,7 +14,7 @@ class FlightsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (_) => FlightCubit(context.read<TripCubit>()),
+      create: (_) => FlightCubit(),
       child: const _FlightsScreenBody(),
     );
   }

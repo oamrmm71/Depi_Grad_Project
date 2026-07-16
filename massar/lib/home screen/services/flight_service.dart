@@ -92,10 +92,12 @@ class FlightService {
         : await _countryService.resolveCountryName(countryCode);
 
     final result = {
-      "cityName": cityName.isNotEmpty ? cityName : code,
-      "countryName": countryName,
-      "countryCode": countryCode,
-    };
+  "cityName": cityName.isNotEmpty ? cityName : code,
+  "countryName": countryName,
+  "countryCode": countryCode,
+  "latitude": (airport["lat"] as num?)?.toDouble() ?? 0.0,
+  "longitude": (airport["lng"] as num?)?.toDouble() ?? 0.0,
+};
     _airportDetailsCache[code] = result;
     return result;
   }

@@ -1,50 +1,58 @@
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:massar/home%20screen/cubits/trip_cubit.dart';
-import 'package:massar/home%20screen/cubits/trip_state.dart';
-import 'package:massar/flights%20screen/models/flight_model.dart';
-import 'flight_state.dart';
 import 'dart:async';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+
+import '../models/flight_model.dart';
+import 'flight_state.dart';
+
 class FlightCubit extends Cubit<FlightState> {
-  final TripCubit tripCubit;
-  late final StreamSubscription<TripState> _tripSubscription;
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
-  FlightCubit(this.tripCubit) : super(FlightInitial()) {
-    _tripSubscription = tripCubit.stream.listen(_onTripStateChanged);
-    _onTripStateChanged(tripCubit.state);
+  StreamSubscription<QuerySnapshot>? _subscription;
+
+  FlightCubit() : super(FlightLoading()) {
+    loadFlights();
   }
 
-  void _onTripStateChanged(TripState tripState) {
-    if (tripState is TripLoading) {
-      emit(FlightLoading());
-      return;
-    }
+  Future<void> loadFlights() async {
+  await _subscription?.cancel();
 
-    if (tripState is TripError) {
-      emit(FlightError(tripState.message));
-      return;
-    }
+  final uid = FirebaseAuth.instance.currentUser?.uid;
 
-    if (tripState is TripLoaded) {
-      final flights = <FlightModel>[];
-
-      for (final trip in tripState.trips) {
-        if (trip.flightCode != null || trip.departureDate != null) {
-          flights.add(FlightModel.fromTrip(trip));
-        }
-        if (trip.returnFlightCode != null ||
-            trip.returnDepartureDate != null) {
-          flights.add(FlightModel.fromTrip(trip, isReturn: true));
-        }
-      }
-
-      emit(FlightLoaded(flights));
-    }
+  if (uid == null) {
+    emit(FlightLoaded([]));
+    return;
   }
+
+  _subscription = _firestore
+      .collection('users')
+      .doc(uid)
+      .collection('bookings')
+      .orderBy('bookedAt', descending: true)
+      .snapshots()
+      .listen(
+        (snapshot) {
+          final flights = snapshot.docs
+              .map(
+                (doc) => FlightModel.fromFirestore(
+                  doc.data() as Map<String, dynamic>,
+                ),
+              )
+              .toList();
+
+          emit(FlightLoaded(flights));
+        },
+        onError: (e) {
+          emit(FlightError(e.toString()));
+        },
+      );
+}
 
   @override
-  Future<void> close() {
-    _tripSubscription.cancel();
+  Future<void> close() async {
+    await _subscription?.cancel();
     return super.close();
   }
 }

@@ -64,16 +64,28 @@ class BookingService {
           .doc('${flight.flightId}_${DateTime.now().millisecondsSinceEpoch}');
 
       batch.set(bookingRef, {
-        'flightId': flight.flightId,
-        'flightCode': flight.flightCode,
-        'flightCompany': flight.flightCompany,
-        'date': flight.date,
-        'fromAirport': flight.fromAirport,
-        'toAirport': flight.toAirport,
-        'selectedSeats': selectedSeats.map((seat) => seat.seatNumber).toList(),
-        'seatCount': selectedSeats.length,
-        'bookedAt': bookedAt,
-      });
+  'flightId': flight.flightId,
+  'flightType': flight.flightType,
+  'flightCompany': flight.flightCompany,
+  'flightCode': flight.flightCode,
+  'date': flight.date,
+
+  'fromCountry': flight.fromCountry,
+  'toCountry': flight.toCountry,
+
+  'fromAirport': flight.fromAirport,
+  'toAirport': flight.toAirport,
+
+  'fromTime': flight.fromTime,
+  'toTime': flight.toTime,
+
+  'selectedSeats': selectedSeats
+      .map((e) => e.seatNumber)
+      .toList(),
+
+  'seatCount': selectedSeats.length,
+  'bookedAt': bookedAt,
+    });
     }
 
     await batch.commit();

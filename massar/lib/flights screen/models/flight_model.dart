@@ -107,4 +107,21 @@ class FlightModel {
       toTime: trip.destinationTime ?? 'TBD',
     );
   }
+  factory FlightModel.fromFirestore(
+  Map<String, dynamic> json,
+) {
+  return FlightModel(
+    flightId: json['flightId'] ?? '',
+    flightType: json['flightType'] ?? 'Flight',
+    flightCompany: json['flightCompany'] ?? '',
+    flightCode: json['flightCode'] ?? '',
+    date: json['date'] ?? '',
+    fromCountry: json['fromCountry'] ?? '',
+    fromAirport: json['fromAirport'] ?? '',
+    fromTime: json['fromTime'] ?? '',
+    toCountry: json['toCountry'] ?? '',
+    toAirport: json['toAirport'] ?? '',
+    toTime: json['toTime'] ?? '',
+  );
+}
 }
