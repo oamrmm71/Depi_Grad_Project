@@ -6,11 +6,41 @@ import 'package:massar/theme/app_colors.dart';
 class OnboardingScreen6 extends StatelessWidget {
   const OnboardingScreen6({super.key});
 
+  static const double horizontalPadding = 80;
+  static const double featureScale = 1.5;
+
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
 
     final buttonHeight = (size.height * 0.075).clamp(54.0, 60.0);
+
+    const features = [
+      _FeatureData(
+        image: "lib/assets/time sand.png",
+        text: "Plan your journey\ntimeline with smart\nitineraries.",
+        rotation: -0.08,
+        imageLeft: true,
+      ),
+      _FeatureData(
+        image: "lib/assets/maps.png",
+        text: "Plan your journey\ntimeline with smart\nitineraries.",
+        rotation: 0.08,
+        imageLeft: false,
+      ),
+      _FeatureData(
+        image: "lib/assets/tower.png",
+        text: "Discover iconic\nlandmarks and\nunforgettable\nexperiences.",
+        rotation: -0.05,
+        imageLeft: true,
+      ),
+      _FeatureData(
+        image: "lib/assets/clock.png",
+        text: "Stay on track with live\ntrip schedules and\nreminders.",
+        rotation: 0,
+        imageLeft: false,
+      ),
+    ];
 
     return Scaffold(
       backgroundColor: AppColors.splashBg,
@@ -19,9 +49,8 @@ class OnboardingScreen6 extends StatelessWidget {
           children: [
             Expanded(
               child: Padding(
-                padding: EdgeInsets.only(
-                  left: 80,
-                  right: 80,
+                padding: const EdgeInsets.symmetric(
+                  horizontal: horizontalPadding,
                 ),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -41,94 +70,37 @@ class OnboardingScreen6 extends StatelessWidget {
 
                     const Spacer(),
 
-                    Transform.scale(
-                      scale: 1.5,
-                      child: const FeatureItem(
-                        image: "lib/assets/time sand.png",
-                        text:
-                            "Plan your journey\ntimeline with smart\nitineraries.",
-                        rotation: -0.08,
-                        imageLeft: true,
+                    ...features.map(
+                      (feature) => Column(
+                        children: [
+                          Transform.scale(
+                            scale: featureScale,
+                            child: FeatureItem(
+                              image: feature.image,
+                              text: feature.text,
+                              rotation: feature.rotation,
+                              imageLeft: feature.imageLeft,
+                            ),
+                          ),
+                          const Spacer(),
+                        ],
                       ),
                     ),
-
-                    const Spacer(),
-
-                    Transform.scale(
-                      scale: 1.5,
-                      child: const FeatureItem(
-                        image: "lib/assets/maps.png",
-                        text:
-                            "Plan your journey\ntimeline with smart\nitineraries.",
-                        rotation: 0.08,
-                        imageLeft: false,
-                      ),
-                    ),
-
-                    const Spacer(),
-
-                    Transform.scale(
-                      scale: 1.5,
-                      child: const FeatureItem(
-                        image: "lib/assets/tower.png",
-                        text:
-                            "Discover iconic\nlandmarks and\nunforgettable\nexperiences.",
-                        rotation: -0.05,
-                        imageLeft: true,
-                      ),
-                    ),
-
-                    const Spacer(),
-
-                    Transform.scale(
-                      scale: 1.5,
-                      child: const FeatureItem(
-                        image: "lib/assets/clock.png",
-                        text:
-                            "Stay on track with live\ntrip schedules and\nreminders.",
-                        rotation: 0,
-                        imageLeft: false,
-                      ),
-                    ),
-
-                    const Spacer(),
                   ],
                 ),
               ),
             ),
 
-            Padding(
-              padding: const EdgeInsets.only(left: 20, right: 20),
-              child: SizedBox(
-                width: double.infinity,
-                height: buttonHeight,
-                child: ElevatedButton(
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (_) => const OnboardingScreen7(),
-                      ),
-                    );
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: AppColors.navIcon,
-                    foregroundColor: AppColors.white,
-                    elevation: 0,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(30),
-                    ),
+            StartButton(
+              height: buttonHeight,
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => const OnboardingScreen7(),
                   ),
-                  child: Text(
-                    "Lets start..",
-                    style: GoogleFonts.poppins(
-                      fontSize: 18,
-                      fontWeight: FontWeight.w500,
-                      color: AppColors.white,
-                    ),
-                  ),
-                ),
-              ),
+                );
+              },
             ),
 
             SizedBox(height: size.height * 0.025),
@@ -138,6 +110,64 @@ class OnboardingScreen6 extends StatelessWidget {
     );
   }
 }
+
+
+class _FeatureData {
+  final String image;
+  final String text;
+  final double rotation;
+  final bool imageLeft;
+
+  const _FeatureData({
+    required this.image,
+    required this.text,
+    required this.rotation,
+    required this.imageLeft,
+  });
+}
+
+
+class StartButton extends StatelessWidget {
+  final double height;
+  final VoidCallback onPressed;
+
+  const StartButton({
+    super.key,
+    required this.height,
+    required this.onPressed,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 20),
+      child: SizedBox(
+        width: double.infinity,
+        height: height,
+        child: ElevatedButton(
+          onPressed: onPressed,
+          style: ElevatedButton.styleFrom(
+            backgroundColor: AppColors.navIcon,
+            foregroundColor: AppColors.white,
+            elevation: 0,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(30),
+            ),
+          ),
+          child: Text(
+            "Lets start..",
+            style: GoogleFonts.poppins(
+              fontSize: 18,
+              fontWeight: FontWeight.w500,
+              color: AppColors.white,
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
 
 class FeatureItem extends StatelessWidget {
   final String image;
@@ -175,6 +205,12 @@ class FeatureItem extends StatelessWidget {
       ),
     );
 
+    final baseTextStyle = GoogleFonts.poppins(
+      fontSize: textFont,
+      fontWeight: FontWeight.w700,
+      height: 1.15,
+    );
+
     final textWidget = Transform.rotate(
       angle: rotation,
       child: Stack(
@@ -182,57 +218,47 @@ class FeatureItem extends StatelessWidget {
           Text(
             text,
             textAlign: TextAlign.center,
-            style: GoogleFonts.poppins(
-              fontSize: textFont,
-              fontWeight: FontWeight.w700,
-              height: 1.15,
+            style: baseTextStyle.copyWith(
               foreground: Paint()
                 ..style = PaintingStyle.stroke
                 ..strokeWidth = 10
                 ..strokeJoin = StrokeJoin.round
-                ..color = const Color.fromARGB(255, 255, 255, 255),
+                ..color = AppColors.white,
             ),
           ),
           Text(
             text,
             textAlign: TextAlign.center,
-            style: GoogleFonts.poppins(
-              fontSize: textFont,
-              fontWeight: FontWeight.w700,
+            style: baseTextStyle.copyWith(
               color: AppColors.navIcon,
-              height: 1.15,
             ),
           ),
         ],
       ),
     );
 
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        return Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: imageLeft
-              ? [
-                  imageWidget,
-                  Expanded(
-                    child: Align(
-                      alignment: Alignment.centerLeft,
-                      child: textWidget,
-                    ),
-                  ),
-                ]
-              : [
-                  Expanded(
-                    child: Align(
-                      alignment: Alignment.centerRight,
-                      child: textWidget,
-                    ),
-                  ),
-                  imageWidget,
-                ],
-        );
-      },
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: imageLeft
+          ? [
+              imageWidget,
+              Expanded(
+                child: Align(
+                  alignment: Alignment.centerLeft,
+                  child: textWidget,
+                ),
+              ),
+            ]
+          : [
+              Expanded(
+                child: Align(
+                  alignment: Alignment.centerRight,
+                  child: textWidget,
+                ),
+              ),
+              imageWidget,
+            ],
     );
   }
 }
