@@ -484,20 +484,30 @@ class TravelDetailScreen extends StatelessWidget {
                                   ),
                                 ),
                                 onPressed: () {
+                                  debugPrint("===== TRAVEL DETAIL DEBUG =====");
+debugPrint("Trip stops count: ${trip.stops.length}");
+
+for (final stop in trip.stops) {
+  debugPrint(
+    "${stop.airport} | ${stop.city} | ${stop.latitude}, ${stop.longitude}",
+  );
+}
+debugPrint("===============================");
                                   final flight = FlightModel(
-  flightId: trip.flightID ?? '',
-  flightType: 'Transit Flight',
-  flightCompany: trip.flightCompany ?? 'TBD',
-  flightCode: trip.flightCode ?? 'TBD',
-  date: trip.departureDate ?? 'TBD',
-  fromCountry: trip.takeoffCity,
-  fromAirport: trip.takeoffAirport,
-  fromTime: trip.takeoffTime ?? 'TBD',
-  toCountry: trip.destinationCity,
-  toAirport: trip.destinationAirport,
-  toTime: trip.destinationTime ?? 'TBD',
-  stops: trip.stops, 
-);
+                                    flightId: trip.flightID ?? '',
+                                    flightType: 'Transit Flight',
+                                    flightCompany: trip.flightCompany ?? 'TBD',
+                                    flightCode: trip.flightCode ?? 'TBD',
+                                    date: trip.departureDate ?? 'TBD',
+                                    fromCountry: trip.takeoffCity,
+                                    fromAirport: trip.takeoffAirport,
+                                    fromTime: trip.takeoffTime ?? 'TBD',
+                                    toCountry: trip.destinationCity,
+                                    toAirport: trip.destinationAirport,
+                                    toTime: trip.destinationTime ?? 'TBD',
+                                    stops: trip.stops, 
+                                    );
+                                
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(
