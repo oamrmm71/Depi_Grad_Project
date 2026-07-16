@@ -496,7 +496,16 @@ class TravelDetailScreen extends StatelessWidget {
                                     toCountry: trip.destinationCity,
                                     toAirport: trip.destinationAirport,
                                     toTime: trip.destinationTime ?? 'TBD',
-                                    stops: trip.stops, 
+                                    stops: trip.stops,
+                                    itineraryStops: [
+                                      if (trip.tripPlan?.accommodations
+                                              .isNotEmpty ??
+                                          false)
+                                        trip.tripPlan!.accommodations.first
+                                            .hotelName,
+                                      ...?trip.tripPlan?.attractions
+                                          .map((a) => a.name),
+                                    ],
                                     );
                                 
                                   Navigator.push(

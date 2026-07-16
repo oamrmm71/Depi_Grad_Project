@@ -82,6 +82,7 @@ class BookingService {
 
         'selectedSeats': selectedSeats.map((e) => e.seatNumber).toList(),
         'stops': flight.stops.map((e) => e.toJson()).toList(),
+        'itineraryStops': flight.itineraryStops,
         'seatCount': selectedSeats.length,
         'bookedAt': bookedAt,
       });

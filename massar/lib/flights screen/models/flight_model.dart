@@ -41,6 +41,7 @@ class FlightModel {
   final String toAirport;
   final String toTime;
   final List<FlightStop> stops;
+  final List<String> itineraryStops;
 
   FlightModel({
     required this.flightId,
@@ -55,6 +56,7 @@ class FlightModel {
     required this.toAirport,
     required this.toTime,
     this.stops = const [],
+    this.itineraryStops = const [],
   });
 
   Map<String, dynamic> toJson() {
@@ -71,6 +73,7 @@ class FlightModel {
       'toAirport': toAirport,
       'toTime': toTime,
       'stops': stops.map((s) => s.toJson()).toList(),
+      'itineraryStops': itineraryStops,
     };
   }
 
@@ -138,7 +141,18 @@ class FlightModel {
       toAirport: trip.destinationAirport,
       toTime: trip.destinationTime ?? 'TBD',
       stops: trip.stops,
+      itineraryStops: _itineraryStopsFromTrip(trip),
     );
+  }
+
+  static List<String> _itineraryStopsFromTrip(TripModel trip) {
+    final plan = trip.tripPlan;
+    if (plan == null) return [];
+
+    return [
+      if (plan.accommodations.isNotEmpty) plan.accommodations.first.hotelName,
+      ...plan.attractions.map((a) => a.name),
+    ].where((name) => name.trim().isNotEmpty).toList();
   }
   factory FlightModel.fromFirestore(
   Map<String, dynamic> json,
@@ -157,6 +171,9 @@ class FlightModel {
     toTime: json['toTime'] ?? '',
     stops: ((json['stops'] as List?) ?? [])
         .map((s) => FlightStop.fromJson(Map<String, dynamic>.from(s)))
+        .toList(),
+    itineraryStops: ((json['itineraryStops'] as List?) ?? [])
+        .map((e) => e.toString())
         .toList(),
   );
 }
