@@ -9,6 +9,7 @@ class TripModel {
   final String? departureDate;
   final String? arrivalDate;
   final String? flightCompany;
+  final String? flightID;
   final String? flightCode;
   final String? ticketPrice;
   final String takeoffCity;
@@ -36,6 +37,7 @@ class TripModel {
     this.departureDate,
     this.arrivalDate,
     this.flightCompany,
+    this.flightID,
     this.flightCode,
     this.ticketPrice,
     required this.takeoffCity,
@@ -58,8 +60,7 @@ class TripModel {
   factory TripModel.fromJson(Map<String, dynamic> json) {
     return TripModel(
       cityName: json["cityName"] ?? "Unknown",
-      countryName:
-          json["countryName"] ?? json["locationName"] ?? "",
+      countryName: json["countryName"] ?? json["locationName"] ?? "",
       tripBudget: json["tripBudget"]?.toString() ?? "0",
       locationName: json["locationName"] ?? "",
       locationImage: json["locationImage"] ?? "",
@@ -69,6 +70,7 @@ class TripModel {
 
       flightCompany: json["flightCompany"],
       flightCode: json["flightCode"],
+      flightID: json["flightID"]?.toString(),
       ticketPrice: json["ticketPrice"]?.toString(),
 
       takeoffCity: json["takeoffCity"] ?? "",
@@ -86,12 +88,9 @@ class TripModel {
       returnTakeoffTime: json["returnTakeoffTime"],
       returnDestinationTime: json["returnDestinationTime"],
 
-      tours: (json["tours"] as List<dynamic>?)
-              ?.map(
-                (e) => TourModel.fromJson(
-                  Map<String, dynamic>.from(e),
-                ),
-              )
+      tours:
+          (json["tours"] as List<dynamic>?)
+              ?.map((e) => TourModel.fromJson(Map<String, dynamic>.from(e)))
               .toList() ??
           [],
 
@@ -100,10 +99,8 @@ class TripModel {
       tripPlan: json["tripPlan"] == null
           ? null
           : json["tripPlan"] is TripPlanModel
-              ? json["tripPlan"] as TripPlanModel
-              : TripPlanModel.fromJson(
-                  Map<String, dynamic>.from(json["tripPlan"]),
-                ),
+          ? json["tripPlan"] as TripPlanModel
+          : TripPlanModel.fromJson(Map<String, dynamic>.from(json["tripPlan"])),
     );
   }
 }
@@ -112,10 +109,7 @@ class TourModel {
   final String name;
   final String price;
 
-  TourModel({
-    required this.name,
-    required this.price,
-  });
+  TourModel({required this.name, required this.price});
 
   factory TourModel.fromJson(Map<String, dynamic> json) {
     return TourModel(

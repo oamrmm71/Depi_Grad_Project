@@ -120,7 +120,7 @@ class _BookingScreenViewState extends State<BookingScreenView> {
                       ],
                     ),
                     GestureDetector(
-                      onTap: () {},
+                      onTap: () {  Navigator.pop(context);},
                       child: Container(
                         padding: const EdgeInsets.all(10),
                         margin: EdgeInsets.only(top: 20),
