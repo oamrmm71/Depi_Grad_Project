@@ -53,7 +53,7 @@ class BookingService {
         'bookedBy': uid,
         'bookedAt': bookedAt,
         'flightId': flight.flightId,
-        'stops': flight.stops
+        'stops': flight.stops.map((e) => e.toJson()).toList(),
       }, SetOptions(merge: true));
     }
 
@@ -81,7 +81,7 @@ class BookingService {
         'toTime': flight.toTime,
 
         'selectedSeats': selectedSeats.map((e) => e.seatNumber).toList(),
-        'stops':flight.stops,
+        'stops': flight.stops.map((e) => e.toJson()).toList(),
         'seatCount': selectedSeats.length,
         'bookedAt': bookedAt,
       });

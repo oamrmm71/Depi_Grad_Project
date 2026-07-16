@@ -95,6 +95,7 @@ class TripService {
             "destinationCityName": cityName,
             "destinationCountryCode":
                 airportDetails["countryCode"]?.toString() ?? "",
+            "stops": [],
           };
         }
 
@@ -120,6 +121,7 @@ class TripService {
           "arrivalDate": null,
           "takeoffTime": null,
           "destinationTime": null,
+          "stops": [],
         };
         try {
           returnFlightData = await _flightService.getFlightData(
@@ -152,12 +154,14 @@ class TripService {
           "destinationCity": cityName,
           "destinationAirport": flightData["destinationAirport"],
           "destinationTime": flightData["destinationTime"],
+          "stops": flightData["stops"] ?? [],
           "returnFlightCompany": returnFlightData["flightCompany"],
           "returnFlightCode": returnFlightData["flightCode"],
           "returnDepartureDate": returnFlightData["departureDate"],
           "returnArrivalDate": returnFlightData["arrivalDate"],
           "returnTakeoffTime": returnFlightData["takeoffTime"],
           "returnDestinationTime": returnFlightData["destinationTime"],
+          "returnStops": returnFlightData["stops"] ?? [],
           "isRealFlightData": !usedFallback,
           "fullTripPlan": "Trip plan will be generated soon",
           "tripPlan": tripPlan,
