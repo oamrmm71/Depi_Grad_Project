@@ -10,6 +10,8 @@ import 'package:massar/home%20screen/services/flight_service.dart';
 import 'package:massar/custom widgets/app_background.dart';
 import 'package:massar/theme/app_colors.dart';
 
+const Color _navyBlue = Color(0xFF000080);
+
 class _ItineraryPlace {
   final String name;
   final LatLng point;
@@ -48,6 +50,10 @@ class _FlightRouteScreenState extends State<FlightRouteScreen> {
   List<LatLng> get _stopPoints => widget.flight.stops
       .map((s) => LatLng(s.latitude, s.longitude))
       .toList();
+
+  List<LatLng> get _boundsPoints => _itineraryPlaces.isNotEmpty
+      ? _itineraryPlaces.map((p) => p.point).toList()
+      : [_origin, ..._stopPoints, _destination];
 
   Future<LatLng?> _geocodePlace(String query) async {
     try {
@@ -195,12 +201,7 @@ class _FlightRouteScreenState extends State<FlightRouteScreen> {
           FlutterMap(
             options: MapOptions(
               initialCameraFit: CameraFit.bounds(
-                bounds: LatLngBounds.fromPoints([
-                  _origin,
-                  ..._stopPoints,
-                  _destination,
-                  ..._itineraryPlaces.map((p) => p.point),
-                ]),
+                bounds: LatLngBounds.fromPoints(_boundsPoints),
                 padding: const EdgeInsets.fromLTRB(
                   60,
                   180,
@@ -223,19 +224,18 @@ class _FlightRouteScreenState extends State<FlightRouteScreen> {
                     'com.yourcompany.massar',
               ),
 
-              PolylineLayer(
-                polylines: [
-                  Polyline(
-                    points: [
-                      _origin,
-                      ..._stopPoints,
-                      _destination,
-                    ],
-                    strokeWidth: 3,
-                    color: AppColors.navIcon,
-                  ),
-                ],
-              ),
+              if (_itineraryPlaces.length > 1)
+                PolylineLayer(
+                  polylines: [
+                    Polyline(
+                      points: [
+                        for (final place in _itineraryPlaces) place.point,
+                      ],
+                      strokeWidth: 3,
+                      color: _navyBlue,
+                    ),
+                  ],
+                ),
 
               MarkerLayer(
                 markers: [
@@ -464,11 +464,16 @@ class _ItineraryMarker extends StatelessWidget {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        const Icon(
-          Icons.star,
-          color: Colors.amber,
-          size: 20,
+        Container(
+          width: 14,
+          height: 14,
+          decoration: BoxDecoration(
+            color: _navyBlue,
+            shape: BoxShape.circle,
+            border: Border.all(color: AppColors.white, width: 2),
+          ),
         ),
+        const SizedBox(height: 2),
         Container(
           padding: const EdgeInsets.symmetric(
             horizontal: 6,
