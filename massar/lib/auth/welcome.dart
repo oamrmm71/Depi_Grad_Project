@@ -14,23 +14,21 @@ class WelcomeScreen extends StatelessWidget {
 
     return Scaffold(
       backgroundColor: AppColors.splashBg,
-      body: SafeArea(
-        child: Center(
-          child: Container(
-            width: size.width,
-            height: size.height,
-            decoration: const BoxDecoration(color: Color(0xFF072C46)),
-            child: Stack(
-              children: [
-                _buildTopGradient(size),
-                _buildGlow(size),
-                _buildGlobe(size),
-                _buildWelcomeText(size),
-                _buildLogo(size),
-                _buildBottomGlow(size),
-                _buildActionButton(context),
-              ],
-            ),
+      body: Center(
+        child: Container(
+          width: size.width,
+          height: size.height,
+          decoration: const BoxDecoration(color: Color(0xFF072C46)),
+          child: Stack(
+            children: [
+              _buildTopGradient(size),
+              _buildGlow(size),
+              _buildGlobe(size),
+              _buildWelcomeText(size),
+              _buildLogo(size),
+              _buildBottomGlow(size),
+              _buildActionButton(context),
+            ],
           ),
         ),
       ),
@@ -63,7 +61,7 @@ class WelcomeScreen extends StatelessWidget {
     return Positioned(
       top: size.height * 0.12,
       right: -18,
-      child: const GlowCircle(radius: 80, color: Color(0x224D8DFF)),
+      child: const GlowCircle(radius: 200, color: Color(0x224D8DFF)),
     );
   }
 
@@ -71,7 +69,7 @@ class WelcomeScreen extends StatelessWidget {
     return Positioned(
       left: -76,
       right: -76,
-      top: size.height * 0.13,
+      top: size.height * 0.20,
       child: Transform.scale(
         scale: 1.23,
         child: Image.asset(
@@ -85,14 +83,14 @@ class WelcomeScreen extends StatelessWidget {
 
   Widget _buildWelcomeText(Size size) {
     return Positioned(
-      left: size.width * 0.07,
-      top: size.height * 0.40,
+      left: size.width * 0.15,
+      top: size.height * 0.43,
       child: Text(
         'Welcome to',
         style: GoogleFonts.poppins(
-          fontSize: 28,
+          fontSize: 26,
           color: const Color(0xFF0A3553),
-          fontWeight: FontWeight.w700,
+          fontWeight: FontWeight.w300,
         ),
       ),
     );
@@ -102,7 +100,7 @@ class WelcomeScreen extends StatelessWidget {
     return Positioned(
       left: 0,
       right: 0,
-      top: size.height * 0.24,
+      top: size.height * 0.30,
       child: Center(
         child: Image.asset(
           'lib/assets/logo_bgremove.png',

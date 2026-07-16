@@ -335,14 +335,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     child: Column(
 
                       children:[
-
-
-                        const PageTitle(
-                          firstLine:"MY",
-                          secondLine:"PROFILE",
+                        Align(
+                        alignment: Alignment.centerLeft,
+                       child: const PageTitle(
+                        firstLine: "MY",
+                        secondLine: "PROFILE",
+                          ),
                         ),
-
-
                         SizedBox(
                           height:size.height*.02,
                         ),

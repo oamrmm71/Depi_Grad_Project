@@ -13,13 +13,10 @@ class FlightService {
   static const String _base = "https://airlabs.co/api/v9";
 
   FlightService({required CountryService countryService})
-      : _countryService = countryService;
+    : _countryService = countryService;
 
-  Future<Response> _get(String path, {Map<String, dynamic>? params}) =>
-      _dio.get(
-        "$_base$path",
-        queryParameters: {"api_key": _apiKey, ...?params},
-      );
+  Future<Response> _get(String path, {Map<String, dynamic>? params}) => _dio
+      .get("$_base$path", queryParameters: {"api_key": _apiKey, ...?params});
 
   String _formatDate(DateTime dt) =>
       "${dt.day.toString().padLeft(2, '0')}/"
@@ -29,6 +26,32 @@ class FlightService {
   String _formatTime(DateTime dt) =>
       "${dt.hour.toString().padLeft(2, '0')}:"
       "${dt.minute.toString().padLeft(2, '0')}";
+
+  String _buildFlightId({
+    String? flightCode,
+    required String origin,
+    required String destination,
+    String? date,
+  }) {
+    if (flightCode != null && flightCode.trim().isNotEmpty) {
+      return flightCode.trim();
+    }
+
+    final sanitizedDate = (date ?? '').replaceAll(
+      RegExp(r'[^A-Za-z0-9_]'),
+      '_',
+    );
+    final sanitizedOrigin = origin.replaceAll(RegExp(r'[^A-Za-z0-9_]'), '_');
+    final sanitizedDestination = destination.replaceAll(
+      RegExp(r'[^A-Za-z0-9_]'),
+      '_',
+    );
+    final base = '${sanitizedOrigin}_to_${sanitizedDestination}';
+    if (sanitizedDate.isNotEmpty) {
+      return '${base}_date_${sanitizedDate}'.replaceAll(RegExp(r'\s+'), '_');
+    }
+    return base.replaceAll(RegExp(r'\s+'), '_');
+  }
 
   String _cityFromAirportName(String name) => name
       .replaceAll(
@@ -48,8 +71,7 @@ class FlightService {
       return _airlineNameCache[iataCode];
     }
     try {
-      final response =
-          await _get("/airlines", params: {"iata_code": iataCode});
+      final response = await _get("/airlines", params: {"iata_code": iataCode});
       final items = response.data["response"] as List? ?? [];
       if (items.isNotEmpty) {
         final name = items.first["name"]?.toString();
@@ -66,25 +88,26 @@ class FlightService {
     final cached = _airportDetailsCache[code];
     if (cached != null) return cached;
 
-    final response =
-        await _get("/airports", params: {"iata_code": code});
+    final response = await _get("/airports", params: {"iata_code": code});
     final items = response.data["response"] as List? ?? [];
     if (items.isEmpty) throw Exception("Airport not found: $iata");
 
     final airport = items.first as Map;
 
-    final rawCity = airport["city"]?.toString().trim() ??
+    final rawCity =
+        airport["city"]?.toString().trim() ??
         airport["city_name"]?.toString().trim() ??
         "";
     final airportName = airport["name"]?.toString().trim() ?? "";
     final cityName = rawCity.isNotEmpty
         ? rawCity
         : airportName.isNotEmpty
-            ? _cityFromAirportName(airportName)
-            : code;
+        ? _cityFromAirportName(airportName)
+        : code;
 
     final countryCode = airport["country_code"]?.toString().trim() ?? "";
-    final rawCountryName = airport["country_name"]?.toString().trim() ??
+    final rawCountryName =
+        airport["country_name"]?.toString().trim() ??
         airport["country"]?.toString().trim() ??
         "";
     final countryName = rawCountryName.isNotEmpty
@@ -92,12 +115,12 @@ class FlightService {
         : await _countryService.resolveCountryName(countryCode);
 
     final result = {
-  "cityName": cityName.isNotEmpty ? cityName : code,
-  "countryName": countryName,
-  "countryCode": countryCode,
-  "latitude": (airport["lat"] as num?)?.toDouble() ?? 0.0,
-  "longitude": (airport["lng"] as num?)?.toDouble() ?? 0.0,
-};
+      "cityName": cityName.isNotEmpty ? cityName : code,
+      "countryName": countryName,
+      "countryCode": countryCode,
+      "latitude": (airport["lat"] as num?)?.toDouble() ?? 0.0,
+      "longitude": (airport["lng"] as num?)?.toDouble() ?? 0.0,
+    };
     _airportDetailsCache[code] = result;
     return result;
   }
@@ -120,8 +143,7 @@ class FlightService {
     final route = routes.first;
     final depTimeStr = route["dep_time"]?.toString();
     final arrTimeStr = route["arr_time"]?.toString();
-    final durationMins =
-        int.tryParse(route["duration"]?.toString() ?? "") ?? 0;
+    final durationMins = int.tryParse(route["duration"]?.toString() ?? "") ?? 0;
 
     final rawDays = route["days"];
     final opDays = (rawDays is List)
@@ -150,8 +172,17 @@ class FlightService {
 
     final airlineIata = route["airline_iata"]?.toString() ?? "";
     final airlineName = await _getAirlineName(airlineIata);
+    final flightId = _buildFlightId(
+      flightCode: route["flight_iata"]?.toString(),
+      origin: origin,
+      destination: destination,
+      date: nextDep != null ? _formatDate(nextDep) : null,
+    );
 
     return {
+      "flightID": flightId,
+      "flightId": flightId,
+      "f": flightId,
       "flightCompany": airlineName,
       "flightCode": route["flight_iata"]?.toString(),
       "takeoffAirport": origin,
@@ -162,8 +193,8 @@ class FlightService {
       "arrivalDate": arrDt != null
           ? _formatDate(arrDt)
           : nextDep != null
-              ? _formatDate(nextDep)
-              : null,
+          ? _formatDate(nextDep)
+          : null,
       "takeoffCityName": origin,
       "destinationCityName": destination,
       "destinationCountryCode": "",

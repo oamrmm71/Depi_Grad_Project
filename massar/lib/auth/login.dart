@@ -35,41 +35,42 @@ class _LoginScreenState extends State<LoginScreen> {
     final size = MediaQuery.of(context).size;
     return Scaffold(
       backgroundColor: AppColors.splashBg,
-      body: SafeArea(
-        child: SingleChildScrollView(
-          child: Column(
-            children: [
-              SizedBox(
-                height: size.height * .48,
-                width: double.infinity,
-                child: Stack(
-                  fit: StackFit.expand,
-                  children: [
-                    Container(
-                      color: const Color(0xFF072B46),
-                    ),
-
-                    Align(
-                      alignment: Alignment.bottomCenter,
-                      child: Container(
-                        height: size.height * .39,
-                        decoration: BoxDecoration(
-                          gradient: RadialGradient(
-                            center: const Alignment(0, 1.55),
-                            radius: 1.25,
-                            colors: [
-                              Colors.white.withOpacity(.45),
-                              Colors.white.withOpacity(.12),
-                              Colors.transparent,
-                            ],
-                          ),
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            SizedBox(
+              height: size.height * .48,
+              width: double.infinity,
+              child: Stack(
+                fit: StackFit.expand,
+                children: [
+                  Container(
+                    color: const Color(0xFF072B46),
+                  ),
+      
+                  Align(
+                    alignment: Alignment.bottomCenter,
+                    child: Container(
+                      height: size.height * .39,
+                      decoration: BoxDecoration(
+                        gradient: RadialGradient(
+                          center: const Alignment(0, 1.55),
+                          radius: 1.25,
+                          colors: [
+                            Colors.white.withOpacity(.45),
+                            Colors.white.withOpacity(.12),
+                            Colors.transparent,
+                          ],
                         ),
                       ),
                     ),
-
-                    // Plane Image
-                   Positioned(
-                      top: -215,
+                  ),
+      
+                  // Plane Image
+                 Transform.scale(
+                  scale:1.2,
+                   child: Positioned(
+                      top: -80,
                       left: -20,
                       right: -20,
                       child: Image.asset(
@@ -78,162 +79,162 @@ class _LoginScreenState extends State<LoginScreen> {
                         //fit: BoxFit.fitWidth,
                       ),
                     ),
-
-                    Align(
-                      alignment: Alignment.bottomCenter,
-                      child: Container(
-                        height: size.height * .18,
-                        decoration: const BoxDecoration(
-                          gradient: LinearGradient(
-                            begin: Alignment.topCenter,
-                            end: Alignment.bottomCenter,
-                            colors: [
-                              Colors.transparent,
-                              AppColors.splashBg,
-                            ],
-                          ),
+                 ),
+      
+                  Align(
+                    alignment: Alignment.bottomCenter,
+                    child: Container(
+                      height: size.height * .18,
+                      decoration: const BoxDecoration(
+                        gradient: LinearGradient(
+                          begin: Alignment.topCenter,
+                          end: Alignment.bottomCenter,
+                          colors: [
+                            Colors.transparent,
+                            AppColors.splashBg,
+                          ],
                         ),
                       ),
                     ),
-                  ],
-                ),
+                  ),
+                ],
               ),
-
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 28),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const SizedBox(height: 14),
-
-                    Text(
-                      "Continue your Journey",
-                      style: GoogleFonts.poppins(
-                        fontSize: 28,
-                        fontWeight: FontWeight.w700,
-                        color: AppColors.navIcon,
+            ),
+      
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 28),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  const SizedBox(height: 120),
+      
+                  Text(
+                    "Continue your Journey",
+                    style: GoogleFonts.poppins(
+                      fontSize: 30,
+                      fontWeight: FontWeight.w700,
+                      color: AppColors.navIcon,
+                    ),
+                  ),
+      
+                  const SizedBox(height: 28),
+      
+                  _textField(
+                    hint: "Email",
+                    icon: Icons.email_outlined,
+                    controller: emailController,
+                  ),
+      
+                  const SizedBox(height: 16),
+      
+                  _textField(
+                    hint: "Password",
+                    icon: Icons.lock_outline,
+                    obscure: true,
+                    controller: passwordController,
+                  ),
+      
+                  const SizedBox(height: 28),
+      
+                  SizedBox(
+                    width: double.infinity,
+                    height: 58,
+                    child: ElevatedButton(
+                        onPressed: () async {
+                            try {
+                              await AuthService().login(
+                                email: emailController.text,
+                                password: passwordController.text,
+                              );
+      
+                              if (context.mounted) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(content: Text("Login Successful")),
+                                );
+      
+                                Navigator.pushReplacementNamed(context, Routes.welcome);
+                              }
+                            } on FirebaseAuthException catch (e) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text("${e.code}\n${e.message}"),
+                                ),
+                              );
+      
+                              debugPrint("Firebase Error: ${e.code}");
+                              debugPrint(e.message);
+                            } catch (e) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text(e.toString()),
+                                ),
+                              );
+      
+                              debugPrint(e.toString());
+                            }
+                          },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: AppColors.cardDark,
+                        foregroundColor: Colors.white,
+                        elevation: 0,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(32),
+                        ),
+                      ),
+                      child: Text(
+                        "Take me back",
+                        style: GoogleFonts.poppins(
+                          fontWeight: FontWeight.w600,
+                          fontSize: 20,
+                        ),
                       ),
                     ),
-
-                    const SizedBox(height: 28),
-
-                    _textField(
-                      hint: "Email",
-                      icon: Icons.email_outlined,
-                      controller: emailController,
-                    ),
-
-                    const SizedBox(height: 16),
-
-                    _textField(
-                      hint: "Password",
-                      icon: Icons.lock_outline,
-                      obscure: true,
-                      controller: passwordController,
-                    ),
-
-                    const SizedBox(height: 28),
-
-                    SizedBox(
-                      width: double.infinity,
-                      height: 58,
-                      child: ElevatedButton(
-                          onPressed: () async {
-                              try {
-                                await AuthService().login(
-                                  email: emailController.text,
-                                  password: passwordController.text,
-                                );
-
-                                if (context.mounted) {
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    const SnackBar(content: Text("Login Successful")),
-                                  );
-
-                                  Navigator.pushReplacementNamed(context, Routes.welcome);
-                                }
-                              } on FirebaseAuthException catch (e) {
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  SnackBar(
-                                    content: Text("${e.code}\n${e.message}"),
-                                  ),
-                                );
-
-                                debugPrint("Firebase Error: ${e.code}");
-                                debugPrint(e.message);
-                              } catch (e) {
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  SnackBar(
-                                    content: Text(e.toString()),
-                                  ),
-                                );
-
-                                debugPrint(e.toString());
-                              }
-                            },
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: AppColors.cardDark,
-                          foregroundColor: Colors.white,
-                          elevation: 0,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(32),
-                          ),
+                  ),
+      
+                  const SizedBox(height: 18),
+      
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      TextButton(
+                        onPressed: () {
+                          Navigator.pushNamed(context, '/signup');
+                        },
+                        style: TextButton.styleFrom(
+                          padding: EdgeInsets.zero,
+                          minimumSize: const Size(0, 0),
+                          tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                         ),
                         child: Text(
-                          "Take me back",
+                          "its my first time",
                           style: GoogleFonts.poppins(
                             fontWeight: FontWeight.w600,
-                            fontSize: 20,
+                            fontSize: 13,
+                            color: AppColors.navIcon,
                           ),
                         ),
                       ),
-                    ),
-
-                    const SizedBox(height: 18),
-
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        TextButton(
-                          onPressed: () {
-                            Navigator.pushNamed(context, '/signup');
-                          },
-                          style: TextButton.styleFrom(
-                            padding: EdgeInsets.zero,
-                            minimumSize: const Size(0, 0),
-                            tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                          ),
-                          child: Text(
-                            "its my first time",
-                            style: GoogleFonts.poppins(
-                              fontWeight: FontWeight.w600,
-                              fontSize: 13,
-                              color: AppColors.navIcon,
-                            ),
+                      GestureDetector(
+                        onTap: () {
+                          Navigator.pushNamed(context, '/forget_password');
+                        },
+                        child: Text(
+                          "Forgot my password",
+                          style: GoogleFonts.poppins(
+                            decoration: TextDecoration.underline,
+                            color: const Color(0xff758290),
+                            fontSize: 13,
                           ),
                         ),
-                        GestureDetector(
-                          onTap: () {
-                            Navigator.pushNamed(context, '/forget_password');
-                          },
-                          child: Text(
-                            "Forgot my password",
-                            style: GoogleFonts.poppins(
-                              decoration: TextDecoration.underline,
-                              color: const Color(0xff758290),
-                              fontSize: 13,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-
-                    const SizedBox(height: 30),
-                  ],
-                ),
+                      ),
+                    ],
+                  ),
+      
+                  const SizedBox(height: 30),
+                ],
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );

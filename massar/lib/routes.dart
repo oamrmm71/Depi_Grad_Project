@@ -13,6 +13,7 @@ class Routes {
   static const String forgetPassword = '/forget_password';
   static const String home = '/home';
   static const String flights = '/flights';
+  static const String booking = '/booking_screen';
   static const String profile = '/profile';
   static const String expenseTracker = '/expense_tracker';
 }

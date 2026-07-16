@@ -14,17 +14,16 @@ class TripService {
     required GroqService groqService,
     required ImageService imageService,
     required CountryService countryService,
-  })  : _flightService = flightService,
-        _groqService = groqService,
-        _imageService = imageService,
-        _countryService = countryService;
+  }) : _flightService = flightService,
+       _groqService = groqService,
+       _imageService = imageService,
+       _countryService = countryService;
 
   Future<String> _resolveTripCountryName({
     required Map<String, dynamic> airportDetails,
     required Map<String, dynamic> flightData,
   }) async {
-    final fromAirport =
-        airportDetails["countryName"]?.toString().trim() ?? "";
+    final fromAirport = airportDetails["countryName"]?.toString().trim() ?? "";
     if (fromAirport.isNotEmpty) return fromAirport;
 
     final fromFlight =
@@ -65,10 +64,10 @@ class TripService {
           await Future.delayed(const Duration(milliseconds: 300));
         }
 
-        final airportDetails =
-            await _flightService.getAirportDetails(destination);
-        final cityName =
-            airportDetails["cityName"]?.toString() ?? destination;
+        final airportDetails = await _flightService.getAirportDetails(
+          destination,
+        );
+        final cityName = airportDetails["cityName"]?.toString() ?? destination;
 
         if (excluded.contains(cityName.toLowerCase())) continue;
 
@@ -83,6 +82,7 @@ class TripService {
         } catch (_) {
           usedFallback = true;
           flightData = {
+            "flightID": '${origin}_to_${destination}',
             "flightCompany": null,
             "flightCode": null,
             "takeoffAirport": origin,
@@ -142,6 +142,7 @@ class TripService {
           "locationImage": locationImage,
           "departureDate": flightData["departureDate"],
           "arrivalDate": flightData["arrivalDate"],
+          "flightID": flightData["flightID"] ?? flightData["f"],
           "flightCompany": flightData["flightCompany"],
           "flightCode": flightData["flightCode"],
           "ticketPrice": ticketPrice,

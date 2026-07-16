@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:massar/booking%20screen/screens/booking_screen.dart';
+import 'package:massar/flights%20screen/models/flight_model.dart';
 import 'package:massar/home%20screen/cubits/trip_cubit.dart';
 import 'package:massar/home%20screen/repositories/trip_repository.dart';
 import 'package:massar/home%20screen/screens/home_screen.dart';
@@ -28,7 +30,6 @@ import 'splash_screen.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
 
-
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
@@ -50,9 +51,7 @@ Future<void> main() async {
   );
 
   final tripRepository = TripRepository(tripService);
-    await Firebase.initializeApp(
-      options: DefaultFirebaseOptions.currentPlatform,
-    );
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   runApp(
     BlocProvider(
       create: (_) =>
@@ -86,7 +85,7 @@ class MainApp extends StatelessWidget {
             return MaterialPageRoute(builder: (_) => const OnboardingScreen3());
           case Routes.onboarding4:
             return MaterialPageRoute(builder: (_) => const OnboardingScreen4());
-            case Routes.onboarding5:
+          case Routes.onboarding5:
             return MaterialPageRoute(builder: (_) => const OnboardingScreen5());
           case Routes.onboarding6:
             return MaterialPageRoute(builder: (_) => const OnboardingScreen6());
@@ -95,31 +94,38 @@ class MainApp extends StatelessWidget {
             return MaterialPageRoute(builder: (_) => const OnboardingScreen7());
 
           case Routes.login:
-            return MaterialPageRoute(
-              builder: (_) => const LoginScreen(),
-            );
+            return MaterialPageRoute(builder: (_) => const LoginScreen());
           case Routes.welcome:
-            return MaterialPageRoute(
-              builder: (_) => const WelcomeScreen(),
-            );
+            return MaterialPageRoute(builder: (_) => const WelcomeScreen());
           case Routes.signup:
-            return MaterialPageRoute(
-              builder: (_) => const SignupScreen(),
-            );
+            return MaterialPageRoute(builder: (_) => const SignupScreen());
           case Routes.forgetPassword:
             return MaterialPageRoute(
               builder: (_) => const ForgetPasswordScreen(),
             );
-            case Routes.expenseTracker:
-            return MaterialPageRoute(
-              builder: (_) => ExpenseTrackerScreen(),
-            );
+          case Routes.expenseTracker:
+            return MaterialPageRoute(builder: (_) => ExpenseTrackerScreen());
 
           case Routes.home:
             return MaterialPageRoute(builder: (_) => const HomeScreen());
 
           case Routes.flights:
             return MaterialPageRoute(builder: (_) => const FlightsScreen());
+          case Routes.booking:
+            final args = settings.arguments;
+            if (args is FlightModel) {
+              return MaterialPageRoute(
+                builder: (_) => BookingScreen(flight: args),
+              );
+            }
+            return MaterialPageRoute(
+              builder: (_) => Scaffold(
+                appBar: AppBar(title: const Text('Booking')),
+                body: const Center(
+                  child: Text('No flight selected for booking.'),
+                ),
+              ),
+            );
 
           case Routes.profile:
             return MaterialPageRoute(builder: (_) => const ProfileScreen());

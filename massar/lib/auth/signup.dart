@@ -26,207 +26,209 @@ class _SignupScreenState extends State<SignupScreen> {
     final confirmPasswordController = TextEditingController();
     return Scaffold(
       backgroundColor: AppColors.cardDark,
-      body: SafeArea(
-        child: SingleChildScrollView(
-          child: Column(
-            children: [
-             SizedBox(
-                height: 480,
-                width: 550,
-                child: Transform.rotate(
-                  angle: 15 * 3.1415927 / -10, 
-                  child: Image.asset(
-                    "lib/assets/plan2.png",
-                    fit: BoxFit.cover,
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            Stack(
+              children: [
+               Transform.translate(
+                offset: const Offset(0, -40),
+                 child: SizedBox(
+                    height: 800,
+                    width: 550,
+                    child: Image.asset(
+                      "lib/assets/signupplane.png",
+                      fit: BoxFit.contain,
+                    ),
+                  ),
+               ),
+                    
+                Padding(
+                  padding: const EdgeInsets.only(left: 22, top: 380,right: 22),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                    
+                      Text(
+                        "Start your Journey",
+                        style: GoogleFonts.poppins(
+                          color: Colors.white,
+                          fontWeight: FontWeight.w700,
+                          fontSize: 30,
+                        ),
+                      ),
+                    
+                      const SizedBox(height: 26),
+                    
+                      Row(
+                        children: [
+                          Expanded(
+                            child: _glassField(
+                              hint: "First Name",
+                              icon: Icons.person,
+                              controller: firstNameController,
+                            ),
+                          ),
+                    
+                          const SizedBox(width: 12),
+                    
+                          Expanded(
+                            child: _glassField(
+                              hint: "Last Name",
+                              icon: Icons.person,
+                              controller: lastNameController,
+                            ),
+                          ),
+                        ],
+                      ),
+                    
+                      const SizedBox(height: 16),
+                    
+                      _glassField(
+                        hint: "    Card Number",
+                        controller: cardNumberController,
+                      ),
+                    
+                      const SizedBox(height: 16),
+                    
+                      Row(
+                        children: [
+                          Expanded(
+                            child: _glassField(
+                              hint: "    Card Expiry",
+                              controller: expiryController,
+                            ),
+                          ),
+                    
+                          const SizedBox(width: 12),
+                    
+                          Expanded(
+                            child: _glassField(
+                              hint: "    CVV",
+                              controller: cvvController,
+                            ),
+                          ),
+                        ],
+                      ),
+                    
+                      const SizedBox(height: 16),
+                                          _glassField(
+                        hint: "Passport No.",
+                        icon: Icons.mail,
+                        controller: passportController,
+                      ),
+                    
+                      const SizedBox(height: 16),
+                    
+                      _glassField(
+                        hint: "Email",
+                        icon: Icons.mail,
+                        controller: emailController,
+                      ),
+                    
+                      const SizedBox(height: 16),
+                    
+                      _glassField(
+                        hint: "Password",
+                        icon: Icons.lock,
+                        obscure: true,
+                        controller: passwordController,
+                      ),
+                    
+                      const SizedBox(height: 16),
+                    
+                      _glassField(
+                        hint: "Confirm Password",
+                        icon: Icons.lock,
+                        obscure: true,
+                        highlight: true,
+                        controller: confirmPasswordController,
+                      ),
+                    
+                      const SizedBox(height: 26),
+                    
+                      SizedBox(
+                        width: double.infinity,
+                        height: 58,
+                        child: ElevatedButton(
+                          onPressed: () async {
+                                if (passwordController.text != confirmPasswordController.text) {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(
+                                      content: Text("Passwords do not match"),
+                                    ),
+                                  );
+                                  return;
+                                }
+                    
+                                try {
+                                  await AuthService().signUp(
+                                    firstName: firstNameController.text,
+                                    lastName: lastNameController.text,
+                                    email: emailController.text,
+                                    password: passwordController.text,
+                                    passportNumber: passportController.text,
+                                    cardNumber: cardNumberController.text,
+                                    cardExpiry: expiryController.text,
+                                    cvv: cvvController.text,
+                                  );
+                    
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(
+                                      content: Text("Account Created Successfully"),
+                                    ),
+                                  );
+                    
+                                  // Navigate to your home screen
+                                } on FirebaseAuthException catch (e) {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                      content: Text(e.message ?? "Authentication Error"),
+                                    ),
+                                  );
+                                }
+                              },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: AppColors.splashBg,
+                            foregroundColor: AppColors.navIcon,
+                            elevation: 0,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(32),
+                            ),
+                          ),
+                          child: Text(
+                            "Take me back",
+                            style: GoogleFonts.poppins(
+                              fontSize: 18,
+                              fontWeight: FontWeight.w700,
+                            ),
+                          ),
+                        ),
+                      ),
+                    
+                      const SizedBox(height: 18),
+                    
+                      Center(
+                        child: GestureDetector(
+                          onTap: () => Navigator.pushNamed(context, '/login'),
+                          child: Text(
+                            "its not my first time",
+                            style: GoogleFonts.poppins(
+                              color: Colors.white,
+                              fontWeight: FontWeight.w600,
+                              fontSize: 13,
+                            ),
+                          ),
+                        ),
+                      ),
+                    
+                      const SizedBox(height: 24),
+                    ],
                   ),
                 ),
-              ),
-
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 22),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-
-                    Text(
-                      "Start your Journey",
-                      style: GoogleFonts.poppins(
-                        color: Colors.white,
-                        fontWeight: FontWeight.w700,
-                        fontSize: 26,
-                      ),
-                    ),
-
-                    const SizedBox(height: 26),
-
-                    Row(
-                      children: [
-                        Expanded(
-                          child: _glassField(
-                            hint: "First Name",
-                            icon: Icons.person,
-                            controller: firstNameController,
-                          ),
-                        ),
-
-                        const SizedBox(width: 12),
-
-                        Expanded(
-                          child: _glassField(
-                            hint: "Last Name",
-                            icon: Icons.person,
-                            controller: lastNameController,
-                          ),
-                        ),
-                      ],
-                    ),
-
-                    const SizedBox(height: 16),
-
-                    _glassField(
-                      hint: "    Card Number",
-                      controller: cardNumberController,
-                    ),
-
-                    const SizedBox(height: 16),
-
-                    Row(
-                      children: [
-                        Expanded(
-                          child: _glassField(
-                            hint: "    Card Expiry",
-                            controller: expiryController,
-                          ),
-                        ),
-
-                        const SizedBox(width: 12),
-
-                        Expanded(
-                          child: _glassField(
-                            hint: "    CVV",
-                            controller: cvvController,
-                          ),
-                        ),
-                      ],
-                    ),
-
-                    const SizedBox(height: 16),
-                                        _glassField(
-                      hint: "Passport No.",
-                      icon: Icons.mail,
-                      controller: passportController,
-                    ),
-
-                    const SizedBox(height: 16),
-
-                    _glassField(
-                      hint: "Email",
-                      icon: Icons.mail,
-                      controller: emailController,
-                    ),
-
-                    const SizedBox(height: 16),
-
-                    _glassField(
-                      hint: "Password",
-                      icon: Icons.lock,
-                      obscure: true,
-                      controller: passwordController,
-                    ),
-
-                    const SizedBox(height: 16),
-
-                    _glassField(
-                      hint: "Confirm Password",
-                      icon: Icons.lock,
-                      obscure: true,
-                      highlight: true,
-                      controller: confirmPasswordController,
-                    ),
-
-                    const SizedBox(height: 26),
-
-                    SizedBox(
-                      width: double.infinity,
-                      height: 58,
-                      child: ElevatedButton(
-                        onPressed: () async {
-                              if (passwordController.text != confirmPasswordController.text) {
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(
-                                    content: Text("Passwords do not match"),
-                                  ),
-                                );
-                                return;
-                              }
-
-                              try {
-                                await AuthService().signUp(
-                                  firstName: firstNameController.text,
-                                  lastName: lastNameController.text,
-                                  email: emailController.text,
-                                  password: passwordController.text,
-                                  passportNumber: passportController.text,
-                                  cardNumber: cardNumberController.text,
-                                  cardExpiry: expiryController.text,
-                                  cvv: cvvController.text,
-                                );
-
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(
-                                    content: Text("Account Created Successfully"),
-                                  ),
-                                );
-
-                                // Navigate to your home screen
-                              } on FirebaseAuthException catch (e) {
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  SnackBar(
-                                    content: Text(e.message ?? "Authentication Error"),
-                                  ),
-                                );
-                              }
-                            },
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: AppColors.splashBg,
-                          foregroundColor: AppColors.navIcon,
-                          elevation: 0,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(32),
-                          ),
-                        ),
-                        child: Text(
-                          "Take me back",
-                          style: GoogleFonts.poppins(
-                            fontSize: 18,
-                            fontWeight: FontWeight.w700,
-                          ),
-                        ),
-                      ),
-                    ),
-
-                    const SizedBox(height: 18),
-
-                    Center(
-                      child: GestureDetector(
-                        onTap: () => Navigator.pushNamed(context, '/login'),
-                        child: Text(
-                          "its not my first time",
-                          style: GoogleFonts.poppins(
-                            color: Colors.white,
-                            fontWeight: FontWeight.w600,
-                            fontSize: 13,
-                          ),
-                        ),
-                      ),
-                    ),
-
-                    const SizedBox(height: 24),
-                  ],
-                ),
-              ),
-            ],
-          ),
+              ],
+            ),
+          ],
         ),
       ),
     );

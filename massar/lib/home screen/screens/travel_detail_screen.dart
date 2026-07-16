@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:massar/booking%20screen/screens/booking_screen.dart';
+import 'package:massar/flights%20screen/models/flight_model.dart';
 import 'package:massar/theme/app_colors.dart';
 import 'package:massar/custom%20widgets/bottom_nav_glass.dart';
 import 'package:massar/custom%20widgets/flight_path_connector.dart';
@@ -482,17 +484,36 @@ class TravelDetailScreen extends StatelessWidget {
                                   ),
                                 ),
                                 onPressed: () {
-                                  // Handle button press
+                                  final flight = FlightModel(
+                                    flightId: trip.flightID ?? '',
+                                    flightType: 'Transit Flight',
+                                    flightCompany: trip.flightCompany ?? 'TBD',
+                                    flightCode: trip.flightCode ?? 'TBD',
+                                    date: trip.departureDate ?? 'TBD',
+                                    fromCountry: trip.takeoffCity,
+                                    fromAirport: trip.takeoffAirport,
+                                    fromTime: trip.takeoffTime ?? 'TBD',
+                                    toCountry: trip.destinationCity,
+                                    toAirport: trip.destinationAirport,
+                                    toTime: trip.destinationTime ?? 'TBD',
+                                  );
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (_) =>
+                                          BookingScreen(flight: flight),
+                                    ),
+                                  );
                                 },
-                                child: const Text('Reserve',
+                                child: const Text(
+                                  'Reserve',
                                   style: TextStyle(
                                     color: AppColors.reserveBtnText,
                                     fontSize: 18,
                                     fontWeight: FontWeight.bold,
                                   ),
-                                )
+                                ),
                               ),
-                              
                             ),
                             SizedBox(height: 20),
                           ],
