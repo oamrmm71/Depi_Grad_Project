@@ -144,33 +144,67 @@ class OnboardingButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
 
-    return SizedBox(
-      width: double.infinity,
-      height: height,
-
-      child: ElevatedButton(
-        onPressed: onPressed,
-
-        style: ElevatedButton.styleFrom(
-          backgroundColor: backgroundColor,
-          foregroundColor: textColor,
-          elevation: 0,
-
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(30),
+    return Column(
+      children: [
+        SizedBox(
+          width: double.infinity,
+          height: height,
+        
+          child: ElevatedButton(
+            onPressed: onPressed,
+        
+            style: ElevatedButton.styleFrom(
+              backgroundColor: backgroundColor,
+              foregroundColor: textColor,
+              elevation: 0,
+        
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(30),
+              ),
+            ),
+        
+            child: Text(
+              text,
+        
+              style: GoogleFonts.poppins(
+                fontSize: fontSize,
+                fontWeight: FontWeight.w500,
+                color: textColor,
+              ),
+            ),
           ),
         ),
-
-        child: Text(
-          text,
-
-          style: GoogleFonts.poppins(
-            fontSize: fontSize,
-            fontWeight: FontWeight.w500,
-            color: textColor,
+        SizedBox(height: 12),
+        SizedBox(
+          width: double.infinity,
+          height: height,
+        
+          child: ElevatedButton(
+            onPressed: onPressed,
+        
+            style: ElevatedButton.styleFrom(
+              backgroundColor: AppColors.white,
+              foregroundColor: AppColors.glowHigh,
+              elevation: 0,
+        
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(30),
+              ),
+              shadowColor: const Color.fromARGB(141, 186, 209, 255).withOpacity(0.2),
+            ),
+        
+            child: Text(
+              'Skip',
+        
+              style: GoogleFonts.poppins(
+                fontSize: fontSize,
+                fontWeight: FontWeight.w500,
+                color: AppColors.cardDark,
+              ),
+            ),
           ),
         ),
-      ),
+      ],
     );
   }
 }
