@@ -3,17 +3,90 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:massar/auth/login.dart';
 import 'package:massar/theme/app_colors.dart';
+import 'package:android_intent_plus/android_intent.dart';
 
 class OnboardingScreen7 extends StatelessWidget {
   const OnboardingScreen7({super.key});
 
-  void _goHome(BuildContext context) {
+  Future<void> _goHome(BuildContext context) async {
     Navigator.pushAndRemoveUntil(
       context,
       MaterialPageRoute(
         builder: (_) => const LoginScreen(),
       ),
       (_) => false,
+    );
+  }
+
+  Future<void> _openAirplaneSettings(BuildContext context) async {
+    const intent = AndroidIntent(
+      action: 'android.settings.AIRPLANE_MODE_SETTINGS',
+    );
+
+    try {
+      await intent.launch();
+    } catch (_) {}
+
+    if (context.mounted) {
+      await _goHome(context);
+    }
+  }
+
+  Future<void> _showAirplaneDialog(BuildContext context) async {
+    await showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (_) {
+        return AlertDialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(24),
+          ),
+          title: Text(
+            "Enable Airplane Mode",
+            style: GoogleFonts.poppins(
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+          content: Text(
+            "For the best travel experience, enable Airplane Mode from your device settings.\n\n"
+            "• Save battery\n"
+            "• Avoid roaming charges\n"
+            "• Stay distraction-free during your trip",
+            style: GoogleFonts.poppins(
+              height: 1.5,
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () async {
+                Navigator.pop(context);
+                await _goHome(context);
+              },
+              child: Text(
+                "Not Now",
+                style: GoogleFonts.poppins(),
+              ),
+            ),
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: AppColors.navIcon,
+                foregroundColor: Colors.white,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(18),
+                ),
+              ),
+              onPressed: () async {
+                Navigator.pop(context);
+                await _openAirplaneSettings(context);
+              },
+              child: Text(
+                "Open Settings",
+                style: GoogleFonts.poppins(),
+              ),
+            ),
+          ],
+        );
+      },
     );
   }
 
@@ -40,24 +113,18 @@ class OnboardingScreen7 extends StatelessWidget {
                 ? 380.0
                 : 320.0;
 
-
     return Scaffold(
       backgroundColor: AppColors.splashBg,
-
       body: SafeArea(
         child: Padding(
           padding: EdgeInsets.symmetric(
             horizontal: size.width * .06,
           ),
-
           child: Column(
             children: [
-
               SizedBox(
                 height: size.height * .06,
               ),
-
-
               Text(
                 "Airplane Mode",
                 textAlign: TextAlign.center,
@@ -67,13 +134,9 @@ class OnboardingScreen7 extends StatelessWidget {
                   color: AppColors.navIcon,
                 ),
               ),
-
-
               SizedBox(
                 height: size.height * .01,
               ),
-
-
               Text(
                 "Airplane Mode saves battery, avoids\nroaming, and keeps your trip stress-free.",
                 textAlign: TextAlign.center,
@@ -86,8 +149,6 @@ class OnboardingScreen7 extends StatelessWidget {
                   height: 1.4,
                 ),
               ),
-
-
               Expanded(
                 child: Center(
                   child: AirplaneIllustration(
@@ -95,18 +156,14 @@ class OnboardingScreen7 extends StatelessWidget {
                   ),
                 ),
               ),
-
-
               OnboardingButton(
                 height: buttonHeight,
                 text: "Allow",
                 fontSize: buttonFont,
                 backgroundColor: AppColors.navIcon,
                 textColor: AppColors.white,
-                onPressed: () => _goHome(context),
+                onPressed: () => _showAirplaneDialog(context),
               ),
-
-
               SizedBox(
                 height: size.height * .04,
               ),
@@ -117,8 +174,6 @@ class OnboardingScreen7 extends StatelessWidget {
     );
   }
 }
-
-
 
 class OnboardingButton extends StatelessWidget {
 
