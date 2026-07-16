@@ -11,8 +11,6 @@ class OnboardingScreen3 extends StatelessWidget {
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
     final titleFont = (size.width * 0.090).clamp(30.0, 42.0).toDouble();
-    final bodyFont = (size.width * 0.040).clamp(15.0, 18.0).toDouble();
-
     return Container(
       decoration: const BoxDecoration(
         gradient: LinearGradient(
