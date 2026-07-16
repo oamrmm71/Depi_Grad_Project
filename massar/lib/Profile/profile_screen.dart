@@ -5,6 +5,12 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:massar/Profile/services/profile_service.dart';
+import 'package:massar/Profile/widgets/profile_avatar.dart';
+import 'package:massar/Profile/widgets/profile_edit_chip.dart';
+import 'package:massar/Profile/widgets/profile_fields.dart';
+import 'package:massar/Profile/widgets/profile_save_button.dart';
+import 'package:massar/custom%20widgets/app_background.dart';
+import 'package:massar/custom%20widgets/page_title.dart';
 import 'package:massar/theme/app_colors.dart';
 import 'package:massar/custom%20widgets/bottom_nav_glass.dart';
 
