@@ -34,6 +34,10 @@ class _FlightRouteScreenState extends State<FlightRouteScreen> {
   String _originCity = '';
   String _destinationCity = '';
 
+  List<LatLng> get _stopPoints => widget.flight.stops
+      .map((s) => LatLng(s.latitude, s.longitude))
+      .toList();
+
   @override
   void initState() {
     super.initState();
@@ -121,6 +125,7 @@ class _FlightRouteScreenState extends State<FlightRouteScreen> {
               initialCameraFit: CameraFit.bounds(
                 bounds: LatLngBounds.fromPoints([
                   _origin,
+                  ..._stopPoints,
                   _destination,
                 ]),
                 padding: const EdgeInsets.fromLTRB(
@@ -150,6 +155,7 @@ class _FlightRouteScreenState extends State<FlightRouteScreen> {
                   Polyline(
                     points: [
                       _origin,
+                      ..._stopPoints,
                       _destination,
                     ],
                     strokeWidth: 3,
@@ -177,6 +183,14 @@ class _FlightRouteScreenState extends State<FlightRouteScreen> {
                       size: 28,
                     ),
                   ),
+
+                  for (final stop in widget.flight.stops)
+                    Marker(
+                      point: LatLng(stop.latitude, stop.longitude),
+                      width: 60,
+                      height: 40,
+                      child: _StopMarker(code: stop.airport),
+                    ),
                 ],
               ),
             ],
@@ -319,6 +333,39 @@ class _AirportLabel extends StatelessWidget {
             fontSize: 12,
             color:
                 Colors.black.withOpacity(.55),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _StopMarker extends StatelessWidget {
+  final String code;
+
+  const _StopMarker({required this.code});
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Container(
+          width: 12,
+          height: 12,
+          decoration: BoxDecoration(
+            color: AppColors.white,
+            shape: BoxShape.circle,
+            border: Border.all(color: AppColors.navIcon, width: 2),
+          ),
+        ),
+        const SizedBox(height: 2),
+        Text(
+          code,
+          style: const TextStyle(
+            fontSize: 10,
+            fontWeight: FontWeight.bold,
+            color: AppColors.navIcon,
           ),
         ),
       ],

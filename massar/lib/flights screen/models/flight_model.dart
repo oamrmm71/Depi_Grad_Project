@@ -116,6 +116,7 @@ class FlightModel {
         toCountry: trip.takeoffCity,
         toAirport: toAirport,
         toTime: trip.returnDestinationTime ?? 'TBD',
+        stops: trip.returnStops,
       );
     }
     return FlightModel(
@@ -136,6 +137,7 @@ class FlightModel {
       toCountry: trip.destinationCity,
       toAirport: trip.destinationAirport,
       toTime: trip.destinationTime ?? 'TBD',
+      stops: trip.stops,
     );
   }
   factory FlightModel.fromFirestore(
