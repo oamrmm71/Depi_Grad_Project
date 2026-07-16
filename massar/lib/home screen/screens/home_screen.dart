@@ -39,7 +39,7 @@ class _HomeScreenState extends State<HomeScreen> {
   bool _editing = false;
   bool _loading = true;
   bool _saving = false;
-  String? _dreamCity;
+  bool _showDreamOnly = false;
 
   @override
   void initState() {
@@ -72,9 +72,6 @@ class _HomeScreenState extends State<HomeScreen> {
     if (city.isEmpty) return;
 
     if (!mounted) return;
-    setState(() {
-      _dreamCity = city;
-    });
 
     await context.read<TripCubit>().loadDreamTrip(
       origin: 'CAI',
@@ -100,6 +97,30 @@ class _HomeScreenState extends State<HomeScreen> {
               t.countryName.toLowerCase().contains(q),
         )
         .toList();
+  }
+
+  Future<void> _showMyDreams() async {
+    final cubit = context.read<TripCubit>();
+    var dreamTrip = cubit.dreamTrip;
+
+    if (dreamTrip == null) {
+      await _loadSavedDreamTrip();
+      dreamTrip = cubit.dreamTrip;
+    }
+
+    if (!mounted) return;
+
+    if (dreamTrip == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('No dream trip yet — add one first!')),
+      );
+      return;
+    }
+
+    setState(() {
+      _searchActive = false;
+      _showDreamOnly = true;
+    });
   }
 
   void _closeSearch() {
@@ -289,12 +310,18 @@ class _HomeScreenState extends State<HomeScreen> {
                   }
 
                   if (state is TripLoaded) {
-                    final trips = _filterTrips(state.trips);
+                    final dreamTrip = context.read<TripCubit>().dreamTrip;
+                    final sourceTrips = _showDreamOnly && dreamTrip != null
+                        ? [dreamTrip]
+                        : state.trips;
+                    final trips = _filterTrips(sourceTrips);
 
                     if (trips.isEmpty) {
                       return Center(
                         child: Text(
-                          _searchQuery.isEmpty
+                          _showDreamOnly
+                              ? 'No dream trip yet'
+                              : _searchQuery.isEmpty
                               ? 'No trips found'
                               : 'No results for "$_searchQuery"',
                           style: const TextStyle(color: AppColors.white),
@@ -303,7 +330,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     }
 
                     return CardSwiper(
-                      key: ValueKey(_searchQuery),
+                      key: ValueKey('$_searchQuery-$_showDreamOnly'),
                       cardsCount: trips.length,
                       numberOfCardsDisplayed: trips.length >= 3
                           ? 3
@@ -312,6 +339,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       padding: const EdgeInsets.all(0),
                       onSwipe: (previousIndex, currentIndex, direction) {
                         if (!_searchActive &&
+                            !_showDreamOnly &&
                             previousIndex >= state.trips.length - 1) {
                           context.read<TripCubit>().fetchTrips(
                             origin: "CAI",
@@ -354,31 +382,6 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
             ),
           ),
-
-          if (_dreamCity != null)
-            Positioned(
-              top: 230,
-              left: 24,
-              right: 24,
-              child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
-                decoration: BoxDecoration(
-                  color: AppColors.white.withOpacity(0.10),
-                  borderRadius: BorderRadius.circular(18),
-                  border: Border.all(
-                    color: AppColors.white.withOpacity(0.14),
-                  ),
-                ),
-                child: Text(
-                  'My Dream Trip • $_dreamCity',
-                  style: GoogleFonts.poppins(
-                    color: AppColors.white,
-                    fontSize: 14,
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
-              ),
-            ),
 
           // Bottom nav
           Positioned(
@@ -449,11 +452,25 @@ class _HomeScreenState extends State<HomeScreen> {
           height: 52,
           borderRadius: 50,
           child: const Icon(Icons.search, color: AppColors.white, size: 24),
-          onTap: () => setState(() => _searchActive = true),
+          onTap: () => setState(() {
+            _searchActive = true;
+            _showDreamOnly = false;
+          }),
         ),
 
         const SizedBox(width: 8),
-       
+
+        GlassButton(
+          text: 'My Dreams',
+          width: 120,
+          height: 52,
+          fontSize: 14,
+          fontWeight: FontWeight.w500,
+          borderRadius: 30,
+          onTap: _showMyDreams,
+        ),
+
+        const SizedBox(width: 8),
 
         GlassButton(
           text: 'Tour Package',
@@ -463,6 +480,7 @@ class _HomeScreenState extends State<HomeScreen> {
           fontWeight: FontWeight.w500,
           borderRadius: 30,
           onTap: () {
+            setState(() => _showDreamOnly = false);
             context.read<TripCubit>().fetchTrips(
               origin: "CAI",
               budget: 1000000,
@@ -481,6 +499,7 @@ class _HomeScreenState extends State<HomeScreen> {
           fontWeight: FontWeight.w500,
           borderRadius: 30,
           onTap: () {
+            setState(() => _showDreamOnly = false);
             context.read<TripCubit>().fetchTrips(
               origin: "CAI",
               budget: 1000000,
@@ -499,6 +518,7 @@ class _HomeScreenState extends State<HomeScreen> {
           fontWeight: FontWeight.w500,
           borderRadius: 30,
           onTap: () {
+            setState(() => _showDreamOnly = false);
             context.read<TripCubit>().fetchTrips(
               origin: "CAI",
               budget: 1000000,

@@ -8,6 +8,8 @@ class TripCubit extends Cubit<TripState> {
   bool _isFetching = false;
   TripModel? _dreamTrip;
 
+  TripModel? get dreamTrip => _dreamTrip;
+
   TripCubit(this.tripRepository) : super(TripInitial());
 
   List<TripModel> _withDreamTrip(List<TripModel> trips) {
