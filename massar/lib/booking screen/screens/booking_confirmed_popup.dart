@@ -33,54 +33,55 @@ class BookingConfirmedPopup extends StatelessWidget {
             alignment: Alignment.center,
             children: [
               Container(
-                width: 110,
-                height: 110,
+                width: 120,
+                height: 120,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
                   boxShadow: [
                     BoxShadow(
-                      color: AppColors.unreadDot.withOpacity(.18),
-                      blurRadius: 40,
-                      spreadRadius: 15,
+                      color: const Color.fromARGB(255, 19, 118, 255).withOpacity(.18),
+                      blurRadius: 30,
+                      spreadRadius: 20,
                     ),
                   ],
                 ),
               ),
 
               Container(
-                width: 54,
-                height: 54,
+                width: 100,
+                height: 100,
                 decoration: const BoxDecoration(
                   shape: BoxShape.circle,
-                  color: AppColors.glowHigh,
+                  color: Color.fromARGB(70, 0, 55, 165),
                 ),
                 child: const Icon(
                   Icons.check,
-                  color: AppColors.onboardingGrad3,
+                  color: Color.fromARGB(255, 1, 83, 150),
                   size: 34,
                 ),
               ),
             ],
           ),
 
-          const SizedBox(height: 28),
+          const SizedBox(height: 30),
 
           const Text(
             "TRIP BOOKINGS\nCONFIRMED",
             textAlign: TextAlign.center,
             style: TextStyle(
-              fontSize: 28,
+              fontSize: 40,
               fontWeight: FontWeight.w800,
               color: AppColors.onboardingGrad3,
+              height: 0.9,
             ),
           ),
 
-          const SizedBox(height: 12),
+          const SizedBox(height: 30),
 
           Text(
             "Get ready for your next adventure",
             style: GoogleFonts.poppins(
-              fontSize: 13,
+              fontSize: 14,
               color: AppColors.onboardingGrad3,
               fontStyle: FontStyle.italic,
             ),
