@@ -170,7 +170,13 @@ class FlightService {
         ? nextDep.add(Duration(minutes: durationMins))
         : null;
 
+    
     final rawStops = route["stops"] as List? ?? [];
+    debugPrint("========== ROUTE ==========");
+debugPrint(route.toString());
+debugPrint("stops field = ${route["stops"]}");
+debugPrint("type = ${route["stops"].runtimeType}");
+debugPrint("===========================");
     final stops = rawStops
         .map((s) {
           final stop = s as Map;

@@ -484,43 +484,29 @@ class TravelDetailScreen extends StatelessWidget {
                                   ),
                                 ),
                                 onPressed: () {
-
-  debugPrint("========== TRIP DEBUG ==========");
-  debugPrint("Flight ID: ${trip.flightID}");
-  debugPrint("From: ${trip.takeoffAirport}");
-  debugPrint("To: ${trip.destinationAirport}");
-  debugPrint("Stops count: ${trip.stops.length}");
-
-  for (final stop in trip.stops) {
-    debugPrint(
-      "Stop -> ${stop.airport} (${stop.latitude}, ${stop.longitude})",
-    );
-  }
-
-  debugPrint("===============================");
-
-  final flight = FlightModel(
-    flightId: trip.flightID ?? '',
-    flightType: 'Transit Flight',
-    flightCompany: trip.flightCompany ?? 'TBD',
-    flightCode: trip.flightCode ?? 'TBD',
-    date: trip.departureDate ?? 'TBD',
-    fromCountry: trip.takeoffCity,
-    fromAirport: trip.takeoffAirport,
-    fromTime: trip.takeoffTime ?? 'TBD',
-    toCountry: trip.destinationCity,
-    toAirport: trip.destinationAirport,
-    toTime: trip.destinationTime ?? 'TBD',
-    stops: trip.stops,
-  );
-
-  Navigator.push(
-    context,
-    MaterialPageRoute(
-      builder: (_) => BookingScreen(flight: flight),
-    ),
-  );
-},
+                                  final flight = FlightModel(
+                                    flightId: trip.flightID ?? '',
+                                    flightType: 'Transit Flight',
+                                    flightCompany: trip.flightCompany ?? 'TBD',
+                                    flightCode: trip.flightCode ?? 'TBD',
+                                    date: trip.departureDate ?? 'TBD',
+                                    fromCountry: trip.takeoffCity,
+                                    fromAirport: trip.takeoffAirport,
+                                    fromTime: trip.takeoffTime ?? 'TBD',
+                                    toCountry: trip.destinationCity,
+                                    toAirport: trip.destinationAirport,
+                                    toTime: trip.destinationTime ?? 'TBD',
+                                    stops: trip.stops, 
+                                    );
+                                
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (_) =>
+                                          BookingScreen(flight: flight),
+                                    ),
+                                  );
+                                },
                                 child: const Text(
                                   'Reserve',
                                   style: TextStyle(
@@ -535,8 +521,6 @@ class TravelDetailScreen extends StatelessWidget {
                           ],
                         ),
                       ),
-
-                      // Plane in front
                       Transform.translate(
                         offset: const Offset(-24, -40),
                         child: Image.asset(
