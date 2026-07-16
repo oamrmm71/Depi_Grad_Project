@@ -204,33 +204,14 @@ class _BookingScreenViewState extends State<BookingScreenView> {
                                   onPressed: selectedSeats.isEmpty
                                       ? null
                                       : () async {
-        await context.read<BookingCubit>().confirmBooking();
 
-        if (!context.mounted) return;
+                                          await context
+                                              .read<BookingCubit>()
+                                              .confirmBooking();
 
-     
- void showBookingConfirmed(BuildContext context) {
-  showModalBottomSheet(
-    context: context,
-    isScrollControlled: true,
-    backgroundColor: Colors.transparent,
-    builder: (context) {
-      Future.delayed(const Duration(seconds: 2), () {
-        Navigator.pop(context); // close bottom sheet
-
-        Navigator.pushNamedAndRemoveUntil(
-          context,
-          Routes.flights,
-          (route) => false,
-        );
-      });
-
-      return const BookingConfirmedPopup();
-    },
-  );
-}
-
-      },
+                                          if (!context.mounted) return;
+                                          showBookingConfirmed(context);
+                                        },
                                   child: Container(
                                     width: double.infinity,
                                     height: 50,
@@ -356,4 +337,26 @@ class _BookingScreenViewState extends State<BookingScreenView> {
       ],
     );
   }
+}
+void showBookingConfirmed(BuildContext context) {
+  showModalBottomSheet(
+    context: context,
+    isScrollControlled: true,
+    backgroundColor: Colors.transparent,
+    builder: (context) {
+      return const BookingConfirmedPopup();
+    },
+  );
+
+  Future.delayed(const Duration(seconds: 2), () {
+    if (context.mounted) {
+      Navigator.pop(context);
+
+      Navigator.pushNamedAndRemoveUntil(
+        context,
+        Routes.flights,
+        (route) => false,
+      );
+    }
+  });
 }
