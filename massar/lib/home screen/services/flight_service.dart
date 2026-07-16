@@ -126,98 +126,154 @@ class FlightService {
   }
 
   Future<Map<String, dynamic>> getFlightData({
-    required String origin,
-    required String destination,
-    int windowDays = 7,
-  }) async {
-    final response = await _get(
-      "/routes",
-      params: {"dep_iata": origin, "arr_iata": destination},
-    );
+  required String origin,
+  required String destination,
+  int windowDays = 7,
+}) async {
+  final response = await _get(
+    "/routes",
+    params: {
+      "dep_iata": origin,
+      "arr_iata": destination,
+    },
+  );
 
-    final routes = response.data["response"] as List? ?? [];
-    if (routes.isEmpty) {
-      throw Exception("No direct route from $origin to $destination");
-    }
+  final routes = response.data["response"] as List? ?? [];
 
-    final route = routes.first;
-    final depTimeStr = route["dep_time"]?.toString();
-    final arrTimeStr = route["arr_time"]?.toString();
-    final durationMins = int.tryParse(route["duration"]?.toString() ?? "") ?? 0;
+  if (routes.isEmpty) {
+    throw Exception("No direct route from $origin to $destination");
+  }
 
-    final rawDays = route["days"];
-    final opDays = (rawDays is List)
-        ? rawDays.map((d) => d.toString().toLowerCase()).toSet()
-        : <String>{"mon", "tue", "wed", "thu", "fri", "sat", "sun"};
+  final route = routes.first;
 
-    const weekdays = ["mon", "tue", "wed", "thu", "fri", "sat", "sun"];
-    DateTime? nextDep;
-    final now = DateTime.now();
-    for (int i = 1; i <= windowDays + 7; i++) {
-      final d = now.add(Duration(days: i));
-      if (opDays.contains(weekdays[d.weekday - 1])) {
-        if (depTimeStr != null) {
-          final parts = depTimeStr.split(':');
-          final h = int.tryParse(parts[0]) ?? 0;
-          final m = parts.length > 1 ? (int.tryParse(parts[1]) ?? 0) : 0;
-          nextDep = DateTime(d.year, d.month, d.day, h, m);
-          break;
-        }
+  print("========== AIRLABS ROUTE ==========");
+  print(route);
+  print("===================================");
+
+  final depTimeStr = route["dep_time"]?.toString();
+  final arrTimeStr = route["arr_time"]?.toString();
+  final durationMins =
+      int.tryParse(route["duration"]?.toString() ?? "") ?? 0;
+
+  final rawDays = route["days"];
+  final opDays = (rawDays is List)
+      ? rawDays.map((d) => d.toString().toLowerCase()).toSet()
+      : <String>{"mon", "tue", "wed", "thu", "fri", "sat", "sun"};
+
+  const weekdays = [
+    "mon",
+    "tue",
+    "wed",
+    "thu",
+    "fri",
+    "sat",
+    "sun",
+  ];
+
+  DateTime? nextDep;
+  final now = DateTime.now();
+
+  for (int i = 1; i <= windowDays + 7; i++) {
+    final d = now.add(Duration(days: i));
+
+    if (opDays.contains(weekdays[d.weekday - 1])) {
+      if (depTimeStr != null) {
+        final parts = depTimeStr.split(':');
+        final h = int.tryParse(parts[0]) ?? 0;
+        final m = parts.length > 1 ? int.tryParse(parts[1]) ?? 0 : 0;
+
+        nextDep = DateTime(
+          d.year,
+          d.month,
+          d.day,
+          h,
+          m,
+        );
+        break;
       }
     }
+  }
 
-    final arrDt = (nextDep != null && durationMins > 0)
-        ? nextDep.add(Duration(minutes: durationMins))
-        : null;
+  final arrDt = (nextDep != null && durationMins > 0)
+      ? nextDep.add(Duration(minutes: durationMins))
+      : null;
 
-    
-    final rawStops = route["stops"] as List? ?? [];
-    debugPrint("========== ROUTE ==========");
-debugPrint(route.toString());
-debugPrint("stops field = ${route["stops"]}");
-debugPrint("type = ${route["stops"].runtimeType}");
-debugPrint("===========================");
-    final stops = rawStops
-        .map((s) {
-          final stop = s as Map;
-          return {
-            "airport": stop["airport_iata"]?.toString() ?? stop["iata_code"]?.toString() ?? "",
-            "city": stop["city"]?.toString() ?? stop["city_name"]?.toString() ?? "",
-            "latitude": (stop["lat"] as num?)?.toDouble() ?? 0.0,
-            "longitude": (stop["lng"] as num?)?.toDouble() ?? 0.0,
-          };
-        })
-        .toList();
+  print("========== STOPS RAW ==========");
+  print(route["stops"]);
+  print("Runtime type: ${route["stops"]?.runtimeType}");
+  print("===============================");
 
-    final airlineIata = route["airline_iata"]?.toString() ?? "";
-    final airlineName = await _getAirlineName(airlineIata);
-    final flightId = _buildFlightId(
-      flightCode: route["flight_iata"]?.toString(),
-      origin: origin,
-      destination: destination,
-      date: nextDep != null ? _formatDate(nextDep) : null,
-    );
+  final rawStops = route["stops"] as List? ?? [];
+
+  final stops = rawStops.map((s) {
+    final stop = s as Map;
 
     return {
-      "flightID": flightId,
-      "flightId": flightId,
-      "f": flightId,
-      "flightCompany": airlineName,
-      "flightCode": route["flight_iata"]?.toString(),
-      "takeoffAirport": origin,
-      "destinationAirport": destination,
-      "takeoffTime": nextDep != null ? _formatTime(nextDep) : depTimeStr,
-      "destinationTime": arrDt != null ? _formatTime(arrDt) : arrTimeStr,
-      "departureDate": nextDep != null ? _formatDate(nextDep) : null,
-      "arrivalDate": arrDt != null
-          ? _formatDate(arrDt)
-          : nextDep != null
-          ? _formatDate(nextDep)
-          : null,
-      "takeoffCityName": origin,
-      "destinationCityName": destination,
-      "destinationCountryCode": "",
-      "stops": stops,
+      "airport":
+          stop["airport_iata"]?.toString() ??
+          stop["iata_code"]?.toString() ??
+          "",
+
+      "city":
+          stop["city"]?.toString() ??
+          stop["city_name"]?.toString() ??
+          "",
+
+      "latitude":
+          (stop["lat"] as num?)?.toDouble() ?? 0.0,
+
+      "longitude":
+          (stop["lng"] as num?)?.toDouble() ?? 0.0,
     };
-  }
+  }).toList();
+
+  print("========== PARSED STOPS ==========");
+  print(stops);
+  print("Stops count: ${stops.length}");
+  print("==================================");
+
+  final airlineIata = route["airline_iata"]?.toString() ?? "";
+  final airlineName = await _getAirlineName(airlineIata);
+
+  final flightId = _buildFlightId(
+    flightCode: route["flight_iata"]?.toString(),
+    origin: origin,
+    destination: destination,
+    date: nextDep != null ? _formatDate(nextDep) : null,
+  );
+
+  return {
+    "flightID": flightId,
+    "flightId": flightId,
+    "f": flightId,
+
+    "flightCompany": airlineName,
+    "flightCode": route["flight_iata"]?.toString(),
+
+    "takeoffAirport": origin,
+    "destinationAirport": destination,
+
+    "takeoffTime":
+        nextDep != null ? _formatTime(nextDep) : depTimeStr,
+
+    "destinationTime":
+        arrDt != null ? _formatTime(arrDt) : arrTimeStr,
+
+    "departureDate":
+        nextDep != null ? _formatDate(nextDep) : null,
+
+    "arrivalDate":
+        arrDt != null
+            ? _formatDate(arrDt)
+            : nextDep != null
+                ? _formatDate(nextDep)
+                : null,
+
+    "takeoffCityName": origin,
+    "destinationCityName": destination,
+    "destinationCountryCode": "",
+
+    "stops": stops,
+  };
+}
 }
