@@ -161,7 +161,7 @@ class _BookingScreenViewState extends State<BookingScreenView> {
                           ),
                         ),
                         Positioned(
-                          top: localHeight * 0.16,
+                          top: localHeight * 0.30,
                           left: 0,
                           right: 0,
                           bottom: localHeight * 0.1,
@@ -295,7 +295,7 @@ class _BookingScreenViewState extends State<BookingScreenView> {
           children: [
             if (isAfterGap) const SizedBox(height: 8),
             Padding(
-              padding: const EdgeInsets.symmetric(vertical: 1.2),
+              padding: const EdgeInsets.symmetric(vertical: 1.8),
               child: _buildRow(context, rowSeats),
             ),
           ],
@@ -319,18 +319,18 @@ class _BookingScreenViewState extends State<BookingScreenView> {
           children: leftSeats
               .map(
                 (seat) => Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 1.4),
+                  padding: const EdgeInsets.symmetric(horizontal: 2.0),
                   child: SeatWidget(seat: seat),
                 ),
               )
               .toList(),
         ),
-        const SizedBox(width: 10),
+        const SizedBox(width: 14),
         Row(
           children: rightSeats
               .map(
                 (seat) => Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 1.4),
+                  padding: const EdgeInsets.symmetric(horizontal: 2.0),
                   child: SeatWidget(seat: seat),
                 ),
               )

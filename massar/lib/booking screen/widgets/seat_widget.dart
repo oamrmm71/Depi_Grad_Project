@@ -46,21 +46,21 @@ class SeatWidget extends StatelessWidget {
             },
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 180),
-        width: 32,
-        height: 32,
+        width: 40,
+        height: 40,
         alignment: Alignment.center,
         decoration: BoxDecoration(
           color: bgColour,
           border: Border.all(color: borderColour, width: 1.2),
-          borderRadius: BorderRadius.circular(8),
-          
+          borderRadius: BorderRadius.circular(9),
+
         ),
-        
+
         child: Text(
           seat.seatNumber,
           style: TextStyle(
             fontFamily: 'Poppins',
-            fontSize: 9.5,
+            fontSize: 11,
             fontWeight: FontWeight.w600,
             color: isBooked ? Colors.black26 : textColour,
           ),
