@@ -2,9 +2,8 @@ import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:massar/home%20screen/screens/home_screen.dart';
-import 'package:massar/theme/app_colors.dart';
 import 'package:massar/auth/login.dart';
+import 'package:massar/theme/app_colors.dart';
 
 class OnboardingScreen7 extends StatelessWidget {
   const OnboardingScreen7({super.key});
@@ -21,117 +20,178 @@ class OnboardingScreen7 extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final size = MediaQuery.of(context).size;
-
-    final maxContentWidth = size.width > 700 ? 650.0 : size.width;
-
-    final titleSize = (size.width * 0.065).clamp(24.0, 32.0);
-    final bodySize = (size.width * 0.036).clamp(14.0, 17.0);
-    final buttonFont = (size.width * 0.048).clamp(18.0, 22.0);
-
-    final buttonHeight = (size.height * .075).clamp(54.0, 60.0);
-
     return Scaffold(
       backgroundColor: AppColors.splashBg,
       body: SafeArea(
-        child: Center(
-          child: ConstrainedBox(
-            constraints: BoxConstraints(
-              maxWidth: maxContentWidth,
-            ),
-            child: Padding(
-              padding: EdgeInsets.symmetric(
-                horizontal: size.width * .06,
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            final size = constraints.biggest;
+
+            final maxContentWidth =
+                size.width > 700 ? 650.0 : size.width;
+
+            final titleSize =
+                (size.width * .065).clamp(24.0, 34.0);
+
+            final bodySize =
+                (size.width * .036).clamp(14.0, 17.0);
+
+            final buttonFont =
+                (size.width * .048).clamp(18.0, 22.0);
+
+            final buttonHeight =
+                (size.height * .075).clamp(54.0, 60.0);
+
+            final illustrationSize =
+                size.width > 1000
+                    ? 360.0
+                    : size.width > 700
+                        ? 320.0
+                        : 260.0;
+
+            return SingleChildScrollView(
+              child: ConstrainedBox(
+                constraints: BoxConstraints(
+                  minHeight: size.height,
+                ),
+                child: Center(
+                  child: ConstrainedBox(
+                    constraints: BoxConstraints(
+                      maxWidth: maxContentWidth,
+                    ),
+                    child: Padding(
+                      padding: EdgeInsets.symmetric(
+                        horizontal: size.width * .06,
+                        vertical: 20,
+                      ),
+                      child: Column(
+                        children: [
+                          SizedBox(
+                            height: size.height * .05,
+                          ),
+
+                          Text(
+                            "Airplane Mode",
+                            textAlign: TextAlign.center,
+                            style: GoogleFonts.poppins(
+                              fontSize: titleSize,
+                              fontWeight: FontWeight.w700,
+                              color: AppColors.navIcon,
+                            ),
+                          ),
+
+                          SizedBox(
+                            height: size.height * .01,
+                          ),
+
+                          Text(
+                            "Airplane Mode saves battery, avoids\nroaming, and keeps your trip stress-free.",
+                            textAlign: TextAlign.center,
+                            style: GoogleFonts.poppins(
+                              fontSize: bodySize,
+                              fontWeight: FontWeight.w300,
+                              color: AppColors.navIcon.withValues(
+                                alpha: .65,
+                              ),
+                              height: 1.4,
+                            ),
+                          ),
+
+                          SizedBox(
+                            height: size.height * .04,
+                          ),
+
+                          AirplaneIllustration(
+                            maxSize: illustrationSize,
+                          ),
+
+                          SizedBox(
+                            height: size.height * .05,
+                          ),
+
+                          SizedBox(
+                            width: double.infinity,
+                            height: buttonHeight,
+                            child: ElevatedButton(
+                              onPressed: () => _goHome(context),
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor:
+                                    AppColors.navIcon,
+                                foregroundColor:
+                                    AppColors.white,
+                                elevation: 0,
+                                shape:
+                                    RoundedRectangleBorder(
+                                  borderRadius:
+                                      BorderRadius.circular(
+                                    30,
+                                  ),
+                                ),
+                              ),
+                              child: Text(
+                                "Allow",
+                                style:
+                                    GoogleFonts.poppins(
+                                  fontSize: buttonFont,
+                                  fontWeight:
+                                      FontWeight.w500,
+                                  color:
+                                      AppColors.white,
+                                ),
+                              ),
+                            ),
+                          ),
+
+                          SizedBox(
+                            height: size.height * .02,
+                          ),
+
+                          SizedBox(
+                            width: double.infinity,
+                            height: buttonHeight,
+                            child: ElevatedButton(
+                              onPressed: () => _goHome(context),
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor:
+                                    AppColors.white,
+                                foregroundColor:
+                                    AppColors.navIcon,
+                                elevation: 5,
+                                shadowColor:
+                                    AppColors.flightGlow,
+                                shape:
+                                    RoundedRectangleBorder(
+                                  borderRadius:
+                                      BorderRadius.circular(
+                                    30,
+                                  ),
+                                ),
+                              ),
+                              child: Text(
+                                "Skip",
+                                style:
+                                    GoogleFonts.poppins(
+                                  fontSize: buttonFont,
+                                  fontWeight:
+                                      FontWeight.w500,
+                                  color:
+                                      AppColors.navIcon,
+                                ),
+                              ),
+                            ),
+                          ),
+
+                          SizedBox(
+                            height: size.height * .03,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
               ),
-              child: Column(
-                children: [
-                  const Spacer(),
-
-                  Text(
-                    "Airplane Mode",
-                    textAlign: TextAlign.center,
-                    style: GoogleFonts.poppins(
-                      fontSize: 40,
-                      fontWeight: FontWeight.w700,
-                      color: AppColors.navIcon,
-                    ),
-                  ),
-
-                  SizedBox(height: size.height * .006),
-
-                  Text(
-                    "Airplane Mode saves battery,avoids\n roaming, and keeps your trip stress-free.",
-                    textAlign: TextAlign.center,
-                    style: GoogleFonts.poppins(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w300,
-                      color: AppColors.navIcon.withValues(alpha: .65),
-                      height: 1.4,
-                    ),
-                  ),
-
-                  const Spacer(),
-
-                  const AirplaneIllustration(),
-
-                  const Spacer(),
-
-                  SizedBox(
-                    width: double.infinity,
-                    height: 52,
-                    child: ElevatedButton(
-                      onPressed: () => _goHome(context),
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: AppColors.navIcon,
-                        foregroundColor: AppColors.white,
-                        elevation: 0,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(30),
-                        ),
-                      ),
-                      child: Text(
-                        "Allow",
-                        style: GoogleFonts.poppins(
-                          fontSize: 18,
-                          fontWeight: FontWeight.w500,
-                          color: AppColors.white,
-                        ),
-                      ),
-                    ),
-                  ),
-
-                  SizedBox(height: size.height * .02),
-
-                  SizedBox(
-                    width: double.infinity,
-                    height: 50,
-                    child: ElevatedButton(
-                      onPressed: () => _goHome(context),
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: AppColors.white,
-                        foregroundColor: AppColors.navIcon,
-                        elevation: 5,
-                        shadowColor: AppColors.flightGlow,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(30),
-                        ),
-                      ),
-                      child: Text(
-                        "Skip",
-                        style: GoogleFonts.poppins(
-                          fontSize: 18,
-                          fontWeight: FontWeight.w500,
-                          color: AppColors.navIcon,
-                        ),
-                      ),
-                    ),
-                  ),
-
-                  SizedBox(height: size.height * .03),
-                ],
-              ),
-            ),
-          ),
+            );
+          },
         ),
       ),
     );
@@ -139,13 +199,19 @@ class OnboardingScreen7 extends StatelessWidget {
 }
 
 class AirplaneIllustration extends StatefulWidget {
-  const AirplaneIllustration({super.key});
+  final double maxSize;
+
+  const AirplaneIllustration({
+    super.key,
+    required this.maxSize,
+  });
 
   @override
-  State<AirplaneIllustration> createState() => _AirplaneIllustrationState();
+  State<AirplaneIllustration> createState() =>
+      _AirplaneIllustrationState();
 }
-
-class _AirplaneIllustrationState extends State<AirplaneIllustration>
+class _AirplaneIllustrationState
+    extends State<AirplaneIllustration>
     with SingleTickerProviderStateMixin {
   late final AnimationController _controller;
 
@@ -163,6 +229,7 @@ class _AirplaneIllustrationState extends State<AirplaneIllustration>
   @override
   void initState() {
     super.initState();
+
     _controller = AnimationController(
       vsync: this,
       duration: const Duration(seconds: 16),
@@ -177,9 +244,8 @@ class _AirplaneIllustrationState extends State<AirplaneIllustration>
 
   @override
   Widget build(BuildContext context) {
-    final width = MediaQuery.of(context).size.width;
+    final circleSize = widget.maxSize;
 
-    final circleSize = (width * .80).clamp(240.0, 330.0);
     final outerCircle = circleSize;
     final innerCircle = circleSize * .54;
 
@@ -229,13 +295,15 @@ class _AirplaneIllustrationState extends State<AirplaneIllustration>
             animation: _controller,
             builder: (context, _) {
               final sweep = _controller.value * 360;
+
               return Stack(
                 alignment: Alignment.center,
                 children: [
-                  for (var i = 0; i < _icons.length; i++)
+                  for (int i = 0; i < _icons.length; i++)
                     _circleIcon(
                       asset: _icons[i],
-                      angle: (i * 360 / _icons.length) + sweep,
+                      angle:
+                          (i * 360 / _icons.length) + sweep,
                       radius: radius,
                       iconSize: iconSize,
                     ),
