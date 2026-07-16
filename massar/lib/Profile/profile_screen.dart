@@ -1,8 +1,12 @@
+import 'dart:convert';
+import 'dart:typed_data';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:image_picker/image_picker.dart';
 
 import 'package:massar/theme/app_colors.dart';
 import 'package:massar/custom%20widgets/bottom_nav_glass.dart';
@@ -23,12 +27,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
   final _passportController = TextEditingController();
   final _emailController = TextEditingController();
 
-
   final _passwordController = TextEditingController();
   final _confirmPasswordController = TextEditingController();
 
-  final List<String> _customFieldKeys = [];
-  final Map<String, TextEditingController> _customFieldControllers = {};
+  Uint8List? _profileImageBytes;
+  bool _isPickingImage = false;
 
   bool _isEditing = false;
   bool _isLoading = true;
@@ -58,9 +61,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
     _emailController.dispose();
     _passwordController.dispose();
     _confirmPasswordController.dispose();
-    for (final c in _customFieldControllers.values) {
-      c.dispose();
-    }
     super.dispose();
   }
 
@@ -83,14 +83,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
         _passportController.text = data['passportNumber'] ?? '';
         _emailController.text = data['email'] ?? _user?.email ?? '';
 
-        final customFields = data['customFields'];
-        if (customFields is Map) {
-          customFields.forEach((key, value) {
-            final keyStr = key.toString();
-            _customFieldKeys.add(keyStr);
-            _customFieldControllers[keyStr] =
-                TextEditingController(text: value?.toString() ?? '');
-          });
+        final photoBase64 = data['photoBase64'] as String?;
+        if (photoBase64 != null && photoBase64.isNotEmpty) {
+          try {
+            _profileImageBytes = base64Decode(photoBase64);
+          } catch (_) {
+          }
         }
       } else {
         _emailController.text = _user?.email ?? '';
@@ -113,11 +111,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
     setState(() => _isSaving = true);
 
     try {
-      final customFieldsMap = <String, String>{
-        for (final key in _customFieldKeys)
-          key: _customFieldControllers[key]?.text.trim() ?? '',
-      };
-
       await docRef.set({
         'firstName': _firstNameController.text.trim(),
         'lastName': _lastNameController.text.trim(),
@@ -125,7 +118,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
         'cardExpiry': _cardExpiryController.text.trim(),
         'passportNumber': _passportController.text.trim(),
         'email': _emailController.text.trim(),
-        'customFields': customFieldsMap,
+        'photoBase64': _profileImageBytes != null
+            ? base64Encode(_profileImageBytes!)
+            : null,
         'updatedAt': FieldValue.serverTimestamp(),
       }, SetOptions(merge: true));
 
@@ -166,60 +161,42 @@ class _ProfileScreenState extends State<ProfileScreen> {
       setState(() => _isEditing = true);
     }
   }
+  Future<void> _pickImage() async {
+    setState(() => _isPickingImage = true);
+    try {
+      final picker = ImagePicker();
+      final picked = await picker.pickImage(
+        source: ImageSource.gallery,
+        maxWidth: 512,
+        maxHeight: 512,
+        imageQuality: 70,
+      );
 
-  Future<void> _addCustomField() async {
-    final controller = TextEditingController();
+      if (picked == null) return;
 
-    final fieldName = await showDialog<String>(
-      context: context,
-      builder: (ctx) => AlertDialog(
-        backgroundColor: AppColors.cardDark,
-        title: Text(
-          'Add field',
-          style: GoogleFonts.poppins(color: AppColors.white),
-        ),
-        content: TextField(
-          controller: controller,
-          autofocus: true,
-          style: GoogleFonts.poppins(color: AppColors.white),
-          decoration: InputDecoration(
-            hintText: 'e.g. Instagram handle',
-            hintStyle: GoogleFonts.poppins(color: AppColors.whiteDim),
-          ),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(ctx),
-            child: const Text('Cancel'),
-          ),
-          TextButton(
-            onPressed: () => Navigator.pop(ctx, controller.text.trim()),
-            child: const Text('Add'),
-          ),
-        ],
-      ),
-    );
+      final bytes = await picked.readAsBytes();
 
-    if (fieldName == null || fieldName.isEmpty) return;
+      if (bytes.length > 700 * 1024) {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('That image is too large, pick a smaller one.'),
+            ),
+          );
+        }
+        return;
+      }
 
-    var key = fieldName;
-    var suffix = 1;
-    while (_customFieldKeys.contains(key)) {
-      suffix++;
-      key = '$fieldName ($suffix)';
+      setState(() => _profileImageBytes = bytes);
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Failed to pick image: $e')),
+        );
+      }
+    } finally {
+      if (mounted) setState(() => _isPickingImage = false);
     }
-
-    setState(() {
-      _customFieldKeys.add(key);
-      _customFieldControllers[key] = TextEditingController();
-    });
-  }
-
-  void _removeCustomField(String key) {
-    setState(() {
-      _customFieldKeys.remove(key);
-      _customFieldControllers.remove(key)?.dispose();
-    });
   }
 
   @override
@@ -306,45 +283,87 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                   Center(
                                     child: Column(
                                       children: [
-                                        Container(
-                                          width: 157,
-                                          height: 157,
-                                          decoration: BoxDecoration(
-                                            shape: BoxShape.circle,
-                                            color: AppColors.avatarBg,
-                                            border: Border.all(
-                                              color: AppColors.glassBorder,
-                                              width: 2,
-                                            ),
-                                            boxShadow: [
-                                              BoxShadow(
-                                                color: Colors.black
-                                                    .withOpacity(.28),
-                                                blurRadius: 16,
-                                                offset: const Offset(0, 8),
-                                              ),
-                                            ],
-                                          ),
-                                          child: Padding(
-                                            padding: const EdgeInsets.all(4),
-                                            child: ClipOval(
-                                              child: Image.asset(
-                                                "lib/assets/profile.png",
-                                                fit: BoxFit.cover,
-                                                errorBuilder:
-                                                    (_, __, ___) {
-                                                  return Container(
+                                        GestureDetector(
+                                          onTap: _isEditing && !_isPickingImage
+                                              ? _pickImage
+                                              : null,
+                                          child: Stack(
+                                            children: [
+                                              Container(
+                                                width: 157,
+                                                height: 157,
+                                                decoration: BoxDecoration(
+                                                  shape: BoxShape.circle,
+                                                  color: AppColors.avatarBg,
+                                                  border: Border.all(
                                                     color:
-                                                        AppColors.imageFailed,
-                                                    child: const Icon(
-                                                      Icons.person,
-                                                      color: Colors.white,
-                                                      size: 45,
+                                                        AppColors.glassBorder,
+                                                    width: 2,
+                                                  ),
+                                                  boxShadow: [
+                                                    BoxShadow(
+                                                      color: Colors.black
+                                                          .withOpacity(.28),
+                                                      blurRadius: 16,
+                                                      offset:
+                                                          const Offset(0, 8),
                                                     ),
-                                                  );
-                                                },
+                                                  ],
+                                                ),
+                                                child: Padding(
+                                                  padding:
+                                                      const EdgeInsets.all(4),
+                                                  child: ClipOval(
+                                                    child: _isPickingImage
+                                                        ? const Center(
+                                                            child:
+                                                                CircularProgressIndicator(
+                                                              color:
+                                                                  Colors.white,
+                                                            ),
+                                                          )
+                                                        : _profileImageBytes !=
+                                                                null
+                                                            ? Image.memory(
+                                                                _profileImageBytes!,
+                                                                fit: BoxFit
+                                                                    .cover,
+                                                              )
+                                                            : Container(
+                                                                color: AppColors
+                                                                    .imageFailed,
+                                                                child: const Icon(
+                                                                    Icons
+                                                                        .person,
+                                                                    color: Colors
+                                                                        .white,
+                                                                    size: 45),
+                                                              ),
+                                                  ),
+                                                ),
                                               ),
-                                            ),
+                                              if (_isEditing)
+                                                Positioned(
+                                                  bottom: 6,
+                                                  right: 6,
+                                                  child: Container(
+                                                    padding:
+                                                        const EdgeInsets.all(
+                                                            6),
+                                                    decoration:
+                                                        const BoxDecoration(
+                                                      shape: BoxShape.circle,
+                                                      color:
+                                                          AppColors.cardDark,
+                                                    ),
+                                                    child: const Icon(
+                                                      Icons.camera_alt,
+                                                      color: Colors.white,
+                                                      size: 16,
+                                                    ),
+                                                  ),
+                                                ),
+                                            ],
                                           ),
                                         ),
                                         const SizedBox(height: 10),
@@ -464,7 +483,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                           textInputAction:
                                               TextInputAction.next,
                                         ),
-
                                         if (_isEditing) ...[
                                           const SizedBox(height: 10),
                                           _buildField(
@@ -486,85 +504,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                                 TextInputAction.done,
                                           ),
                                         ],
-                                        if (_customFieldKeys.isNotEmpty) ...[
-                                          const SizedBox(height: 16),
-                                          Align(
-                                            alignment: Alignment.centerLeft,
-                                            child: Text(
-                                              "Additional Info",
-                                              style: GoogleFonts.poppins(
-                                                color: AppColors.whiteDim,
-                                                fontSize: 13,
-                                                fontWeight: FontWeight.w500,
-                                              ),
-                                            ),
-                                          ),
-                                          const SizedBox(height: 8),
-                                        ],
-                                        ..._customFieldKeys.map((key) {
-                                          return Padding(
-                                            padding: const EdgeInsets.only(
-                                                bottom: 10),
-                                            child: Row(
-                                              children: [
-                                                Expanded(
-                                                  child: _buildField(
-                                                    controller:
-                                                        _customFieldControllers[
-                                                            key]!,
-                                                    hint: key,
-                                                    textInputAction:
-                                                        TextInputAction.next,
-                                                  ),
-                                                ),
-                                                if (_isEditing) ...[
-                                                  const SizedBox(width: 8),
-                                                  InkWell(
-                                                    onTap: () =>
-                                                        _removeCustomField(
-                                                            key),
-                                                    child: const Icon(
-                                                      Icons.close,
-                                                      color:
-                                                          AppColors.whiteDim,
-                                                      size: 18,
-                                                    ),
-                                                  ),
-                                                ],
-                                              ],
-                                            ),
-                                          );
-                                        }),
-
-                                        if (_isEditing) ...[
-                                          const SizedBox(height: 6),
-                                          InkWell(
-                                            onTap: _addCustomField,
-                                            child: Row(
-                                              mainAxisSize: MainAxisSize.min,
-                                              children: [
-                                                const Icon(
-                                                  Icons.add_circle_outline,
-                                                  color: AppColors.white,
-                                                  size: 18,
-                                                ),
-                                                const SizedBox(width: 6),
-                                                Text(
-                                                  "Add field",
-                                                  style: GoogleFonts.poppins(
-                                                    color: AppColors.white,
-                                                    fontSize: 13,
-                                                    fontWeight:
-                                                        FontWeight.w500,
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                          ),
-                                        ],
 
                                         SizedBox(height: size.height * .03),
-
                                         if (_isEditing)
                                           Container(
                                             width: double.infinity,
@@ -660,6 +601,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               textInputAction: textInputAction,
               inputFormatters: inputFormatters,
               cursorColor: AppColors.white,
+              // Read-only until the user taps Edit.
               readOnly: !_isEditing,
               style: GoogleFonts.poppins(
                 color: AppColors.white,
