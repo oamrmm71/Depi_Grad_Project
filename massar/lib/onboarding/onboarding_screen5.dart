@@ -19,7 +19,7 @@ class OnboardingScreen5 extends StatelessWidget {
         child: Column(
           children:[ SizedBox(
             width: width,
-            height: height*0.6,
+            height: height*0.5,
             child: Stack(
               alignment: AlignmentGeometry.center,
               children: [
