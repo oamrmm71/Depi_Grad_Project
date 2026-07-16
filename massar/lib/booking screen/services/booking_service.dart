@@ -53,6 +53,7 @@ class BookingService {
         'bookedBy': uid,
         'bookedAt': bookedAt,
         'flightId': flight.flightId,
+        'stops': flight.stops.map((e) => e.toJson()).toList(),
       }, SetOptions(merge: true));
     }
 
@@ -64,28 +65,26 @@ class BookingService {
           .doc('${flight.flightId}_${DateTime.now().millisecondsSinceEpoch}');
 
       batch.set(bookingRef, {
-  'flightId': flight.flightId,
-  'flightType': flight.flightType,
-  'flightCompany': flight.flightCompany,
-  'flightCode': flight.flightCode,
-  'date': flight.date,
+        'flightId': flight.flightId,
+        'flightType': flight.flightType,
+        'flightCompany': flight.flightCompany,
+        'flightCode': flight.flightCode,
+        'date': flight.date,
 
-  'fromCountry': flight.fromCountry,
-  'toCountry': flight.toCountry,
+        'fromCountry': flight.fromCountry,
+        'toCountry': flight.toCountry,
 
-  'fromAirport': flight.fromAirport,
-  'toAirport': flight.toAirport,
+        'fromAirport': flight.fromAirport,
+        'toAirport': flight.toAirport,
 
-  'fromTime': flight.fromTime,
-  'toTime': flight.toTime,
+        'fromTime': flight.fromTime,
+        'toTime': flight.toTime,
 
-  'selectedSeats': selectedSeats
-      .map((e) => e.seatNumber)
-      .toList(),
-
-  'seatCount': selectedSeats.length,
-  'bookedAt': bookedAt,
-    });
+        'selectedSeats': selectedSeats.map((e) => e.seatNumber).toList(),
+        'stops': flight.stops.map((e) => e.toJson()).toList(),
+        'seatCount': selectedSeats.length,
+        'bookedAt': bookedAt,
+      });
     }
 
     await batch.commit();
@@ -93,10 +92,7 @@ class BookingService {
 
   List<Seat> _generateSeats() {
     const seatLetters = ['A', 'B', 'C', 'D', 'E', 'F'];
-    // No hardcoded booked seats here — initial availability is determined
-    // per-flight by what exists in Firestore. New flights start with all
-    // seats available and bookings are persisted to the flight's seats
-    // collection when confirmed.
+    
 
     final seats = <Seat>[];
 

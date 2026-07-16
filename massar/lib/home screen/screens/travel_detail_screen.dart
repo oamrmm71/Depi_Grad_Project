@@ -496,7 +496,9 @@ class TravelDetailScreen extends StatelessWidget {
                                     toCountry: trip.destinationCity,
                                     toAirport: trip.destinationAirport,
                                     toTime: trip.destinationTime ?? 'TBD',
-                                  );
+                                    stops: trip.stops, 
+                                    );
+                                
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(
@@ -519,8 +521,6 @@ class TravelDetailScreen extends StatelessWidget {
                           ],
                         ),
                       ),
-
-                      // Plane in front
                       Transform.translate(
                         offset: const Offset(-24, -40),
                         child: Image.asset(
