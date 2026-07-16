@@ -48,11 +48,6 @@ class AddDreamScreen extends StatelessWidget {
             builder: (context, state) {
               return Stack(
                 children: [
-                  Positioned.fill(
-                    child: CustomPaint(
-                      painter: const DreamArcPainter(),
-                    ),
-                  ),
                   Positioned(
                     top: 14,
                     left: 24,
@@ -124,31 +119,6 @@ class AddDreamScreen extends StatelessWidget {
                     ),
                   ),
                   Positioned(
-                    right: 0,
-                    top: MediaQuery.of(context).size.height * 0.48,
-                    child: GestureDetector(
-                      onTap: () {
-                        context.read<AddDreamCubit>().nextStep();
-                      },
-                      child: Container(
-                        width: 50,
-                        height: 50,
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: AppColors.white.withOpacity(0.1),
-                          border: Border.all(
-                            color: AppColors.white.withOpacity(0.15),
-                          ),
-                        ),
-                        child: const Icon(
-                          Icons.arrow_forward,
-                          color: AppColors.white,
-                          size: 28,
-                        ),
-                      ),
-                    ),
-                  ),
-                  Positioned(
                     left: 0,
                     right: 0,
                     bottom: 20,
@@ -164,7 +134,7 @@ class AddDreamScreen extends StatelessWidget {
   }
 }
 
-class _DestinationFlow extends StatelessWidget {
+class _DestinationFlow extends StatefulWidget {
   final List<String> destinations;
   final String selectedDestination;
   final ValueChanged<String> onSelect;
@@ -178,101 +148,179 @@ class _DestinationFlow extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
-    final selectedIndex = destinations.indexOf(selectedDestination);
-    final effectiveCenter =
-        selectedIndex < 0 ? destinations.length ~/ 2 : selectedIndex;
+  State<_DestinationFlow> createState() => _DestinationFlowState();
+}
 
+class _DestinationFlowState extends State<_DestinationFlow> {
+  double _rotation = 0.0;
+
+  @override
+  Widget build(BuildContext context) {
     return LayoutBuilder(
       builder: (context, constraints) {
         final screenWidth = constraints.maxWidth;
         final screenHeight = constraints.maxHeight;
-        final contentHeight = math.max(screenHeight * 1.7, destinations.length * 110.0);
-        final arcCenter = Offset(-screenWidth * 0.24, contentHeight * 0.40);
-        final arcRadius = screenWidth * 0.78;
-        const arcStartAngle = -1.40;
-        const arcSweepAngle = 3.15;
+        final arcCenter = Offset(-screenWidth * 0.10, screenHeight * 0.46);
+        final arcRadius = screenWidth * 0.72;
+        const arcStartAngle = -1.36;
+        const arcSweepAngle = 2.78;
+        final selectedIndex = _selectedIndexForRotation();
+        final focusedIndex = selectedIndex < 0 ? widget.destinations.length ~/ 2 : selectedIndex;
+        final arrowTop = screenHeight * 0.50 - 26;
 
-        return SingleChildScrollView(
-          physics: const BouncingScrollPhysics(),
-          child: SizedBox(
-            height: contentHeight,
-            width: screenWidth,
-            child: Stack(
-              children: [
-                ...List.generate(destinations.length, (index) {
-                  final destination = destinations[index];
-                  final isSelected = index == effectiveCenter;
-                  final progress = destinations.length == 1
-                      ? 0.5
-                      : index / (destinations.length - 1);
-                  final mappedProgress = 0.10 + (progress * 0.80);
-                  final angle = arcStartAngle + (arcSweepAngle * mappedProgress);
-                  final point = Offset(
-                    arcCenter.dx + (arcRadius * math.cos(angle)),
-                    arcCenter.dy + (arcRadius * math.sin(angle)),
-                  );
+        return GestureDetector(
+          behavior: HitTestBehavior.translucent,
+          onVerticalDragUpdate: (details) {
+            setState(() {
+              _rotation = _wrap01(_rotation + (details.delta.dy * 0.0028));
+            });
+          },
+          child: Stack(
+            clipBehavior: Clip.none,
+            children: [
+              Positioned.fill(
+                child: CustomPaint(
+                  painter: const DreamArcPainter(),
+                ),
+              ),
+              ...List.generate(widget.destinations.length, (index) {
+                final destination = widget.destinations[index];
+                final progress = widget.destinations.length == 1
+                    ? 0.5
+                    : index / (widget.destinations.length - 1);
+                final rotatedProgress = _wrap01(progress + _rotation);
+                final angle = arcStartAngle +
+                    (arcSweepAngle * (0.12 + (rotatedProgress * 0.72)));
+                final point = Offset(
+                  arcCenter.dx + (arcRadius * math.cos(angle)),
+                  arcCenter.dy + (arcRadius * math.sin(angle)),
+                );
+                final isSelected = index == focusedIndex;
 
-                  final textStyle = GoogleFonts.poppins(
-                    color: isSelected
-                        ? AppColors.white
-                        : AppColors.white.withOpacity(0.72),
-                    fontSize: isSelected ? 31 : 18,
-                    fontWeight: isSelected ? FontWeight.w700 : FontWeight.w300,
-                    fontStyle: isSelected ? FontStyle.normal : FontStyle.italic,
-                  );
+                final textStyle = GoogleFonts.poppins(
+                  color: isSelected
+                      ? AppColors.white
+                      : AppColors.white.withOpacity(0.72),
+                  fontSize: isSelected ? 24 : 14,
+                  fontWeight: isSelected ? FontWeight.w700 : FontWeight.w300,
+                  fontStyle: isSelected ? FontStyle.normal : FontStyle.italic,
+                );
 
-                  final textPainter = TextPainter(
-                    text: TextSpan(text: destination, style: textStyle),
-                    textDirection: TextDirection.ltr,
-                  )..layout();
+                final textPainter = TextPainter(
+                  text: TextSpan(text: destination, style: textStyle),
+                  textDirection: TextDirection.ltr,
+                )..layout();
 
-                  final labelWidth = textPainter.width + (isSelected ? 40 : 24);
-                  final labelHeight = math.max(
-                    textPainter.height,
-                    isSelected ? 40.0 : 26.0,
-                  );
+                final double labelWidth = textPainter.width + (isSelected ? 30 : 20);
+                final double labelHeight = math.max(
+                  textPainter.height,
+                  isSelected ? 30.0 : 22.0,
+                ).toDouble();
 
-                  return Positioned(
-                    left: point.dx,
-                    top: point.dy - (labelHeight / 2),
-                    child: GestureDetector(
-                      onTap: () => onSelect(destination),
-                      child: AnimatedOpacity(
-                        duration: const Duration(milliseconds: 180),
-                        opacity: isSelected ? 1 : 0.78,
-                        child: SizedBox(
-                          width: labelWidth,
-                          height: labelHeight,
-                          child: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              if (isSelected) ...[
-                                Container(
-                                  width: 12,
-                                  height: 12,
-                                  margin: const EdgeInsets.only(right: 10),
-                                  decoration: const BoxDecoration(
-                                    shape: BoxShape.circle,
-                                    color: AppColors.white,
-                                  ),
-                                ),
-                              ],
-                              Text(destination, style: textStyle),
-                            ],
-                          ),
+                return Positioned(
+                  left: point.dx - (labelWidth * 0.12),
+                  top: point.dy - (labelHeight / 2),
+                  child: GestureDetector(
+                    onTap: () {
+                      widget.onSelect(destination);
+                      _snapToIndex(index);
+                    },
+                    child: AnimatedOpacity(
+                      duration: const Duration(milliseconds: 180),
+                      opacity: isSelected ? 1 : 0.76,
+                      child: SizedBox(
+                        width: labelWidth,
+                        height: labelHeight,
+                        child: Align(
+                          alignment: Alignment.centerLeft,
+                          child: Text(destination, style: textStyle),
                         ),
                       ),
                     ),
-                  );
-                }),
-              ],
-            ),
+                  ),
+                );
+              }),
+              Positioned(
+                right: 18,
+                top: arrowTop,
+                child: GestureDetector(
+                  onTap: widget.onNext,
+                  child: Container(
+                    width: 52,
+                    height: 52,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: AppColors.white.withOpacity(0.12),
+                      border: Border.all(
+                        color: AppColors.white.withOpacity(0.18),
+                      ),
+                    ),
+                    child: const Icon(
+                      Icons.arrow_forward,
+                      color: AppColors.white,
+                      size: 28,
+                    ),
+                  ),
+                ),
+              ),
+            ],
           ),
         );
       },
     );
   }
 
+  @override
+  void didUpdateWidget(covariant _DestinationFlow oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.selectedDestination != widget.selectedDestination) {
+      final selectedIndex = widget.destinations.indexOf(widget.selectedDestination);
+      if (selectedIndex >= 0) {
+        _snapToIndex(selectedIndex);
+      }
+    }
+  }
+
+  double _wrap01(double value) {
+    final wrapped = value % 1.0;
+    return wrapped < 0 ? wrapped + 1.0 : wrapped;
+  }
+
+  int _selectedIndexForRotation() {
+    if (widget.destinations.isEmpty) {
+      return -1;
+    }
+
+    const targetProgress = 0.5;
+    var bestIndex = 0;
+    var bestDistance = double.infinity;
+
+    for (var index = 0; index < widget.destinations.length; index++) {
+      final progress = widget.destinations.length == 1
+          ? 0.5
+          : index / (widget.destinations.length - 1);
+      final rotatedProgress = _wrap01(progress + _rotation);
+      final distance = _circularDistance(rotatedProgress, targetProgress);
+      if (distance < bestDistance) {
+        bestDistance = distance;
+        bestIndex = index;
+      }
+    }
+
+    return bestIndex;
+  }
+
+  double _circularDistance(double a, double b) {
+    final diff = (a - b).abs();
+    return math.min(diff, 1.0 - diff);
+  }
+
+  void _snapToIndex(int index) {
+    final denominator = math.max(widget.destinations.length - 1, 1);
+    final progress = index / denominator;
+    const targetProgress = 0.5;
+    setState(() {
+      _rotation = _wrap01(targetProgress - progress);
+    });
+  }
 }

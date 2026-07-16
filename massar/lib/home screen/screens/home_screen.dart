@@ -16,6 +16,7 @@ import 'package:massar/home%20screen/cubits/trip_state.dart';
 import 'package:massar/home%20screen/models/trip_model.dart';
 import 'package:massar/home%20screen/screens/notifications_screen.dart';
 import 'package:massar/home%20screen/screens/travel_detail_screen.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../cubits/trip_cubit.dart';
 
@@ -38,11 +39,15 @@ class _HomeScreenState extends State<HomeScreen> {
   bool _editing = false;
   bool _loading = true;
   bool _saving = false;
+  String? _dreamCity;
 
   @override
   void initState() {
     super.initState();
     _loadProfileImage();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _loadSavedDreamTrip();
+    });
   }
 
   Future<void> _loadProfileImage() async {
@@ -56,6 +61,27 @@ class _HomeScreenState extends State<HomeScreen> {
         });
       }
     } catch (_) {}
+  }
+
+  Future<void> _loadSavedDreamTrip() async {
+    final prefs = await SharedPreferences.getInstance();
+    final city = prefs.getString('dream_city_name')?.trim() ?? '';
+    final country = prefs.getString('dream_country_name')?.trim() ?? '';
+    final budget = prefs.getInt('dream_budget') ?? 0;
+
+    if (city.isEmpty) return;
+
+    if (!mounted) return;
+    setState(() {
+      _dreamCity = city;
+    });
+
+    await context.read<TripCubit>().loadDreamTrip(
+      origin: 'CAI',
+      cityName: city,
+      countryName: country.isEmpty ? city : country,
+      budget: budget > 0 ? budget : 1000000,
+    );
   }
 
   @override
@@ -328,6 +354,31 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
             ),
           ),
+
+          if (_dreamCity != null)
+            Positioned(
+              top: 230,
+              left: 24,
+              right: 24,
+              child: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+                decoration: BoxDecoration(
+                  color: AppColors.white.withOpacity(0.10),
+                  borderRadius: BorderRadius.circular(18),
+                  border: Border.all(
+                    color: AppColors.white.withOpacity(0.14),
+                  ),
+                ),
+                child: Text(
+                  'My Dream Trip • $_dreamCity',
+                  style: GoogleFonts.poppins(
+                    color: AppColors.white,
+                    fontSize: 14,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ),
+            ),
 
           // Bottom nav
           Positioned(

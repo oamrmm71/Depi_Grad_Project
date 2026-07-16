@@ -21,4 +21,21 @@ class TripRepository {
 
     return data.map((e) => TripModel.fromJson(e)).toList();
   }
+
+  Future<TripModel?> getDreamTrip({
+    required String origin,
+    required String cityName,
+    required String countryName,
+    required int budget,
+  }) async {
+    final data = await tripService.getDreamTrip(
+      origin: origin,
+      cityName: cityName,
+      countryName: countryName,
+      budget: budget,
+    );
+
+    if (data == null) return null;
+    return TripModel.fromJson(data);
+  }
 }
