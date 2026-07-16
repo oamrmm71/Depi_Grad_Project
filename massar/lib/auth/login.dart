@@ -3,6 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:massar/theme/app_colors.dart';
 import 'package:massar/services/auth_services.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:massar/routes.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -149,7 +150,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                     const SnackBar(content: Text("Login Successful")),
                                   );
 
-                                  Navigator.pushReplacementNamed(context, "/home");
+                                  Navigator.pushReplacementNamed(context, Routes.welcome);
                                 }
                               } on FirebaseAuthException catch (e) {
                                 ScaffoldMessenger.of(context).showSnackBar(
