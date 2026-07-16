@@ -12,6 +12,7 @@ class OnboardingScreen7 extends StatelessWidget {
 
   void _goHome(BuildContext context) {
     Navigator.pushAndRemoveUntil(
+    
       context,
       MaterialPageRoute(
         builder: (_) => const LoginScreen(),
