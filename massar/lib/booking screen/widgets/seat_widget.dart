@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:massar/theme/app_colors.dart';
 import '../cubits/booking_cubit.dart';
 import '../models/seats.dart';
 
@@ -13,18 +14,18 @@ class SeatWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-     Color borderColour = const Color(0xff01253D);
-    Color bgColour = const Color(0xFFF8F8F3);
-        Color textColour = const Color(0xFF7F7F7F);
+     Color borderColour = AppColors.screenBgGrad2;
+    Color bgColour = AppColors.splashBg;
+        Color textColour = AppColors.whiteDim;
 
     switch (seat.status) {
       case SeatStatus.available:
-        borderColour = const Color(0xff01253D);
-    bgColour = const Color(0xFFF8F8F3);
-     textColour = const Color(0xFF7F7F7F);
+        borderColour = AppColors.screenBgGrad2;
+    bgColour = AppColors.splashBg;
+     textColour = AppColors.whiteDim;
         break;
       case SeatStatus.selected: 
-        bgColour = const Color(0xff01253D);
+        bgColour = AppColors.screenBgGrad2;
         textColour = Colors.white;
         break;
       case SeatStatus.booked:
@@ -54,7 +55,7 @@ class SeatWidget extends StatelessWidget {
           borderRadius: BorderRadius.circular(8),
           
         ),
-        // Make the name of each seat always appear on it
+        
         child: Text(
           seat.seatNumber,
           style: TextStyle(

@@ -9,6 +9,8 @@ import '../models/seats.dart';
 import '../services/booking_service.dart';
 import '../widgets/seat_widget.dart';
 import '../../theme/app_colors.dart';
+import 'booking_confirmed_popup.dart';
+
 
 class BookingScreen extends StatelessWidget {
   final FlightModel flight;
@@ -74,7 +76,7 @@ class _BookingScreenViewState extends State<BookingScreenView> {
                             fontSize: 32,
                             fontStyle: FontStyle.italic,
                             fontWeight: FontWeight.w200,
-                            color: Color(0xffF8F8F3),
+                            color: AppColors.splashBg,
                           ),
                         ),
                         Text(
@@ -82,7 +84,7 @@ class _BookingScreenViewState extends State<BookingScreenView> {
                           style: GoogleFonts.poppins(
                             fontSize: 40,
                             fontWeight: FontWeight.w600,
-                            color: Color(0xffF8F8F3),
+                            color: AppColors.splashBg,
                           ),
                         ),
                         const SizedBox(height: 8),
@@ -92,7 +94,7 @@ class _BookingScreenViewState extends State<BookingScreenView> {
                               'Cairo',
                               style: GoogleFonts.poppins(
                                 fontSize: 12,
-                                color: Color(0xffF8F8F3),
+                                color: AppColors.splashBg,
                                 fontWeight: FontWeight.w300,
                               ),
                             ),
@@ -101,7 +103,7 @@ class _BookingScreenViewState extends State<BookingScreenView> {
                               'assets/images/arrow.png',
                               width: 37,
                               height: 37,
-                              color: Colors.white.withOpacity(0.8),
+                              color: AppColors.white.withOpacity(0.8),
                               fit: BoxFit.contain,
                             ),
                             const SizedBox(width: 12),
@@ -109,7 +111,7 @@ class _BookingScreenViewState extends State<BookingScreenView> {
                               'Qatar',
                               style: GoogleFonts.poppins(
                                 fontSize: 12,
-                                color: Color(0xffF8F8F3),
+                                color: AppColors.splashBg,
                                 fontWeight: FontWeight.w300,
                               ),
                             ),
@@ -163,7 +165,7 @@ class _BookingScreenViewState extends State<BookingScreenView> {
                                 if (state is BookingLoading) {
                                   return const Center(
                                     child: CircularProgressIndicator(
-                                      color: Color(0xff01253D),
+                                      color: AppColors.screenBgGrad2,
                                     ),
                                   );
                                 } else if (state is BookingLoaded) {
@@ -196,49 +198,30 @@ class _BookingScreenViewState extends State<BookingScreenView> {
                                           .toList()
                                     : [];
 
-                                return GestureDetector(
-                                  onTap: selectedSeats.isEmpty
+                                return ElevatedButton(
+                                  onPressed: selectedSeats.isEmpty
                                       ? null
                                       : () {
-                                          final seatNumbers = selectedSeats
-                                              .map((s) => s.seatNumber)
-                                              .join(', ');
-
-                                          context
-                                              .read<BookingCubit>()
-                                              .confirmBooking();
-
-                                          ScaffoldMessenger.of(
-                                            context,
-                                          ).showSnackBar(
-                                            SnackBar(
-                                              backgroundColor: Color(
-                                                0xff01253D,
-                                              ),
-                                              content: Text(
-                                                'Seats confirmed: $seatNumbers',
-                                                style: const TextStyle(
-                                                  fontFamily: 'Poppins',
-                                                  fontWeight: FontWeight.w500,
-                                                ),
-                                              ),
-                                            ),
-                                          );
+                                          showDialog(
+      context: context,
+      barrierColor: Colors.black45,
+      builder: (_) => const BookingConfirmedPopup(),
+    );
+  
+                                          
                                         },
                                   child: Container(
                                     width: double.infinity,
                                     height: 50,
                                     decoration: BoxDecoration(
                                       color: selectedSeats.isEmpty
-                                          ? const Color(0xFF061B2B)
-                                          : const Color(0xFF01253D),
+                                          ? AppColors.screenBgGrad3
+                                          : AppColors.screenBgGrad2,
                                       borderRadius: BorderRadius.circular(25),
                                       border: Border.all(
                                         color: selectedSeats.isEmpty
                                             ? Colors.white.withOpacity(0.05)
-                                            : const Color(
-                                                0xFF7E94A8,
-                                              ).withOpacity(0.3),
+                                            : AppColors.whiteDim,
                                         width: 1,
                                       ),
                                       boxShadow: selectedSeats.isNotEmpty
