@@ -10,6 +10,7 @@ import '../services/booking_service.dart';
 import '../widgets/seat_widget.dart';
 import '../../theme/app_colors.dart';
 import 'booking_confirmed_popup.dart';
+import 'package:massar/routes.dart';
 
 class BookingScreen extends StatelessWidget {
   final FlightModel flight;
@@ -207,11 +208,28 @@ class _BookingScreenViewState extends State<BookingScreenView> {
 
         if (!context.mounted) return;
 
-        showDialog(
-          context: context,
-          barrierColor: Colors.black45,
-          builder: (_) => const BookingConfirmedPopup(),
+     
+ void showBookingConfirmed(BuildContext context) {
+  showModalBottomSheet(
+    context: context,
+    isScrollControlled: true,
+    backgroundColor: Colors.transparent,
+    builder: (context) {
+      Future.delayed(const Duration(seconds: 2), () {
+        Navigator.pop(context); // close bottom sheet
+
+        Navigator.pushNamedAndRemoveUntil(
+          context,
+          Routes.flights,
+          (route) => false,
         );
+      });
+
+      return const BookingConfirmedPopup();
+    },
+  );
+}
+
       },
                                   child: Container(
                                     width: double.infinity,
