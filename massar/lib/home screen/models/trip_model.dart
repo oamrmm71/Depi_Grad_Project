@@ -33,17 +33,17 @@ class TripModel {
     required this.tripBudget,
     required this.locationName,
     required this.locationImage,
-    required this.departureDate,
-    required this.arrivalDate,
+    this.departureDate,
+    this.arrivalDate,
     this.flightCompany,
     this.flightCode,
     this.ticketPrice,
     required this.takeoffCity,
     required this.takeoffAirport,
-    required this.takeoffTime,
+    this.takeoffTime,
     required this.destinationCity,
     required this.destinationAirport,
-    required this.destinationTime,
+    this.destinationTime,
     this.returnFlightCompany,
     this.returnFlightCode,
     this.returnDepartureDate,
@@ -57,33 +57,51 @@ class TripModel {
 
   factory TripModel.fromJson(Map<String, dynamic> json) {
     return TripModel(
-      cityName: json["cityName"],
-      countryName: json["countryName"] ?? json["locationName"] ?? "",
-      tripBudget: json["tripBudget"],
-      locationName: json["locationName"],
-      locationImage: json["locationImage"],
+      cityName: json["cityName"] ?? "Unknown",
+      countryName:
+          json["countryName"] ?? json["locationName"] ?? "",
+      tripBudget: json["tripBudget"]?.toString() ?? "0",
+      locationName: json["locationName"] ?? "",
+      locationImage: json["locationImage"] ?? "",
+
       departureDate: json["departureDate"],
       arrivalDate: json["arrivalDate"],
+
       flightCompany: json["flightCompany"],
       flightCode: json["flightCode"],
-      ticketPrice: json["ticketPrice"],
-      takeoffCity: json["takeoffCity"],
-      takeoffAirport: json["takeoffAirport"],
+      ticketPrice: json["ticketPrice"]?.toString(),
+
+      takeoffCity: json["takeoffCity"] ?? "",
+      takeoffAirport: json["takeoffAirport"] ?? "",
       takeoffTime: json["takeoffTime"],
-      destinationCity: json["destinationCity"],
-      destinationAirport: json["destinationAirport"],
+
+      destinationCity: json["destinationCity"] ?? "",
+      destinationAirport: json["destinationAirport"] ?? "",
       destinationTime: json["destinationTime"],
+
       returnFlightCompany: json["returnFlightCompany"],
       returnFlightCode: json["returnFlightCode"],
       returnDepartureDate: json["returnDepartureDate"],
       returnArrivalDate: json["returnArrivalDate"],
       returnTakeoffTime: json["returnTakeoffTime"],
       returnDestinationTime: json["returnDestinationTime"],
-      fullTripPlan: json["fullTripPlan"],
-      tours: (json["tours"] as List)
-          .map((e) => TourModel.fromJson(e))
-          .toList(),
-      tripPlan: json["tripPlan"] as TripPlanModel?,
+
+      tours: (json["tours"] as List<dynamic>?)
+              ?.map(
+                (e) => TourModel.fromJson(
+                  Map<String, dynamic>.from(e),
+                ),
+              )
+              .toList() ??
+          [],
+
+      fullTripPlan: json["fullTripPlan"] ?? "",
+
+      tripPlan: json["tripPlan"] != null
+          ? TripPlanModel.fromJson(
+              Map<String, dynamic>.from(json["tripPlan"]),
+            )
+          : null,
     );
   }
 }
@@ -99,8 +117,8 @@ class TourModel {
 
   factory TourModel.fromJson(Map<String, dynamic> json) {
     return TourModel(
-      name: json["name"],
-      price: json["price"],
+      name: json["name"] ?? "",
+      price: json["price"]?.toString() ?? "0",
     );
   }
 }
