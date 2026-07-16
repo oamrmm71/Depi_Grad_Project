@@ -17,15 +17,11 @@ class BookingConfirmedPopup extends StatelessWidget {
           borderRadius: BorderRadius.circular(25),
         ),
         child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.center,
-
-          children: [
-             Stack(
+  mainAxisSize: MainAxisSize.min,
+  children: [
+    Stack(
       alignment: Alignment.center,
       children: [
-
-        // Outer glow
         Container(
           width: 110,
           height: 110,
@@ -41,13 +37,12 @@ class BookingConfirmedPopup extends StatelessWidget {
           ),
         ),
 
-        // Blue circle
         Container(
           width: 54,
           height: 54,
           decoration: const BoxDecoration(
             shape: BoxShape.circle,
-            color: AppColors.glowHigh
+            color: AppColors.glowHigh,
           ),
           child: const Icon(
             Icons.check,
@@ -55,33 +50,33 @@ class BookingConfirmedPopup extends StatelessWidget {
             size: 34,
           ),
         ),
-            const SizedBox(height: 28),
+      ],
+    ),
 
-            const Text(
-              "TRIP BOOKINGS\nCONFIRMED",
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                fontSize: 28,
-                fontWeight: FontWeight.w800,
-                color: AppColors.onboardingGrad3,
-                height: 1,
-              ),
-            ),
+    const SizedBox(height: 28),
 
-            const SizedBox(height: 12),
+    const Text(
+      "TRIP BOOKINGS\nCONFIRMED",
+      textAlign: TextAlign.center,
+      style: TextStyle(
+        fontSize: 28,
+        fontWeight: FontWeight.w800,
+        color: AppColors.onboardingGrad3,
+      ),
+    ),
 
-            Text(
-              "get ready for your next adventure",
-              style: GoogleFonts.poppins(
-                fontSize: 13,
-                color: AppColors.onboardingGrad3,
-                fontStyle: FontStyle.italic,
-              ),
-            ),
-          ],
-        ),
-          ]
-        )
+    const SizedBox(height: 12),
+
+    Text(
+      "Get ready for your next adventure",
+      style: GoogleFonts.poppins(
+        fontSize: 13,
+        color: AppColors.onboardingGrad3,
+        fontStyle: FontStyle.italic,
+      ),
+    ),
+  ],
+)
       ),
     );
   }

@@ -202,14 +202,17 @@ class _BookingScreenViewState extends State<BookingScreenView> {
                                 return ElevatedButton(
                                   onPressed: selectedSeats.isEmpty
                                       ? null
-                                      : () {
-                                          showDialog(
-                                            context: context,
-                                            barrierColor: Colors.black45,
-                                            builder: (_) =>
-                                                const BookingConfirmedPopup(),
-                                          );
-                                        },
+                                      : () async {
+        await context.read<BookingCubit>().confirmBooking();
+
+        if (!context.mounted) return;
+
+        showDialog(
+          context: context,
+          barrierColor: Colors.black45,
+          builder: (_) => const BookingConfirmedPopup(),
+        );
+      },
                                   child: Container(
                                     width: double.infinity,
                                     height: 50,
