@@ -6,8 +6,22 @@ import 'trip_state.dart';
 class TripCubit extends Cubit<TripState> {
   final TripRepository tripRepository;
   bool _isFetching = false;
+  TripModel? _dreamTrip;
 
   TripCubit(this.tripRepository) : super(TripInitial());
+
+  List<TripModel> _withDreamTrip(List<TripModel> trips) {
+    final dreamTrip = _dreamTrip;
+    if (dreamTrip == null) return trips;
+
+    final filteredTrips = trips
+        .where(
+          (trip) =>
+              trip.cityName.toLowerCase() != dreamTrip.cityName.toLowerCase(),
+        )
+        .toList();
+    return [dreamTrip, ...filteredTrips];
+  }
 
   Future<void> fetchTrips({
     required String origin,
@@ -48,7 +62,7 @@ class TripCubit extends Cubit<TripState> {
           )
           .toList();
 
-      emit(TripLoaded([...currentTrips, ...uniqueNewTrips]));
+      emit(TripLoaded(_withDreamTrip([...currentTrips, ...uniqueNewTrips])));
     } catch (e) {
       if (state is! TripLoaded) {
         emit(TripError(e.toString()));
@@ -56,5 +70,32 @@ class TripCubit extends Cubit<TripState> {
     } finally {
       _isFetching = false;
     }
+  }
+
+  Future<void> loadDreamTrip({
+    required String origin,
+    required String cityName,
+    required String countryName,
+    required int budget,
+  }) async {
+    try {
+      final dreamTrip = await tripRepository.getDreamTrip(
+        origin: origin,
+        cityName: cityName,
+        countryName: countryName,
+        budget: budget,
+      );
+
+      if (dreamTrip == null) return;
+
+      _dreamTrip = dreamTrip;
+
+      if (state is TripLoaded) {
+        final existingTrips = List<TripModel>.from((state as TripLoaded).trips);
+        emit(TripLoaded(_withDreamTrip(existingTrips)));
+      } else {
+        emit(TripLoaded([dreamTrip]));
+      }
+    } catch (_) {}
   }
 }

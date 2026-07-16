@@ -4,6 +4,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:massar/custom%20widgets/glass_button.dart';
 import 'package:massar/routes.dart';
 import 'package:massar/theme/app_colors.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../cubits/add_dream_cubit.dart';
 import '../models/add_dream_state.dart';
 import '../widgets/dream_stepper_card.dart';
@@ -121,11 +122,35 @@ class AddDreamBudgetScreen extends StatelessWidget {
                             height: 54,
                             borderRadius: 26,
                             backgroundColor: AppColors.screenBgGrad3.withOpacity(0.75),
-                            onTap: () {
+                            onTap: () async {
+                              final prefs = await SharedPreferences.getInstance();
+                              await prefs.setString(
+                                'dream_city_name',
+                                state.selectedDestination,
+                              );
+                              await prefs.setString(
+                                'dream_country_name',
+                                _resolveCountryName(state.selectedDestination),
+                              );
+                              await prefs.setInt(
+                                'dream_days',
+                                state.days > 0 ? state.days : 3,
+                              );
+                              await prefs.setInt('dream_budget', state.budget);
+                              await prefs.setInt('dream_people', state.people);
+
+                              if (!context.mounted) return;
                               context.read<AddDreamCubit>().reset();
                               Navigator.pushReplacementNamed(
                                 context,
                                 Routes.expenseTracker,
+                                arguments: {
+                                  'cityName': state.selectedDestination,
+                                  'countryName': _resolveCountryName(
+                                    state.selectedDestination,
+                                  ),
+                                  'days': state.days > 0 ? state.days : 3,
+                                },
                               );
                             },
                             child: Text(
@@ -148,5 +173,30 @@ class AddDreamBudgetScreen extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  String _resolveCountryName(String cityName) {
+    switch (cityName.toLowerCase()) {
+      case 'dubai':
+        return 'United Arab Emirates';
+      case 'budapest':
+        return 'Hungary';
+      case 'cairo':
+        return 'Egypt';
+      case 'new york':
+        return 'United States';
+      case 'qatar':
+        return 'Qatar';
+      case 'london':
+        return 'United Kingdom';
+      case 'mekka':
+        return 'Saudi Arabia';
+      case 'rome':
+        return 'Italy';
+      case 'paris':
+        return 'France';
+      default:
+        return cityName;
+    }
   }
 }

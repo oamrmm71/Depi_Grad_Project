@@ -201,7 +201,9 @@ class GroqService {
             "role": "system",
             "content":
                 "You are a travel expense planner. Reply ONLY with valid JSON. "
-                "Do not use markdown or code fences."
+                "Do not use markdown or code fences. "
+                "Always choose real tourist sights that belong to the exact city "
+                "and country the user requested."
           },
           {
             "role": "user",
@@ -229,7 +231,8 @@ class GroqService {
             - Generate 2-3 attractions per day.
             - Prices must be in EGP.
             - total = entryFee + transport.
-            - Use real tourist attractions.
+            - Use real tourist attractions in $cityName, $countryName only.
+            - If the city has famous districts or landmarks, prefer those.
             - Return ONLY JSON.
             """
           }

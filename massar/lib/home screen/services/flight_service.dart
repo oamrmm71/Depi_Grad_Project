@@ -125,6 +125,69 @@ class FlightService {
     return result;
   }
 
+  List<Map<String, dynamic>> _extractAirportMatches(
+    dynamic data,
+    String key,
+  ) {
+    if (data is Map<String, dynamic>) {
+      final response = data["response"];
+      if (response is Map<String, dynamic>) {
+        final matches = response[key];
+        if (matches is List) {
+          return matches
+              .whereType<Map>()
+              .map((item) => Map<String, dynamic>.from(item))
+              .toList();
+        }
+      }
+
+      final matches = data[key];
+      if (matches is List) {
+        return matches
+            .whereType<Map>()
+            .map((item) => Map<String, dynamic>.from(item))
+            .toList();
+      }
+    }
+
+    return [];
+  }
+
+  Future<String?> getAirportCodeForCity({
+    required String cityName,
+    String? countryName,
+  }) async {
+    final queryParts = <String>[
+      cityName.trim(),
+      if ((countryName ?? '').trim().isNotEmpty) countryName!.trim(),
+    ]..removeWhere((part) => part.isEmpty);
+
+    final query = queryParts.join(' ');
+    if (query.isEmpty) return null;
+
+    try {
+      final response = await _get("/suggest", params: {"q": query});
+      final data = response.data;
+
+      final airportGroups = <String>[
+        "airports_by_cities",
+        "airports_by_countries",
+        "airports",
+      ];
+
+      for (final group in airportGroups) {
+        final airports = _extractAirportMatches(data, group);
+        if (airports.isEmpty) continue;
+
+        final airport = airports.first;
+        final code = airport["iata_code"]?.toString().trim() ?? "";
+        if (code.isNotEmpty) return code.toUpperCase();
+      }
+    } catch (_) {}
+
+    return null;
+  }
+
   Future<Map<String, dynamic>> getFlightData({
   required String origin,
   required String destination,
@@ -145,10 +208,6 @@ class FlightService {
   }
 
   final route = routes.first;
-
-  print("========== AIRLABS ROUTE ==========");
-  print(route);
-  print("===================================");
 
   final depTimeStr = route["dep_time"]?.toString();
   final arrTimeStr = route["arr_time"]?.toString();
@@ -198,11 +257,6 @@ class FlightService {
       ? nextDep.add(Duration(minutes: durationMins))
       : null;
 
-  print("========== STOPS RAW ==========");
-  print(route["stops"]);
-  print("Runtime type: ${route["stops"]?.runtimeType}");
-  print("===============================");
-
   final rawStops = route["stops"] as List? ?? [];
 
   final stops = rawStops.map((s) {
@@ -226,11 +280,6 @@ class FlightService {
           (stop["lng"] as num?)?.toDouble() ?? 0.0,
     };
   }).toList();
-
-  print("========== PARSED STOPS ==========");
-  print(stops);
-  print("Stops count: ${stops.length}");
-  print("==================================");
 
   final airlineIata = route["airline_iata"]?.toString() ?? "";
   final airlineName = await _getAirlineName(airlineIata);
