@@ -170,6 +170,19 @@ class FlightService {
         ? nextDep.add(Duration(minutes: durationMins))
         : null;
 
+    final rawStops = route["stops"] as List? ?? [];
+    final stops = rawStops
+        .map((s) {
+          final stop = s as Map;
+          return {
+            "airport": stop["airport_iata"]?.toString() ?? stop["iata_code"]?.toString() ?? "",
+            "city": stop["city"]?.toString() ?? stop["city_name"]?.toString() ?? "",
+            "latitude": (stop["lat"] as num?)?.toDouble() ?? 0.0,
+            "longitude": (stop["lng"] as num?)?.toDouble() ?? 0.0,
+          };
+        })
+        .toList();
+
     final airlineIata = route["airline_iata"]?.toString() ?? "";
     final airlineName = await _getAirlineName(airlineIata);
     final flightId = _buildFlightId(
@@ -198,6 +211,7 @@ class FlightService {
       "takeoffCityName": origin,
       "destinationCityName": destination,
       "destinationCountryCode": "",
+      "stops": stops,
     };
   }
 }

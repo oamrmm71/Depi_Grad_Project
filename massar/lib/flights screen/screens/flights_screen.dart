@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'package:massar/custom%20widgets/bottom_nav_glass.dart';
-import 'package:massar/flights%20screen/cubits/flight_cubit.dart';
-import 'package:massar/flights%20screen/cubits/flight_state.dart';
-import 'package:massar/flights%20screen/widgets/flight_card.dart';
-import 'package:massar/flights%20screen/widgets/flight_header.dart';
-import 'package:massar/custom%20widgets/app_background.dart';
+import 'package:massar/custom widgets/app_background.dart';
+import 'package:massar/custom widgets/bottom_nav_glass.dart';
+import 'package:massar/flights screen/screens/flight_route_screen.dart';
+import 'package:massar/flights screen/cubits/flight_cubit.dart';
+import 'package:massar/flights screen/cubits/flight_state.dart';
+import 'package:massar/flights screen/widgets/flight_card.dart';
+import 'package:massar/flights screen/widgets/flight_header.dart';
 import 'package:massar/theme/app_colors.dart';
 
 class FlightsScreen extends StatelessWidget {
@@ -31,14 +32,11 @@ class _FlightsScreenBody extends StatelessWidget {
         fit: StackFit.expand,
         children: [
           const AppBackground(),
-
           SafeArea(
             child: Column(
               children: [
                 const FlightHeader(),
-
                 const SizedBox(height: 12),
-
                 Expanded(
                   child: BlocBuilder<FlightCubit, FlightState>(
                     builder: (context, state) {
@@ -82,18 +80,32 @@ class _FlightsScreenBody extends StatelessWidget {
                           separatorBuilder: (_, __) =>
                               const SizedBox(height: 14),
                           itemBuilder: (context, index) {
-                            return FlightCard(
-                              flight: state.flights[index],
+                            final flight = state.flights[index];
+
+                            return GestureDetector(
+                              behavior: HitTestBehavior.opaque,
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (_) => FlightRouteScreen(
+                                      flight: flight,
+                                    ),
+                                  ),
+                                );
+                              },
+                              child: FlightCard(
+                                flight: flight,
+                              ),
                             );
                           },
                         );
                       }
 
-                      return const SizedBox();
+                      return const SizedBox.shrink();
                     },
                   ),
                 ),
-
                 const Padding(
                   padding: EdgeInsets.only(bottom: 12),
                   child: BottomNavGlass(
