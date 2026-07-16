@@ -11,7 +11,6 @@ import '../widgets/seat_widget.dart';
 import '../../theme/app_colors.dart';
 import 'booking_confirmed_popup.dart';
 
-
 class BookingScreen extends StatelessWidget {
   final FlightModel flight;
 
@@ -91,7 +90,7 @@ class _BookingScreenViewState extends State<BookingScreenView> {
                         Row(
                           children: [
                             Text(
-                              'Cairo',
+                              widget.flight.fromCountry,
                               style: GoogleFonts.poppins(
                                 fontSize: 12,
                                 color: AppColors.splashBg,
@@ -108,7 +107,7 @@ class _BookingScreenViewState extends State<BookingScreenView> {
                             ),
                             const SizedBox(width: 12),
                             Text(
-                              'Qatar',
+                              widget.flight.toCountry,
                               style: GoogleFonts.poppins(
                                 fontSize: 12,
                                 color: AppColors.splashBg,
@@ -120,7 +119,9 @@ class _BookingScreenViewState extends State<BookingScreenView> {
                       ],
                     ),
                     GestureDetector(
-                      onTap: () {  Navigator.pop(context);},
+                      onTap: () {
+                        Navigator.pop(context);
+                      },
                       child: Container(
                         padding: const EdgeInsets.all(10),
                         margin: EdgeInsets.only(top: 20),
@@ -203,12 +204,11 @@ class _BookingScreenViewState extends State<BookingScreenView> {
                                       ? null
                                       : () {
                                           showDialog(
-      context: context,
-      barrierColor: Colors.black45,
-      builder: (_) => const BookingConfirmedPopup(),
-    );
-  
-                                          
+                                            context: context,
+                                            barrierColor: Colors.black45,
+                                            builder: (_) =>
+                                                const BookingConfirmedPopup(),
+                                          );
                                         },
                                   child: Container(
                                     width: double.infinity,

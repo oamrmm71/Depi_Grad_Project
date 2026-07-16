@@ -1,5 +1,6 @@
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter/material.dart';
+import 'package:massar/theme/app_colors.dart';
 
 class BookingConfirmedPopup extends StatelessWidget {
   const BookingConfirmedPopup({super.key});
@@ -17,8 +18,43 @@ class BookingConfirmedPopup extends StatelessWidget {
         ),
         child: Column(
           mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.center,
+
           children: [
-            //const SuccessIcon(),
+             Stack(
+      alignment: Alignment.center,
+      children: [
+
+        // Outer glow
+        Container(
+          width: 110,
+          height: 110,
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            boxShadow: [
+              BoxShadow(
+                color: AppColors.unreadDot.withOpacity(.18),
+                blurRadius: 40,
+                spreadRadius: 15,
+              ),
+            ],
+          ),
+        ),
+
+        // Blue circle
+        Container(
+          width: 54,
+          height: 54,
+          decoration: const BoxDecoration(
+            shape: BoxShape.circle,
+            color: AppColors.glowHigh
+          ),
+          child: const Icon(
+            Icons.check,
+            color: AppColors.onboardingGrad3,
+            size: 34,
+          ),
+        ),
             const SizedBox(height: 28),
 
             const Text(
@@ -27,7 +63,7 @@ class BookingConfirmedPopup extends StatelessWidget {
               style: TextStyle(
                 fontSize: 28,
                 fontWeight: FontWeight.w800,
-                color: Color(0xff0E2846),
+                color: AppColors.onboardingGrad3,
                 height: 1,
               ),
             ),
@@ -38,12 +74,14 @@ class BookingConfirmedPopup extends StatelessWidget {
               "get ready for your next adventure",
               style: GoogleFonts.poppins(
                 fontSize: 13,
-                color: Colors.grey,
+                color: AppColors.onboardingGrad3,
                 fontStyle: FontStyle.italic,
               ),
             ),
           ],
         ),
+          ]
+        )
       ),
     );
   }

@@ -93,7 +93,10 @@ class BookingService {
 
   List<Seat> _generateSeats() {
     const seatLetters = ['A', 'B', 'C', 'D', 'E', 'F'];
-    const bookedSeatNumbers = {'2B', '2E', '4A', '4F', '5C'};
+    // No hardcoded booked seats here — initial availability is determined
+    // per-flight by what exists in Firestore. New flights start with all
+    // seats available and bookings are persisted to the flight's seats
+    // collection when confirmed.
 
     final seats = <Seat>[];
 
@@ -115,9 +118,7 @@ class BookingService {
           Seat(
             seatNumber: seatNumber,
             type: type,
-            status: bookedSeatNumbers.contains(seatNumber)
-                ? SeatStatus.booked
-                : SeatStatus.available,
+            status: SeatStatus.available,
           ),
         );
       }
