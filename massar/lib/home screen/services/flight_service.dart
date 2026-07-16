@@ -146,10 +146,6 @@ class FlightService {
 
   final route = routes.first;
 
-  print("========== AIRLABS ROUTE ==========");
-  print(route);
-  print("===================================");
-
   final depTimeStr = route["dep_time"]?.toString();
   final arrTimeStr = route["arr_time"]?.toString();
   final durationMins =
@@ -198,11 +194,6 @@ class FlightService {
       ? nextDep.add(Duration(minutes: durationMins))
       : null;
 
-  print("========== STOPS RAW ==========");
-  print(route["stops"]);
-  print("Runtime type: ${route["stops"]?.runtimeType}");
-  print("===============================");
-
   final rawStops = route["stops"] as List? ?? [];
 
   final stops = rawStops.map((s) {
@@ -226,11 +217,6 @@ class FlightService {
           (stop["lng"] as num?)?.toDouble() ?? 0.0,
     };
   }).toList();
-
-  print("========== PARSED STOPS ==========");
-  print(stops);
-  print("Stops count: ${stops.length}");
-  print("==================================");
 
   final airlineIata = route["airline_iata"]?.toString() ?? "";
   final airlineName = await _getAirlineName(airlineIata);
