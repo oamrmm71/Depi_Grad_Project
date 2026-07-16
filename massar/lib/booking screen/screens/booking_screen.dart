@@ -1,27 +1,34 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:massar/flights%20screen/models/flight_model.dart';
 import '../cubits/booking_cubit.dart';
 import '../cubits/booking_state.dart';
 import '../models/seats.dart';
 import '../services/booking_service.dart';
 import '../widgets/seat_widget.dart';
 import '../../theme/app_colors.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 class BookingScreen extends StatelessWidget {
-  const BookingScreen({super.key});
+  final FlightModel flight;
+
+  const BookingScreen({super.key, required this.flight});
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => BookingCubit(BookingService())..loadSeats(),
-      child: const BookingScreenView(),
+      create: (context) =>
+          BookingCubit(BookingService(), flight: flight)..loadSeats(),
+      child: BookingScreenView(flight: flight),
     );
   }
 }
 
 class BookingScreenView extends StatefulWidget {
-  const BookingScreenView({super.key});
+  final FlightModel flight;
+
+  const BookingScreenView({super.key, required this.flight});
 
   @override
   State<BookingScreenView> createState() => _BookingScreenViewState();
@@ -39,9 +46,9 @@ class _BookingScreenViewState extends State<BookingScreenView> {
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
             colors: [
-              AppColors.onboardingGrad3, // Dark navy at the top
+              AppColors.onboardingGrad3,
               AppColors.onboardingGrad4,
-              AppColors.onboardingGrad3, // Deeper navy/black at the bottom
+              AppColors.onboardingGrad3,
             ],
             transform: GradientRotation(0.8),
           ),
@@ -49,7 +56,6 @@ class _BookingScreenViewState extends State<BookingScreenView> {
         child: SafeArea(
           child: Column(
             children: [
-              
               Padding(
                 padding: const EdgeInsets.symmetric(
                   horizontal: 24.0,
@@ -77,7 +83,6 @@ class _BookingScreenViewState extends State<BookingScreenView> {
                             fontSize: 40,
                             fontWeight: FontWeight.w600,
                             color: Color(0xffF8F8F3),
-                            
                           ),
                         ),
                         const SizedBox(height: 8),
@@ -86,7 +91,6 @@ class _BookingScreenViewState extends State<BookingScreenView> {
                             Text(
                               'Cairo',
                               style: GoogleFonts.poppins(
-                               
                                 fontSize: 12,
                                 color: Color(0xffF8F8F3),
                                 fontWeight: FontWeight.w300,
@@ -99,7 +103,6 @@ class _BookingScreenViewState extends State<BookingScreenView> {
                               height: 37,
                               color: Colors.white.withOpacity(0.8),
                               fit: BoxFit.contain,
-                              
                             ),
                             const SizedBox(width: 12),
                             Text(
@@ -114,14 +117,11 @@ class _BookingScreenViewState extends State<BookingScreenView> {
                         ),
                       ],
                     ),
-                    
                     GestureDetector(
-                      onTap: () {
-                        // Action for closing
-                      },
+                      onTap: () {},
                       child: Container(
                         padding: const EdgeInsets.all(10),
-                        margin: EdgeInsets.only(top:20),
+                        margin: EdgeInsets.only(top: 20),
                         decoration: BoxDecoration(
                           shape: BoxShape.circle,
                           color: Colors.white.withOpacity(0.15),
@@ -136,11 +136,8 @@ class _BookingScreenViewState extends State<BookingScreenView> {
                   ],
                 ),
               ),
-
-              // Airplane Seat Grid & Confirm Button Container (Expanded to fit the screen without scrolling)
               Expanded(
                 child: Center(
-                  // Increased to make the airplane image wider on the screen
                   child: LayoutBuilder(
                     builder: (context, constraints) {
                       final double localHeight = constraints.maxHeight;
@@ -150,24 +147,17 @@ class _BookingScreenViewState extends State<BookingScreenView> {
 
                       return Stack(
                         children: [
-                          // Airplane Background Image from assets
                           Positioned(
                             child: Image.asset(
                               'assets/images/seat layout.png',
                               fit: BoxFit.fitWidth,
                             ),
                           ),
-
-                          // Seat Grid (Positioned relatively to fit cabin space perfectly)
                           Positioned(
-                            top:
-                                localHeight *
-                                0.33, // Shifted further down to fit the main cabin area
+                            top: localHeight * 0.33,
                             left: 0,
                             right: 0,
-                            bottom:
-                                localHeight *
-                                0.1, // Shifted up to clear the lower tapering body
+                            bottom: localHeight * 0.1,
                             child: BlocBuilder<BookingCubit, BookingState>(
                               builder: (context, state) {
                                 if (state is BookingLoading) {
@@ -190,8 +180,6 @@ class _BookingScreenViewState extends State<BookingScreenView> {
                               },
                             ),
                           ),
-
-                          // Confirm Button Section (Positioned above/overlapping the plane layout at the bottom)
                           Positioned(
                             left: 24,
                             right: 24,
@@ -216,7 +204,6 @@ class _BookingScreenViewState extends State<BookingScreenView> {
                                               .map((s) => s.seatNumber)
                                               .join(', ');
 
-                                          // Confirm booking to make selected seats unavailable
                                           context
                                               .read<BookingCubit>()
                                               .confirmBooking();
@@ -225,8 +212,8 @@ class _BookingScreenViewState extends State<BookingScreenView> {
                                             context,
                                           ).showSnackBar(
                                             SnackBar(
-                                              backgroundColor: const Color(
-                                                0xFF00ADB5,
+                                              backgroundColor: Color(
+                                                0xff01253D,
                                               ),
                                               content: Text(
                                                 'Seats confirmed: $seatNumbers',
@@ -240,7 +227,7 @@ class _BookingScreenViewState extends State<BookingScreenView> {
                                         },
                                   child: Container(
                                     width: double.infinity,
-                                    height: 50, // Slightly more compact
+                                    height: 50,
                                     decoration: BoxDecoration(
                                       color: selectedSeats.isEmpty
                                           ? const Color(0xFF061B2B)
@@ -299,7 +286,6 @@ class _BookingScreenViewState extends State<BookingScreenView> {
   }
 
   Widget _buildSeatMap(List<Seat> seats) {
-    // Group seats by row
     final Map<int, List<Seat>> rowsMap = {};
     for (var seat in seats) {
       final rowStr = seat.seatNumber.replaceAll(RegExp(r'[^0-9]'), '');
@@ -316,13 +302,11 @@ class _BookingScreenViewState extends State<BookingScreenView> {
       mainAxisAlignment: MainAxisAlignment.center,
       children: sortedRowNumbers.map((rowNum) {
         final rowSeats = rowsMap[rowNum]!;
-        // Spacing between rows: Row 1-3 then a gap then Row 4-6
         final isAfterGap = rowNum == 4;
 
         return Column(
           children: [
-            if (isAfterGap)
-              const SizedBox(height: 8), // Responsive vertical separation
+            if (isAfterGap) const SizedBox(height: 8),
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 1.2),
               child: _buildRow(context, rowSeats),
@@ -334,7 +318,6 @@ class _BookingScreenViewState extends State<BookingScreenView> {
   }
 
   Widget _buildRow(BuildContext context, List<Seat> rowSeats) {
-    // Ensure seats are sorted alphabetically A-F
     rowSeats.sort((a, b) => a.seatNumber.compareTo(b.seatNumber));
 
     if (rowSeats.length < 6) return const SizedBox.shrink();
@@ -345,7 +328,6 @@ class _BookingScreenViewState extends State<BookingScreenView> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        // Left Group (A, B, C)
         Row(
           children: leftSeats
               .map(
@@ -356,10 +338,7 @@ class _BookingScreenViewState extends State<BookingScreenView> {
               )
               .toList(),
         ),
-
-        // Aisle
-        const SizedBox(width: 10), // Muted aisle width
-        // Right Group (D, E, F)
+        const SizedBox(width: 10),
         Row(
           children: rightSeats
               .map(
