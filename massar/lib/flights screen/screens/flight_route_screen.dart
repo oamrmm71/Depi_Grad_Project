@@ -77,6 +77,32 @@ class _FlightRouteScreenState extends State<FlightRouteScreen> {
       _destinationCity =
           destinationData["cityName"];
 
+          _originCity = originData["cityName"];
+
+_destinationCity = destinationData["cityName"];
+
+debugPrint("========== FLIGHT ROUTE DEBUG ==========");
+debugPrint("Flight ID: ${widget.flight.flightId}");
+debugPrint("From: ${widget.flight.fromAirport}");
+debugPrint("To: ${widget.flight.toAirport}");
+debugPrint("Stops count: ${widget.flight.stops.length}");
+
+if (widget.flight.stops.isEmpty) {
+  debugPrint("No stops found in FlightModel.");
+} else {
+  for (int i = 0; i < widget.flight.stops.length; i++) {
+    final stop = widget.flight.stops[i];
+    debugPrint(
+      "Stop ${i + 1}: "
+      "${stop.airport} | "
+      "${stop.city} | "
+      "${stop.latitude}, ${stop.longitude}",
+    );
+  }
+}
+
+debugPrint("=======================================");
+
       if (mounted) {
         setState(() {
           _loading = false;
