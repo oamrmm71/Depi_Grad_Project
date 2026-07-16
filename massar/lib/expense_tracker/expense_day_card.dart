@@ -147,6 +147,32 @@ class ExpenseDayCard extends StatelessWidget {
                                           width:
                                               double.infinity,
                                           fit: BoxFit.cover,
+                                          errorBuilder:
+                                              (context, error, stackTrace) {
+                                            return Container(
+                                              height: 150,
+                                              width: double.infinity,
+                                              decoration: BoxDecoration(
+                                                gradient: LinearGradient(
+                                                  begin: Alignment.topLeft,
+                                                  end: Alignment.bottomRight,
+                                                  colors: [
+                                                    AppColors.screenBgGrad1
+                                                        .withOpacity(.85),
+                                                    AppColors.screenBgGrad3
+                                                        .withOpacity(.85),
+                                                  ],
+                                                ),
+                                              ),
+                                              child: const Center(
+                                                child: Icon(
+                                                  Icons.image_not_supported,
+                                                  color: Colors.white70,
+                                                  size: 34,
+                                                ),
+                                              ),
+                                            );
+                                          },
                                         ),
                                       ),
 
