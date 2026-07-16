@@ -6,7 +6,7 @@ import 'package:massar/flights%20screen/cubits/flight_cubit.dart';
 import 'package:massar/flights%20screen/cubits/flight_state.dart';
 import 'package:massar/flights%20screen/widgets/flight_card.dart';
 import 'package:massar/flights%20screen/widgets/flight_header.dart';
-import 'package:massar/profile/widgets/profile_background.dart';
+import 'package:massar/custom%20widgets/app_background.dart';
 import 'package:massar/theme/app_colors.dart';
 
 class FlightsScreen extends StatelessWidget {
@@ -30,7 +30,7 @@ class _FlightsScreenBody extends StatelessWidget {
       body: Stack(
         fit: StackFit.expand,
         children: [
-          const ProfileBackground(),
+          const AppBackground(),
 
           SafeArea(
             child: Column(

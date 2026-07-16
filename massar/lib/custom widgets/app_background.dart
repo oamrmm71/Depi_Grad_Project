@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:massar/theme/app_colors.dart';
 
-class ProfileBackground extends StatelessWidget {
-  const ProfileBackground({super.key});
+class AppBackground extends StatelessWidget {
+  const AppBackground({super.key});
 
   @override
   Widget build(BuildContext context) {
