@@ -12,6 +12,7 @@ class GlassButton extends StatelessWidget {
   final double fontSize;
   final double borderRadius;
   final FontWeight fontWeight;
+  final Color? backgroundColor;
 
   const GlassButton({
     super.key,
@@ -23,6 +24,7 @@ class GlassButton extends StatelessWidget {
     this.fontSize = 24,
     this.borderRadius = 30,
     this.fontWeight = FontWeight.w500,
+    this.backgroundColor,
   });
 
   @override
@@ -40,7 +42,7 @@ class GlassButton extends StatelessWidget {
             width: width,
             height: height,
             decoration: BoxDecoration(
-              color: AppColors.glassFill,
+              color: backgroundColor ?? AppColors.glassFill,
               borderRadius: BorderRadius.circular(borderRadius),
               border: Border.all(
                 color: AppColors.glassBorder,
