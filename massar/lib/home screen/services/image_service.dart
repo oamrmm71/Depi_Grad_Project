@@ -6,7 +6,7 @@ class ImageService {
 
   static final String _apiKey = dotenv.env["UNSPLASH_KEY"]!;
   static const String _fallbackImage =
-      "https://images.unsplash.com/photo-1507525428034-b723cf961d3e";
+      "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=900&q=80";
 
   Future<String> getPlaceImage({
     required String cityName,

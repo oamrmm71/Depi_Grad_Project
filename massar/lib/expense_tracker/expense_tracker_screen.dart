@@ -90,6 +90,7 @@ class _ExpenseTrackerScreenState extends State<ExpenseTrackerScreen> {
       if (expenses.isEmpty) {
         return _fallbackCityTrip(
           cityName: cityName,
+          countryName: countryName,
           days: days,
         );
       }
@@ -105,25 +106,34 @@ class _ExpenseTrackerScreenState extends State<ExpenseTrackerScreen> {
     } catch (_) {
       return _fallbackCityTrip(
         cityName: cityName,
+        countryName: countryName,
         days: days,
       );
     }
   }
 
-  List<TripModel> _fallbackCityTrip({
+  Future<List<TripModel>> _fallbackCityTrip({
     required String cityName,
+    required String countryName,
     required int days,
-  }) {
+  }) async {
+    final imageService = ImageService();
     final fallbackAttractions = _fallbackAttractionsForCity(cityName);
     final expenses = <ExpenseModel>[];
 
     for (var index = 0; index < fallbackAttractions.length; index++) {
       final attraction = fallbackAttractions[index];
+      final attractionName = attraction['name']!.toString();
+      final imageUrl = await imageService.getPlaceImage(
+        cityName: attractionName,
+        countryName: countryName,
+      );
+
       expenses.add(
         ExpenseModel(
           day: (index / 2).floor() + 1,
-          attractionName: attraction['name']!,
-          imageUrl: attraction['image']!,
+          attractionName: attractionName,
+          imageUrl: imageUrl,
           entryFee: attraction['entryFee']!,
           transportationFee: attraction['transportationFee']!,
         ),
