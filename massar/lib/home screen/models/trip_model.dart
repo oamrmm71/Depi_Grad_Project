@@ -97,11 +97,13 @@ class TripModel {
 
       fullTripPlan: json["fullTripPlan"] ?? "",
 
-      tripPlan: json["tripPlan"] != null
-          ? TripPlanModel.fromJson(
-              Map<String, dynamic>.from(json["tripPlan"]),
-            )
-          : null,
+      tripPlan: json["tripPlan"] == null
+          ? null
+          : json["tripPlan"] is TripPlanModel
+              ? json["tripPlan"] as TripPlanModel
+              : TripPlanModel.fromJson(
+                  Map<String, dynamic>.from(json["tripPlan"]),
+                ),
     );
   }
 }
