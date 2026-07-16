@@ -7,7 +7,7 @@ const List<String?> _tabRoutes = [
   Routes.home,
   Routes.flights,
   null, // add
-  null, // money
+  Routes.expenseTracker, 
   Routes.profile,
 ];
 

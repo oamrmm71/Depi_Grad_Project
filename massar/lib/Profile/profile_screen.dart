@@ -1,16 +1,13 @@
 import 'dart:typed_data';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
+import 'package:massar/theme/app_colors.dart';
 import 'package:massar/custom%20widgets/bottom_nav_glass.dart';
-import 'package:massar/profile/services/profile_service.dart';
-import 'package:massar/profile/widgets/profile_avatar.dart';
-import 'package:massar/profile/widgets/profile_background.dart';
-import 'package:massar/profile/widgets/profile_edit_chip.dart';
-import 'package:massar/profile/widgets/profile_fields.dart';
-import 'package:massar/custom%20widgets/page_title.dart';
-import 'package:massar/profile/widgets/profile_save_button.dart';
+import 'package:massar/custom%20widgets/glass_container.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -33,12 +30,20 @@ class _ProfileScreenState extends State<ProfileScreen> {
   final _confirmPasswordController =
       TextEditingController();
 
-  Uint8List? _imageBytes;
+  Uint8List? _profileImageBytes;
+  bool _isPickingImage = false;
 
-  bool _loading = true;
-  bool _saving = false;
-  bool _editing = false;
-  bool _pickingImage = false;
+  bool _isEditing = false;
+  bool _isLoading = true;
+  bool _isSaving = false;
+
+  User? get _user => FirebaseAuth.instance.currentUser;
+
+  DocumentReference<Map<String, dynamic>>? get _userDocRef {
+    final uid = _user?.uid;
+    if (uid == null) return null;
+    return FirebaseFirestore.instance.collection('users').doc(uid);
+  }
 
   @override
   void initState() {

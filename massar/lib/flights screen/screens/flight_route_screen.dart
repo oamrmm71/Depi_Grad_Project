@@ -6,7 +6,7 @@ import 'package:massar/custom%20widgets/page_title.dart';
 import 'package:massar/flights%20screen/models/flight_model.dart';
 import 'package:massar/home%20screen/services/country_service.dart';
 import 'package:massar/home%20screen/services/flight_service.dart';
-import 'package:massar/profile/widgets/profile_background.dart';
+import 'package:massar/custom widgets/app_background.dart';
 import 'package:massar/theme/app_colors.dart';
 
 class FlightRouteScreen extends StatefulWidget {
@@ -114,7 +114,7 @@ class _FlightRouteScreenState extends State<FlightRouteScreen> {
     return Scaffold(
       body: Stack(
         children: [
-          const ProfileBackground(),
+          const AppBackground(),
 
           FlutterMap(
             options: MapOptions(
