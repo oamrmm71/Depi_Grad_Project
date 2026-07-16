@@ -33,62 +33,136 @@ class OnboardingScreen7 extends StatelessWidget {
   }
 
   Future<void> _showAirplaneDialog(BuildContext context) async {
-    await showDialog(
-      context: context,
-      barrierDismissible: false,
-      builder: (_) {
-        return AlertDialog(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(24),
-          ),
-          title: Text(
-            "Enable Airplane Mode",
-            style: GoogleFonts.poppins(
-              fontWeight: FontWeight.w600,
+  await showDialog(
+    context: context,
+    barrierColor: Colors.black.withOpacity(.35),
+    builder: (_) {
+      return Dialog(
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        child: Container(
+          padding: const EdgeInsets.all(24),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(28),
+            color: Colors.white.withOpacity(.15),
+            border: Border.all(
+              color: Colors.white.withOpacity(.25),
             ),
-          ),
-          content: Text(
-            "For the best travel experience, enable Airplane Mode from your device settings.\n\n"
-            "• Save battery\n"
-            "• Avoid roaming charges\n"
-            "• Stay distraction-free during your trip",
-            style: GoogleFonts.poppins(
-              height: 1.5,
-            ),
-          ),
-          actions: [
-            TextButton(
-              onPressed: () async {
-                Navigator.pop(context);
-                await _goHome(context);
-              },
-              child: Text(
-                "Not Now",
-                style: GoogleFonts.poppins(),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(.08),
+                blurRadius: 20,
               ),
-            ),
-            ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                backgroundColor: AppColors.navIcon,
-                foregroundColor: Colors.white,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(18),
+            ],
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const Icon(
+                Icons.flight,
+                size: 46,
+                color: AppColors.navIcon,
+              ),
+
+              const SizedBox(height: 14),
+
+              Text(
+                "Enable Airplane Mode",
+                textAlign: TextAlign.center,
+                style: GoogleFonts.poppins(
+                  fontSize: 22,
+                  fontWeight: FontWeight.w600,
+                  color: AppColors.navIcon,
                 ),
               ),
-              onPressed: () async {
-                Navigator.pop(context);
-                await _openAirplaneSettings(context);
-              },
-              child: Text(
-                "Open Settings",
-                style: GoogleFonts.poppins(),
+
+              const SizedBox(height: 14),
+
+              Text(
+                "For the best travel experience, enable Airplane Mode from your device settings.\n\n"
+                "• Save battery\n"
+                "• Avoid roaming charges\n"
+                "• Stay distraction-free during your trip",
+                textAlign: TextAlign.center,
+                style: GoogleFonts.poppins(
+                  fontSize: 14,
+                  height: 1.6,
+                  color: AppColors.navIcon.withValues(
+                    alpha: .75,
+                  ),
+                ),
               ),
-            ),
-          ],
-        );
-      },
-    );
-  }
+
+              const SizedBox(height: 24),
+
+              Row(
+                children: [
+                  Expanded(
+                    child: SizedBox(
+                      height: 52,
+                      child: OutlinedButton(
+                        onPressed: () async {
+                          Navigator.pop(context);
+                          await _goHome(context);
+                        },
+                        style: OutlinedButton.styleFrom(
+                          side: BorderSide(
+                            color: AppColors.navIcon.withOpacity(.25),
+                          ),
+                          shape: RoundedRectangleBorder(
+                            borderRadius:
+                                BorderRadius.circular(20),
+                          ),
+                        ),
+                        child: Text(
+                          "Not Now",
+                          style: GoogleFonts.poppins(
+                            color: AppColors.navIcon,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+
+                  const SizedBox(width: 12),
+
+                  Expanded(
+                    child: SizedBox(
+                      height: 52,
+                      child: ElevatedButton(
+                        onPressed: () async {
+                          Navigator.pop(context);
+                          await _openAirplaneSettings(context);
+                        },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor:
+                              AppColors.navIcon,
+                          elevation: 0,
+                          shape: RoundedRectangleBorder(
+                            borderRadius:
+                                BorderRadius.circular(20),
+                          ),
+                        ),
+                        child: Text(
+                          "Allow",
+                          style: GoogleFonts.poppins(
+                            color: AppColors.white,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+      );
+    },
+  );
+}
 
   @override
   Widget build(BuildContext context) {
