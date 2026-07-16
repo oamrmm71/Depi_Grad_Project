@@ -32,7 +32,8 @@ class _FlightsScreenBody extends StatelessWidget {
         fit: StackFit.expand,
         children: [
           const AppBackground(),
-          SafeArea(
+          Padding(
+            padding: const EdgeInsets.only(top: 40.0),
             child: Column(
               children: [
                 const FlightHeader(),
@@ -47,7 +48,7 @@ class _FlightsScreenBody extends StatelessWidget {
                           ),
                         );
                       }
-
+            
                       if (state is FlightError) {
                         return Center(
                           child: Text(
@@ -58,7 +59,7 @@ class _FlightsScreenBody extends StatelessWidget {
                           ),
                         );
                       }
-
+            
                       if (state is FlightLoaded) {
                         if (state.flights.isEmpty) {
                           return const Center(
@@ -70,7 +71,7 @@ class _FlightsScreenBody extends StatelessWidget {
                             ),
                           );
                         }
-
+            
                         return ListView.separated(
                           padding: const EdgeInsets.symmetric(
                             horizontal: 20,
@@ -81,7 +82,7 @@ class _FlightsScreenBody extends StatelessWidget {
                               const SizedBox(height: 14),
                           itemBuilder: (context, index) {
                             final flight = state.flights[index];
-
+            
                             return GestureDetector(
                               behavior: HitTestBehavior.opaque,
                               onTap: () {
@@ -101,7 +102,7 @@ class _FlightsScreenBody extends StatelessWidget {
                           },
                         );
                       }
-
+            
                       return const SizedBox.shrink();
                     },
                   ),
