@@ -1,13 +1,23 @@
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter/material.dart';
 import 'package:massar/theme/app_colors.dart';
-
+import 'package:massar/routes.dart';
 class BookingConfirmedPopup extends StatelessWidget {
   const BookingConfirmedPopup({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+     return GestureDetector(
+      onTap: () {
+        Navigator.pop(context); // close popup
+
+        Navigator.pushNamedAndRemoveUntil(
+          context,
+          Routes.flights,
+          (route) => false,
+        );
+      },
+    child: Container(
       width: double.infinity,
       padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 32),
       decoration: const BoxDecoration(
@@ -77,6 +87,8 @@ class BookingConfirmedPopup extends StatelessWidget {
           ),
         ],
       ),
+    )
     );
+  
   }
 }

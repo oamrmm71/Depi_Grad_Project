@@ -10,7 +10,7 @@ import '../services/booking_service.dart';
 import '../widgets/seat_widget.dart';
 import '../../theme/app_colors.dart';
 import 'booking_confirmed_popup.dart';
-import 'package:massar/routes.dart';
+
 
 class BookingScreen extends StatelessWidget {
   final FlightModel flight;
@@ -347,16 +347,4 @@ void showBookingConfirmed(BuildContext context) {
       return const BookingConfirmedPopup();
     },
   );
-
-  Future.delayed(const Duration(seconds: 2), () {
-    if (context.mounted) {
-      Navigator.pop(context);
-
-      Navigator.pushNamedAndRemoveUntil(
-        context,
-        Routes.flights,
-        (route) => false,
-      );
-    }
-  });
 }
