@@ -1,5 +1,10 @@
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:massar/Profile/profile_screen.dart';
+import 'package:massar/Profile/services/profile_service.dart';
+import 'package:massar/Profile/widgets/profile_avatar.dart';
 import 'package:massar/theme/app_colors.dart';
 import 'package:massar/custom%20widgets/bottom_nav_glass.dart';
 import 'package:massar/custom%20widgets/glass_button.dart';
@@ -22,9 +27,36 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  final ProfileService _profileService = ProfileService();
+
   bool _searchActive = false;
   final TextEditingController _searchController = TextEditingController();
   String _searchQuery = '';
+  Uint8List? _imageBytes;
+
+  bool _pickingImage = false;
+  bool _editing = false;
+  bool _loading = true;
+  bool _saving = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadProfileImage();
+  }
+
+  Future<void> _loadProfileImage() async {
+    try {
+      final data = await _profileService.loadProfile();
+      final imageBytes = await _profileService.getProfileImage(data);
+
+      if (mounted) {
+        setState(() {
+          _imageBytes = imageBytes;
+        });
+      }
+    } catch (_) {}
+  }
 
   @override
   void dispose() {
@@ -102,12 +134,20 @@ class _HomeScreenState extends State<HomeScreen> {
                   radius: 28,
                   backgroundColor: AppColors.avatarBg,
                   child: ClipOval(
-                    child: Image.asset(
-                      'lib/assets/profile.png',
-                      width: 98,
-                      height: 98,
-                      fit: BoxFit.cover,
-                    ),
+                    child: ProfileAvatar(
+
+                          imageBytes:
+                          _imageBytes,
+
+                          editable:
+                          _editing,
+
+                          loading:
+                          _pickingImage,
+
+                          onTap:(){}
+                          
+                        ),
                   ),
                 ),
                 Row(
@@ -140,7 +180,14 @@ class _HomeScreenState extends State<HomeScreen> {
                         color: AppColors.white,
                         size: 30,
                       ),
-                      onTap: () {},
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const ProfileScreen(),
+                          ),
+                        );
+                      },
                     ),
                   ],
                 ),
