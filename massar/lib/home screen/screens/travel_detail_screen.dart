@@ -99,20 +99,6 @@ class TravelDetailScreen extends StatelessWidget {
                       Row(
                         children: [
                           GlassButton(
-                            width: 140,
-                            height: 52,
-                            borderRadius: 50,
-                            child: Text(
-                              'Travel Notes',
-                              style: GoogleFonts.poppins(
-                                fontSize: 14,
-                                fontWeight: FontWeight.w500,
-                                color: AppColors.white,
-                              ),
-                            ),
-                            onTap: () {},
-                          ),
-                          GlassButton(
                             width: 52,
                             height: 52,
                             borderRadius: 50,
