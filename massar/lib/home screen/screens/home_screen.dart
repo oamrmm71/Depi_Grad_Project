@@ -63,6 +63,8 @@ class _HomeScreenState extends State<HomeScreen> {
     } catch (_) {}
   }
 
+  
+
   Future<void> _loadSavedDreamTrip() async {
     final prefs = await SharedPreferences.getInstance();
     final city = prefs.getString('dream_city_name')?.trim() ?? '';
