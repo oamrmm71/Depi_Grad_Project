@@ -105,17 +105,7 @@ class MainApp extends StatelessWidget {
               builder: (_) => const ForgetPasswordScreen(),
             );
           case Routes.expenseTracker:
-            final args = settings.arguments;
-            if (args is Map) {
-              return MaterialPageRoute(
-                builder: (_) => ExpenseTrackerScreen(
-                  cityName: args['cityName']?.toString(),
-                  countryName: args['countryName']?.toString(),
-                  days: int.tryParse(args['days']?.toString() ?? '') ?? 3,
-                ),
-              );
-            }
-            return MaterialPageRoute(builder: (_) => const ExpenseTrackerScreen());
+            return MaterialPageRoute(builder: (_) => ExpenseTrackerScreen());
 
           case Routes.addDream:
             return MaterialPageRoute(builder: (_) => const AddDreamFlowScreen());
