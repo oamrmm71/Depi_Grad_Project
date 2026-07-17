@@ -1,3 +1,4 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
@@ -8,6 +9,15 @@ import 'package:massar/home%20screen/services/country_service.dart';
 import 'package:massar/home%20screen/services/flight_service.dart';
 import 'package:massar/custom widgets/app_background.dart';
 import 'package:massar/theme/app_colors.dart';
+
+const Color _navyBlue = Color(0xFF000080);
+
+class _ItineraryPlace {
+  final String name;
+  final LatLng point;
+
+  _ItineraryPlace({required this.name, required this.point});
+}
 
 class FlightRouteScreen extends StatefulWidget {
   final FlightModel flight;
@@ -24,6 +34,7 @@ class FlightRouteScreen extends StatefulWidget {
 
 class _FlightRouteScreenState extends State<FlightRouteScreen> {
   late final FlightService _flightService;
+  final Dio _geocodeDio = Dio();
 
   bool _loading = true;
   String? _error;
@@ -33,6 +44,61 @@ class _FlightRouteScreenState extends State<FlightRouteScreen> {
 
   String _originCity = '';
   String _destinationCity = '';
+
+  List<_ItineraryPlace> _itineraryPlaces = [];
+
+  List<LatLng> get _stopPoints => widget.flight.stops
+      .map((s) => LatLng(s.latitude, s.longitude))
+      .toList();
+
+  List<LatLng> get _boundsPoints => _itineraryPlaces.isNotEmpty
+      ? _itineraryPlaces.map((p) => p.point).toList()
+      : [_origin, ..._stopPoints, _destination];
+
+  Future<LatLng?> _geocodePlace(String query) async {
+    try {
+      final response = await _geocodeDio.get(
+        'https://nominatim.openstreetmap.org/search',
+        queryParameters: {
+          'q': query,
+          'format': 'json',
+          'limit': 1,
+        },
+        options: Options(
+          headers: {'User-Agent': 'massar-travel-app/1.0'},
+        ),
+      );
+
+      final results = response.data as List;
+      if (results.isEmpty) return null;
+
+      final result = results.first as Map;
+      final lat = double.tryParse(result['lat'].toString());
+      final lon = double.tryParse(result['lon'].toString());
+      if (lat == null || lon == null) return null;
+
+      return LatLng(lat, lon);
+    } catch (_) {
+      return null;
+    }
+  }
+
+  Future<List<_ItineraryPlace>> _geocodeItineraryStops(
+    String destinationCity,
+  ) async {
+    final places = <_ItineraryPlace>[];
+
+    for (final name in widget.flight.itineraryStops) {
+      final point = await _geocodePlace('$name, $destinationCity');
+      if (point != null) {
+        places.add(_ItineraryPlace(name: name, point: point));
+      }
+      // Nominatim's public API allows at most 1 request/second.
+      await Future.delayed(const Duration(milliseconds: 1100));
+    }
+
+    return places;
+  }
 
   @override
   void initState() {
@@ -73,8 +139,24 @@ class _FlightRouteScreenState extends State<FlightRouteScreen> {
       _destinationCity =
           destinationData["cityName"];
 
+      debugPrint(
+        "Itinerary stops on flight (${widget.flight.flightId}): "
+        "${widget.flight.itineraryStops}",
+      );
+
+      final itineraryPlaces = widget.flight.itineraryStops.isEmpty
+          ? <_ItineraryPlace>[]
+          : await _geocodeItineraryStops(_destinationCity);
+
+      debugPrint(
+        "Geocoded ${itineraryPlaces.length}/"
+        "${widget.flight.itineraryStops.length} itinerary places: "
+        "${itineraryPlaces.map((p) => '${p.name} -> ${p.point}').toList()}",
+      );
+
       if (mounted) {
         setState(() {
+          _itineraryPlaces = itineraryPlaces;
           _loading = false;
         });
       }
@@ -119,10 +201,7 @@ class _FlightRouteScreenState extends State<FlightRouteScreen> {
           FlutterMap(
             options: MapOptions(
               initialCameraFit: CameraFit.bounds(
-                bounds: LatLngBounds.fromPoints([
-                  _origin,
-                  _destination,
-                ]),
+                bounds: LatLngBounds.fromPoints(_boundsPoints),
                 padding: const EdgeInsets.fromLTRB(
                   60,
                   180,
@@ -145,18 +224,18 @@ class _FlightRouteScreenState extends State<FlightRouteScreen> {
                     'com.yourcompany.massar',
               ),
 
-              PolylineLayer(
-                polylines: [
-                  Polyline(
-                    points: [
-                      _origin,
-                      _destination,
-                    ],
-                    strokeWidth: 3,
-                    color: AppColors.navIcon,
-                  ),
-                ],
-              ),
+              if (_itineraryPlaces.length > 1)
+                PolylineLayer(
+                  polylines: [
+                    Polyline(
+                      points: [
+                        for (final place in _itineraryPlaces) place.point,
+                      ],
+                      strokeWidth: 3,
+                      color: _navyBlue,
+                    ),
+                  ],
+                ),
 
               MarkerLayer(
                 markers: [
@@ -177,6 +256,22 @@ class _FlightRouteScreenState extends State<FlightRouteScreen> {
                       size: 28,
                     ),
                   ),
+
+                  for (final stop in widget.flight.stops)
+                    Marker(
+                      point: LatLng(stop.latitude, stop.longitude),
+                      width: 60,
+                      height: 40,
+                      child: _StopMarker(code: stop.airport),
+                    ),
+
+                  for (final place in _itineraryPlaces)
+                    Marker(
+                      point: place.point,
+                      width: 90,
+                      height: 44,
+                      child: _ItineraryMarker(name: place.name),
+                    ),
                 ],
               ),
             ],
@@ -319,6 +414,90 @@ class _AirportLabel extends StatelessWidget {
             fontSize: 12,
             color:
                 Colors.black.withOpacity(.55),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _StopMarker extends StatelessWidget {
+  final String code;
+
+  const _StopMarker({required this.code});
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Container(
+          width: 12,
+          height: 12,
+          decoration: BoxDecoration(
+            color: AppColors.white,
+            shape: BoxShape.circle,
+            border: Border.all(color: AppColors.navIcon, width: 2),
+          ),
+        ),
+        const SizedBox(height: 2),
+        Text(
+          code,
+          style: const TextStyle(
+            fontSize: 10,
+            fontWeight: FontWeight.bold,
+            color: AppColors.navIcon,
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _ItineraryMarker extends StatelessWidget {
+  final String name;
+
+  const _ItineraryMarker({required this.name});
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Container(
+          width: 14,
+          height: 14,
+          decoration: BoxDecoration(
+            color: _navyBlue,
+            shape: BoxShape.circle,
+            border: Border.all(color: AppColors.white, width: 2),
+          ),
+        ),
+        const SizedBox(height: 2),
+        Container(
+          padding: const EdgeInsets.symmetric(
+            horizontal: 6,
+            vertical: 2,
+          ),
+          decoration: BoxDecoration(
+            color: AppColors.white,
+            borderRadius: BorderRadius.circular(6),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(.15),
+                blurRadius: 4,
+              ),
+            ],
+          ),
+          child: Text(
+            name,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            style: const TextStyle(
+              fontSize: 9,
+              fontWeight: FontWeight.bold,
+              color: AppColors.navIcon,
+            ),
           ),
         ),
       ],

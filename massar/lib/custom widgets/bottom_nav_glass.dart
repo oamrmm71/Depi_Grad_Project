@@ -6,7 +6,7 @@ import 'package:massar/theme/app_colors.dart';
 const List<String?> _tabRoutes = [
   Routes.home,
   Routes.flights,
-  null, // add
+  Routes.addDream,
   Routes.expenseTracker, 
   Routes.profile,
 ];

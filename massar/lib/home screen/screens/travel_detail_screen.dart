@@ -496,7 +496,18 @@ class TravelDetailScreen extends StatelessWidget {
                                     toCountry: trip.destinationCity,
                                     toAirport: trip.destinationAirport,
                                     toTime: trip.destinationTime ?? 'TBD',
-                                  );
+                                    stops: trip.stops,
+                                    itineraryStops: [
+                                      if (trip.tripPlan?.accommodations
+                                              .isNotEmpty ??
+                                          false)
+                                        trip.tripPlan!.accommodations.first
+                                            .hotelName,
+                                      ...?trip.tripPlan?.attractions
+                                          .map((a) => a.name),
+                                    ],
+                                    );
+                                
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(
@@ -519,8 +530,6 @@ class TravelDetailScreen extends StatelessWidget {
                           ],
                         ),
                       ),
-
-                      // Plane in front
                       Transform.translate(
                         offset: const Offset(-24, -40),
                         child: Image.asset(

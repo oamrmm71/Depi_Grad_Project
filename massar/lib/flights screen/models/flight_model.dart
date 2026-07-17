@@ -1,5 +1,33 @@
 import 'package:massar/home%20screen/models/trip_model.dart';
 
+class FlightStop {
+  final String airport;
+  final String city;
+  final double latitude;
+  final double longitude;
+
+  FlightStop({
+    required this.airport,
+    required this.city,
+    required this.latitude,
+    required this.longitude,
+  });
+
+  Map<String, dynamic> toJson() => {
+    'airport': airport,
+    'city': city,
+    'latitude': latitude,
+    'longitude': longitude,
+  };
+
+  factory FlightStop.fromJson(Map<String, dynamic> json) => FlightStop(
+    airport: json['airport'] ?? '',
+    city: json['city'] ?? '',
+    latitude: (json['latitude'] as num?)?.toDouble() ?? 0.0,
+    longitude: (json['longitude'] as num?)?.toDouble() ?? 0.0,
+  );
+}
+
 class FlightModel {
   final String flightId;
   final String flightType;
@@ -12,6 +40,8 @@ class FlightModel {
   final String toCountry;
   final String toAirport;
   final String toTime;
+  final List<FlightStop> stops;
+  final List<String> itineraryStops;
 
   FlightModel({
     required this.flightId,
@@ -25,6 +55,8 @@ class FlightModel {
     required this.toCountry,
     required this.toAirport,
     required this.toTime,
+    this.stops = const [],
+    this.itineraryStops = const [],
   });
 
   Map<String, dynamic> toJson() {
@@ -40,6 +72,8 @@ class FlightModel {
       'toCountry': toCountry,
       'toAirport': toAirport,
       'toTime': toTime,
+      'stops': stops.map((s) => s.toJson()).toList(),
+      'itineraryStops': itineraryStops,
     };
   }
 
@@ -85,6 +119,7 @@ class FlightModel {
         toCountry: trip.takeoffCity,
         toAirport: toAirport,
         toTime: trip.returnDestinationTime ?? 'TBD',
+        stops: trip.returnStops,
       );
     }
     return FlightModel(
@@ -105,7 +140,19 @@ class FlightModel {
       toCountry: trip.destinationCity,
       toAirport: trip.destinationAirport,
       toTime: trip.destinationTime ?? 'TBD',
+      stops: trip.stops,
+      itineraryStops: _itineraryStopsFromTrip(trip),
     );
+  }
+
+  static List<String> _itineraryStopsFromTrip(TripModel trip) {
+    final plan = trip.tripPlan;
+    if (plan == null) return [];
+
+    return [
+      if (plan.accommodations.isNotEmpty) plan.accommodations.first.hotelName,
+      ...plan.attractions.map((a) => a.name),
+    ].where((name) => name.trim().isNotEmpty).toList();
   }
   factory FlightModel.fromFirestore(
   Map<String, dynamic> json,
@@ -122,6 +169,12 @@ class FlightModel {
     toCountry: json['toCountry'] ?? '',
     toAirport: json['toAirport'] ?? '',
     toTime: json['toTime'] ?? '',
+    stops: ((json['stops'] as List?) ?? [])
+        .map((s) => FlightStop.fromJson(Map<String, dynamic>.from(s)))
+        .toList(),
+    itineraryStops: ((json['itineraryStops'] as List?) ?? [])
+        .map((e) => e.toString())
+        .toList(),
   );
 }
 }

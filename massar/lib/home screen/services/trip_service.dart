@@ -95,6 +95,7 @@ class TripService {
             "destinationCityName": cityName,
             "destinationCountryCode":
                 airportDetails["countryCode"]?.toString() ?? "",
+            "stops": [],
           };
         }
 
@@ -120,6 +121,7 @@ class TripService {
           "arrivalDate": null,
           "takeoffTime": null,
           "destinationTime": null,
+          "stops": [],
         };
         try {
           returnFlightData = await _flightService.getFlightData(
@@ -152,12 +154,14 @@ class TripService {
           "destinationCity": cityName,
           "destinationAirport": flightData["destinationAirport"],
           "destinationTime": flightData["destinationTime"],
+          "stops": flightData["stops"] ?? [],
           "returnFlightCompany": returnFlightData["flightCompany"],
           "returnFlightCode": returnFlightData["flightCode"],
           "returnDepartureDate": returnFlightData["departureDate"],
           "returnArrivalDate": returnFlightData["arrivalDate"],
           "returnTakeoffTime": returnFlightData["takeoffTime"],
           "returnDestinationTime": returnFlightData["destinationTime"],
+          "returnStops": returnFlightData["stops"] ?? [],
           "isRealFlightData": !usedFallback,
           "fullTripPlan": "Trip plan will be generated soon",
           "tripPlan": tripPlan,
@@ -175,5 +179,142 @@ class TripService {
     }
 
     return trips;
+  }
+
+  Future<Map<String, dynamic>?> getDreamTrip({
+    required String origin,
+    required String cityName,
+    required String countryName,
+    required int budget,
+  }) async {
+    try {
+      final destinationAirport = await _flightService.getAirportCodeForCity(
+        cityName: cityName,
+        countryName: countryName,
+      );
+
+      final resolvedDestinationAirport = destinationAirport ?? cityName;
+      final airportDetails = destinationAirport != null
+          ? await _flightService.getAirportDetails(destinationAirport)
+          : <String, dynamic>{
+              "cityName": cityName,
+              "countryName": countryName,
+              "countryCode": "",
+            };
+
+      final airportCountryNameValue = airportDetails["countryName"]?.toString();
+      final airportCountryName = airportCountryNameValue?.trim() ?? "";
+      final resolvedCountryName =
+          airportCountryName.isNotEmpty ? airportCountryName : countryName;
+
+      final locationImage = await _imageService.getPlaceImage(
+        cityName: cityName,
+        countryName: resolvedCountryName,
+      );
+
+      Map<String, dynamic> flightData = {
+        "flightID": "${origin}_to_${resolvedDestinationAirport}",
+        "flightCompany": null,
+        "flightCode": null,
+        "takeoffAirport": origin,
+        "destinationAirport": resolvedDestinationAirport,
+        "takeoffTime": null,
+        "destinationTime": null,
+        "departureDate": null,
+        "arrivalDate": null,
+        "takeoffCityName": origin,
+        "destinationCityName": cityName,
+        "destinationCountryCode": airportDetails["countryCode"]?.toString() ?? "",
+      };
+
+      bool usedFallback = true;
+      try {
+        if (destinationAirport != null) {
+          flightData = await _flightService.getFlightData(
+            origin: origin,
+            destination: destinationAirport,
+          );
+          usedFallback = false;
+        }
+      } catch (_) {}
+
+      Map<String, dynamic> returnFlightData = {
+        "flightCompany": null,
+        "flightCode": null,
+        "departureDate": null,
+        "arrivalDate": null,
+        "takeoffTime": null,
+        "destinationTime": null,
+      };
+      try {
+        if (destinationAirport != null) {
+          returnFlightData = await _flightService.getFlightData(
+            origin: destinationAirport,
+            destination: origin,
+          );
+        }
+      } catch (_) {}
+
+      final ticketPrice = destinationAirport == null
+          ? null
+          : await _groqService.getTicketPrice(
+              origin: origin,
+              destination: destinationAirport,
+            );
+
+      final tripPlan = await _groqService.generateTripPlan(
+        cityName: cityName,
+        countryName: resolvedCountryName,
+        budget: budget,
+      );
+
+      return {
+        "cityName": cityName,
+        "countryName": resolvedCountryName,
+        "tripBudget": "$budget EGP",
+        "locationName": resolvedCountryName,
+        "locationImage": locationImage,
+        "departureDate": flightData["departureDate"],
+        "arrivalDate": flightData["arrivalDate"],
+        "flightID": flightData["flightID"] ?? flightData["f"],
+        "flightCompany": flightData["flightCompany"],
+        "flightCode": flightData["flightCode"],
+        "ticketPrice": ticketPrice,
+        "takeoffCity": flightData["takeoffCityName"],
+        "takeoffAirport": flightData["takeoffAirport"],
+        "takeoffTime": flightData["takeoffTime"],
+        "destinationCity": cityName,
+        "destinationAirport": flightData["destinationAirport"],
+        "destinationTime": flightData["destinationTime"],
+        "returnFlightCompany": returnFlightData["flightCompany"],
+        "returnFlightCode": returnFlightData["flightCode"],
+        "returnDepartureDate": returnFlightData["departureDate"],
+        "returnArrivalDate": returnFlightData["arrivalDate"],
+        "returnTakeoffTime": returnFlightData["takeoffTime"],
+        "returnDestinationTime": returnFlightData["destinationTime"],
+        "isRealFlightData": !usedFallback,
+        "fullTripPlan": tripPlan == null
+            ? "Trip plan will be generated soon"
+            : [
+                if (tripPlan.accommodations.isNotEmpty)
+                  "Hotel: ${tripPlan.accommodations.first.hotelName}",
+                if (tripPlan.attractions.isNotEmpty)
+                  "Top place: ${tripPlan.attractions.first.name}",
+              ].join(" | "),
+        "tripPlan": tripPlan,
+        "tours": tripPlan?.attractions
+                .map(
+                  (attraction) => {
+                    "name": attraction.name,
+                    "price": "${attraction.feeEgp ?? 0} EGP",
+                  },
+                )
+                .toList() ??
+            [],
+      };
+    } catch (e) {
+      print("getDreamTrip error: $e");
+      return null;
+    }
   }
 }

@@ -1,3 +1,5 @@
+import 'package:massar/flights%20screen/models/flight_model.dart';
+
 import 'trip_plan_model.dart';
 
 class TripModel {
@@ -24,6 +26,8 @@ class TripModel {
   final String? returnArrivalDate;
   final String? returnTakeoffTime;
   final String? returnDestinationTime;
+  final List<FlightStop> stops;
+  final List<FlightStop> returnStops;
   final List<TourModel> tours;
   final String fullTripPlan;
   final TripPlanModel? tripPlan;
@@ -52,6 +56,8 @@ class TripModel {
     this.returnArrivalDate,
     this.returnTakeoffTime,
     this.returnDestinationTime,
+    this.stops = const [],
+    this.returnStops = const [],
     required this.tours,
     required this.fullTripPlan,
     this.tripPlan,
@@ -87,6 +93,17 @@ class TripModel {
       returnArrivalDate: json["returnArrivalDate"],
       returnTakeoffTime: json["returnTakeoffTime"],
       returnDestinationTime: json["returnDestinationTime"],
+
+      stops:
+          (json["stops"] as List<dynamic>?)
+              ?.map((e) => FlightStop.fromJson(Map<String, dynamic>.from(e)))
+              .toList() ??
+          [],
+      returnStops:
+          (json["returnStops"] as List<dynamic>?)
+              ?.map((e) => FlightStop.fromJson(Map<String, dynamic>.from(e)))
+              .toList() ??
+          [],
 
       tours:
           (json["tours"] as List<dynamic>?)

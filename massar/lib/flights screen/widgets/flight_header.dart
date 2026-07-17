@@ -7,26 +7,24 @@ class FlightHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: 230,
+      height: 380,
       width: double.infinity,
       child: Stack(
         children: [
           Image.asset(
             'lib/assets/flight_hero.png',
             width: double.infinity,
-            height: 230,
+            height: 380,
             fit: BoxFit.cover,
           ),
 
           Positioned(
             top: 24,
-            left: 0,
+            left: 80,
             right: 0,
-            child: Center(
-              child: PageTitle(
-                firstLine: "YOUR",
-                secondLine: "FLIGHTS",
-              ),
+            child: PageTitle(
+              firstLine: "YOUR",
+              secondLine: "FLIGHTS",
             ),
           ),
         ],

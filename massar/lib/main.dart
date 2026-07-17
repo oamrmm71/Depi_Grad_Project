@@ -25,6 +25,7 @@ import 'package:massar/Profile/profile_screen.dart';
 import 'package:massar/flights%20screen/screens/flights_screen.dart';
 import 'package:massar/auth/signup.dart';
 import 'package:massar/expense_tracker/expense_tracker_screen.dart';
+import 'package:massar/add%20dream/screens/add_dream_flow_screen.dart';
 import 'routes.dart';
 import 'splash_screen.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -104,7 +105,20 @@ class MainApp extends StatelessWidget {
               builder: (_) => const ForgetPasswordScreen(),
             );
           case Routes.expenseTracker:
-            return MaterialPageRoute(builder: (_) => ExpenseTrackerScreen());
+            final args = settings.arguments;
+            if (args is Map) {
+              return MaterialPageRoute(
+                builder: (_) => ExpenseTrackerScreen(
+                  cityName: args['cityName']?.toString(),
+                  countryName: args['countryName']?.toString(),
+                  days: int.tryParse(args['days']?.toString() ?? '') ?? 3,
+                ),
+              );
+            }
+            return MaterialPageRoute(builder: (_) => const ExpenseTrackerScreen());
+
+          case Routes.addDream:
+            return MaterialPageRoute(builder: (_) => const AddDreamFlowScreen());
 
           case Routes.home:
             return MaterialPageRoute(builder: (_) => const HomeScreen());

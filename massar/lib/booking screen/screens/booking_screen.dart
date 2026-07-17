@@ -55,214 +55,205 @@ class _BookingScreenViewState extends State<BookingScreenView> {
             transform: GradientRotation(0.8),
           ),
         ),
-        child: SafeArea(
-          child: Column(
-            children: [
-              Padding(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 24.0,
-                  vertical: 16.0,
-                ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          'CHOOSE',
-                          style: GoogleFonts.poppins(
-                            fontSize: 32,
-                            fontStyle: FontStyle.italic,
-                            fontWeight: FontWeight.w200,
-                            color: AppColors.splashBg,
-                          ),
-                        ),
-                        Text(
-                          'FLIGHT SEAT',
-                          style: GoogleFonts.poppins(
-                            fontSize: 40,
-                            fontWeight: FontWeight.w600,
-                            color: AppColors.splashBg,
-                          ),
-                        ),
-                        const SizedBox(height: 8),
-                        Row(
-                          children: [
-                            Text(
-                              'Cairo',
-                              style: GoogleFonts.poppins(
-                                fontSize: 12,
-                                color: AppColors.splashBg,
-                                fontWeight: FontWeight.w300,
-                              ),
-                            ),
-                            const SizedBox(width: 12),
-                            Image.asset(
-                              'lib/assets/arrow.png',
-                              width: 37,
-                              height: 37,
-                              color: AppColors.white.withOpacity(0.8),
-                              fit: BoxFit.contain,
-                            ),
-                            const SizedBox(width: 12),
-                            Text(
-                              'Qatar',
-                              style: GoogleFonts.poppins(
-                                fontSize: 12,
-                                color: AppColors.splashBg,
-                                fontWeight: FontWeight.w300,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                    GestureDetector(
-                      onTap: () {  Navigator.pop(context);},
-                      child: Container(
-                        padding: const EdgeInsets.all(10),
-                        margin: EdgeInsets.only(top: 20),
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: Colors.white.withOpacity(0.15),
-                        ),
-                        child: const Icon(
-                          Icons.close,
-                          color: Colors.white,
-                          size: 20,
+        child: Column(
+          children: [
+            Padding(
+              padding: EdgeInsets.only(
+                left: 24.0,
+                right: 24.0,
+                top: 60.0,
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'CHOOSE',
+                        style: GoogleFonts.poppins(
+                          fontSize: 32,
+                          fontStyle: FontStyle.italic,
+                          fontWeight: FontWeight.w200,
+                          color: AppColors.splashBg,
                         ),
                       ),
-                    ),
-                  ],
-                ),
-              ),
-              Expanded(
-                child: Center(
-                  child: LayoutBuilder(
-                    builder: (context, constraints) {
-                      final double localHeight = constraints.maxHeight;
-                      final double localWidth = constraints.maxWidth;
-
-                      final double buttonBottom = localHeight * 0.035;
-
-                      return Stack(
+                      Text(
+                        'FLIGHT SEAT',
+                        style: GoogleFonts.poppins(
+                          fontSize: 40,
+                          fontWeight: FontWeight.w700,
+                          color: AppColors.splashBg,
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      Row(
                         children: [
-                          Positioned(
+                          Text(
+                            widget.flight.fromCountry,
+                            style: GoogleFonts.poppins(
+                              fontSize: 14,
+                              color: AppColors.splashBg,
+                              fontWeight: FontWeight.w300,
+                            ),
+                          ),
+                          const SizedBox(width: 12),
+                          Image.asset(
+                            'lib/assets/arrow.png',
+                            width: 37,
+                            height: 37,
+                            color: AppColors.white.withOpacity(0.8),
+                            fit: BoxFit.contain,
+                          ),
+                          const SizedBox(width: 12),
+                          Text(
+                            widget.flight.toCountry,
+                            style: GoogleFonts.poppins(
+                              fontSize: 14,
+                              color: AppColors.splashBg,
+                              fontWeight: FontWeight.w300,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.pop(context);
+                    },
+                    child: Container(
+                      padding: const EdgeInsets.all(20),
+                      margin: EdgeInsets.only(top: 20),
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: Colors.white.withOpacity(0.15),
+                      ),
+                      child: const Icon(
+                        Icons.close,
+                        color: Colors.white,
+                        size: 30,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Expanded(
+              child: Center(
+                child: LayoutBuilder(
+                  builder: (context, constraints) {
+                    final double localHeight = constraints.maxHeight;
+                    final double localWidth = constraints.maxWidth;
+        
+                    final double buttonBottom = localHeight * 0.035;
+        
+                    return Stack(
+                      children: [
+                        Transform.scale(
+                          scale: 1.2,
+                          child: Positioned(
                             child: Image.asset(
                               'lib/assets/seat layout.png',
                               fit: BoxFit.fitWidth,
                             ),
                           ),
-                          Positioned(
-                            top: localHeight * 0.33,
-                            left: 0,
-                            right: 0,
-                            bottom: localHeight * 0.1,
-                            child: BlocBuilder<BookingCubit, BookingState>(
-                              builder: (context, state) {
-                                if (state is BookingLoading) {
-                                  return const Center(
-                                    child: CircularProgressIndicator(
-                                      color: AppColors.screenBgGrad2,
-                                    ),
-                                  );
-                                } else if (state is BookingLoaded) {
-                                  return _buildSeatMap(state.seats);
-                                } else if (state is BookingError) {
-                                  return Center(
-                                    child: Text(
-                                      'Error: ${state.message}',
-                                      style: const TextStyle(color: Colors.red),
-                                    ),
-                                  );
-                                }
-                                return const SizedBox.shrink();
-                              },
-                            ),
-                          ),
-                          Positioned(
-                            left: 24,
-                            right: 24,
-                            bottom: buttonBottom,
-                            child: BlocBuilder<BookingCubit, BookingState>(
-                              builder: (context, state) {
-                                final List<Seat> selectedSeats =
-                                    state is BookingLoaded
-                                    ? state.seats
-                                          .where(
-                                            (s) =>
-                                                s.status == SeatStatus.selected,
-                                          )
-                                          .toList()
-                                    : [];
-
-                                return ElevatedButton(
-                                  onPressed: selectedSeats.isEmpty
-                                      ? null
-                                      : () {
-                                          showDialog(
-      context: context,
-      barrierColor: Colors.black45,
-      builder: (_) => const BookingConfirmedPopup(),
-    );
-  
-                                          
-                                        },
-                                  child: Container(
-                                    width: double.infinity,
-                                    height: 50,
-                                    decoration: BoxDecoration(
-                                      color: selectedSeats.isEmpty
-                                          ? AppColors.screenBgGrad3
-                                          : AppColors.screenBgGrad2,
-                                      borderRadius: BorderRadius.circular(25),
-                                      border: Border.all(
-                                        color: selectedSeats.isEmpty
-                                            ? Colors.white.withOpacity(0.05)
-                                            : AppColors.whiteDim,
-                                        width: 1,
-                                      ),
-                                      boxShadow: selectedSeats.isNotEmpty
-                                          ? [
-                                              BoxShadow(
-                                                color: Colors.black.withOpacity(
-                                                  0.3,
-                                                ),
-                                                blurRadius: 10,
-                                                offset: const Offset(0, 4),
-                                              ),
-                                            ]
-                                          : null,
-                                    ),
-                                    alignment: Alignment.center,
-                                    child: Text(
-                                      selectedSeats.isEmpty
-                                          ? 'Select Seats'
-                                          : 'Confirm (${selectedSeats.length})',
-                                      style: TextStyle(
-                                        fontFamily: 'Poppins',
-                                        fontSize: 15,
-                                        fontWeight: FontWeight.w600,
-                                        color: selectedSeats.isEmpty
-                                            ? Colors.white.withOpacity(0.4)
-                                            : Colors.white,
-                                      ),
-                                    ),
+                        ),
+                        Positioned(
+                          top: localHeight * 0.30,
+                          left: 0,
+                          right: 0,
+                          bottom: localHeight * 0.1,
+                          child: BlocBuilder<BookingCubit, BookingState>(
+                            builder: (context, state) {
+                              if (state is BookingLoading) {
+                                return const Center(
+                                  child: CircularProgressIndicator(
+                                    color: AppColors.screenBgGrad2,
                                   ),
                                 );
-                              },
-                            ),
+                              } else if (state is BookingLoaded) {
+                                return _buildSeatMap(state.seats);
+                              } else if (state is BookingError) {
+                                return Center(
+                                  child: Text(
+                                    'Error: ${state.message}',
+                                    style: const TextStyle(color: Colors.red),
+                                  ),
+                                );
+                              }
+                              return const SizedBox.shrink();
+                            },
                           ),
-                        ],
-                      );
-                    },
-                  ),
+                        ),
+                        Positioned(
+                          left: 24,
+                          right: 24,
+                          bottom: buttonBottom,
+                          child: BlocBuilder<BookingCubit, BookingState>(
+                            builder: (context, state) {
+                              final List<Seat> selectedSeats =
+                                  state is BookingLoaded
+                                  ? state.seats
+                                        .where(
+                                          (s) =>
+                                              s.status == SeatStatus.selected,
+                                        )
+                                        .toList()
+                                  : [];
+        
+                              return SizedBox(
+                                width: double.infinity,
+                                height: 54,
+                                child: ElevatedButton(
+                                  onPressed: selectedSeats.isEmpty
+                                      ? null
+                                      : () async {
+
+                                          await context
+                                              .read<BookingCubit>()
+                                              .confirmBooking();
+
+                                          if (!context.mounted) return;
+                                          showBookingConfirmed(context);
+                                        },
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: selectedSeats.isEmpty
+                                        ? AppColors.screenBgGrad3
+                                        : AppColors.screenBgGrad2,
+                                    disabledBackgroundColor:
+                                        AppColors.screenBgGrad3,
+                                    elevation: 0,
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(25),
+                                    ),
+                                  ),
+                                  child: Text(
+                                    selectedSeats.isEmpty
+                                        ? 'Select Seats'
+                                        : 'Confirm (${selectedSeats.length})',
+                                    style: TextStyle(
+                                      fontFamily: 'Poppins',
+                                      fontSize: 15,
+                                      fontWeight: FontWeight.w600,
+                                      color: selectedSeats.isEmpty
+                                          ? Colors.white.withOpacity(0.4)
+                                          : Colors.white,
+                                    ),
+                                  ),
+                                ),
+                              );
+                            },
+                          ),
+                        ),
+                      ],
+                    );
+                  },
                 ),
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
@@ -289,9 +280,9 @@ class _BookingScreenViewState extends State<BookingScreenView> {
 
         return Column(
           children: [
-            if (isAfterGap) const SizedBox(height: 8),
+            if (isAfterGap) const SizedBox(height: 10),
             Padding(
-              padding: const EdgeInsets.symmetric(vertical: 1.2),
+              padding: const EdgeInsets.symmetric(vertical: 1.8),
               child: _buildRow(context, rowSeats),
             ),
           ],
@@ -315,18 +306,18 @@ class _BookingScreenViewState extends State<BookingScreenView> {
           children: leftSeats
               .map(
                 (seat) => Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 1.4),
+                  padding: const EdgeInsets.symmetric(horizontal: 2.0),
                   child: SeatWidget(seat: seat),
                 ),
               )
               .toList(),
         ),
-        const SizedBox(width: 10),
+        const SizedBox(width: 16),
         Row(
           children: rightSeats
               .map(
                 (seat) => Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 1.4),
+                  padding: const EdgeInsets.symmetric(horizontal: 2.0),
                   child: SeatWidget(seat: seat),
                 ),
               )
@@ -335,4 +326,14 @@ class _BookingScreenViewState extends State<BookingScreenView> {
       ],
     );
   }
+}
+void showBookingConfirmed(BuildContext context) {
+  showModalBottomSheet(
+    context: context,
+    isScrollControlled: true,
+    backgroundColor: Colors.transparent,
+    builder: (context) {
+      return const BookingConfirmedPopup();
+    },
+  );
 }
