@@ -1,5 +1,4 @@
 import 'dart:typed_data';
-
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:massar/Profile/profile_screen.dart';
@@ -16,7 +15,6 @@ import 'package:massar/home%20screen/cubits/trip_state.dart';
 import 'package:massar/home%20screen/models/trip_model.dart';
 import 'package:massar/home%20screen/screens/notifications_screen.dart';
 import 'package:massar/home%20screen/screens/travel_detail_screen.dart';
-
 import '../cubits/trip_cubit.dart';
 
 class HomeScreen extends StatefulWidget {
